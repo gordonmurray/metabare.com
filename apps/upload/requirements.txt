@@ -1,0 +1,11 @@
+--extra-index-url https://download.pytorch.org/whl/cpu
+torch==2.1.0+cpu
+numpy<2
+fastapi==0.104.1
+uvicorn==0.24.0
+python-multipart==0.0.6
+transformers==4.37.2
+Pillow==10.3.0
+python-dotenv==1.0.0
+boto3>=1.34
+lancedb[s3,awss3]>=0.5

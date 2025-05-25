@@ -1,0 +1,1 @@
+*/2 * * * * bash -c 'source /tmp/cron-env && /usr/local/bin/python3 /app/sync-to-r2.py >> /var/log/cron.log 2>&1'

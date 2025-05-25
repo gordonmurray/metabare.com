@@ -1,0 +1,27 @@
+app = "metabare-frontend"
+
+[build]
+dockerfile = "./Dockerfile"
+
+[[services]]
+  internal_port = 80
+  protocol = "tcp"
+
+  [[services.ports]]
+    port = 80
+    handlers = ["http"]
+  [[services.ports]]
+    port = 443
+    handlers = ["tls", "http"]
+
+[[services.http_checks]]
+  path = "/"
+  interval = "30s"
+  timeout = "5s"
+
+[[vm]]
+  size = "shared-cpu-1x"
+
+# Custom domain configuration
+[env]
+  PRIMARY_REGION = "lhr"

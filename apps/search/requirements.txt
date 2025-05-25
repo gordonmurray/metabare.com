@@ -1,0 +1,8 @@
+fastapi
+uvicorn
+python-dotenv
+transformers
+torch
+Pillow
+lancedb[s3,awss3]>=0.5
+boto3
