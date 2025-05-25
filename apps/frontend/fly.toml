@@ -6,6 +6,7 @@ dockerfile = "./Dockerfile"
 [[services]]
   internal_port = 80
   protocol = "tcp"
+  force_https = true
 
   [[services.ports]]
     port = 80
@@ -15,7 +16,7 @@ dockerfile = "./Dockerfile"
     handlers = ["tls", "http"]
 
 [[services.http_checks]]
-  path = "/"
+  path = "/health"
   interval = "30s"
   timeout = "5s"
 
