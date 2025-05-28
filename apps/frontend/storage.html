@@ -24,6 +24,17 @@
     </div>
 
     <script src="storage.js"></script>
+
+    <footer style="text-align: center; padding: 2em 0; font-size: 0.9em; color: #666;">
+        © <span id="year"></span> metabare — A minimal image search tool powered by <a
+            href="https://github.com/lancedb/lance" target="_blank" rel="noopener"
+            style="color: #0070f3; text-decoration: none;">Lance</a> and CLIP <a
+            href="https://github.com/gordonmurray/metabare.com" target="_blank" rel="noopener"
+            style="color: #0070f3; text-decoration: none;">view on GitHub</a>
+    </footer>
+    <script>
+        document.getElementById('year').textContent = new Date().getFullYear();
+    </script>
 </body>
 
 </html>

@@ -115,7 +115,7 @@ async def latest_images():
     try:
         # Get latest 9 records assuming table has a `created_at` or `timestamp` field
         data = tbl.to_arrow().to_pylist()
-        sorted_data = sorted(data, key=lambda x: x.get("created_at", ""), reverse=True)
+        sorted_data = sorted(data, key=lambda x: x["id"], reverse=True)
         latest = sorted_data[:9]
         results = [
             {
