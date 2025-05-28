@@ -92,3 +92,39 @@ async def search_images(text: str = Query(..., description="Text to search for")
     return {
         "results": results
     }
+
+
+@app.get("/latest")
+async def latest_images():
+    # Connect to LanceDB
+    db = lancedb.connect(
+        f"s3://{R2_BUCKET}/lance/lance-data/",
+        storage_options={
+            "aws_access_key_id": R2_ACCESS,
+            "aws_secret_access_key": R2_SECRET,
+            "region": "auto",
+            "endpoint": R2_ENDPOINT,
+        },
+    )
+
+    try:
+        tbl = db.open_table("images")
+    except Exception as e:
+        raise HTTPException(404, detail=f"Lance table not found: {e}")
+
+    try:
+        # Get latest 9 records assuming table has a `created_at` or `timestamp` field
+        data = tbl.to_arrow().to_pylist()
+        sorted_data = sorted(data, key=lambda x: x.get("created_at", ""), reverse=True)
+        latest = sorted_data[:9]
+        results = [
+            {
+                "filename": r["id"],
+                "url": f"{BASE_IMAGE_URL}lance/images/{r['id']}"
+            }
+            for r in latest
+        ]
+    except Exception as e:
+        raise HTTPException(500, detail=f"Failed to fetch latest images: {e}")
+
+    return {"results": results}

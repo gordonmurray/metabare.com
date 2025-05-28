@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -8,9 +9,18 @@
   <link rel="stylesheet" href="style.css" />
   <script defer src="https://cloud.umami.is/script.js" data-website-id="25283c85-7185-40d0-b0df-ca12dffa71c4"></script>
 </head>
+
 <body>
   <div class="container">
     <h1>metabare</h1>
+
+    <p class="intro">
+      A minimal image search engine showcasing Lance for vector storage on Cloudflare R2.
+      Upload an image and it will appear here after being processed.
+      Search by keyword to find matching images.
+    </p>
+
+
     <div class="controls">
       <input type="text" id="search" placeholder="Search files..." />
       <label class="upload-btn">
@@ -24,7 +34,11 @@
   <script src="app.js"></script>
 
   <footer style="text-align: center; padding: 2em 0; font-size: 0.9em; color: #666;">
-    © <span id="year"></span> metabare — A minimal image search tool powered by <a href="https://github.com/lancedb/lance" target="_blank" rel="noopener" style="color: #0070f3; text-decoration: none;">Lance</a> and CLIP <a href="https://github.com/gordonmurray/metabare.com" target="_blank" rel="noopener" style="color: #0070f3; text-decoration: none;">view on GitHub</a>
+    © <span id="year"></span> metabare — A minimal image search tool powered by <a
+      href="https://github.com/lancedb/lance" target="_blank" rel="noopener"
+      style="color: #0070f3; text-decoration: none;">Lance</a> and CLIP <a
+      href="https://github.com/gordonmurray/metabare.com" target="_blank" rel="noopener"
+      style="color: #0070f3; text-decoration: none;">view on GitHub</a>
   </footer>
   <script>
     document.getElementById('year').textContent = new Date().getFullYear();
@@ -32,4 +46,5 @@
 
 
 </body>
+
 </html>
