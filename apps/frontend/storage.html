@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Metabare - Storage viewer</title>
+    <link rel="icon" type="image/png" href="/favicon.png" />
+
+    <script defer src="https://cloud.umami.is/script.js"
+        data-website-id="25283c85-7185-40d0-b0df-ca12dffa71c4"></script>
+    <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+    <div class="container">
+        <h1>Lance Dataset Storage</h1>
+        <p class="intro">
+            This page shows the internal structure of the Lance dataset.
+            Files are grouped by folder to demonstrate how Lance tracks metadata, versions, and Arrow-formatted data.
+        </p>
+
+        <div id="lance-container"></div>
+    </div>
+
+    <script src="storage.js"></script>
+</body>
+
+</html>
