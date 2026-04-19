@@ -47,7 +47,3 @@ This is a public showcase. A few endpoints and defaults that would be locked dow
 - `/metrics` proxies Firn's Prometheus text, same argument.
 - `docker-compose.yml` uses the standard MinIO default credentials (`minioadmin:minioadmin`) for local dev only. These are not used anywhere in production.
 - AWS credentials for the application containers come from the EC2 instance profile via IMDS; no static access keys live in the repo, `.env` files, or Secrets Manager.
-
-## License
-
-Apache-2.0.
