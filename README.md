@@ -39,6 +39,15 @@ Firn exposes Prometheus metrics at `/metrics`. A provisioned Grafana dashboard i
 
 `/search` accepts an optional `?backend=lance|firn` query parameter. The upload path writes each image's vector to both Lance (on S3, via the upload container's sync cron) and Firn. This lets the site serve the same query through either backend so the caching win of Firn can be seen side by side.
 
+## Security posture
+
+This is a public showcase. A few endpoints and defaults that would be locked down in a private deployment are intentionally open:
+
+- `/grafana/` runs in anonymous Viewer mode: read-only dashboard access, no edits or sign-in. Serving the Firn metrics to visitors is the point of the site.
+- `/metrics` proxies Firn's Prometheus text, same argument.
+- `docker-compose.yml` uses the standard MinIO default credentials (`minioadmin:minioadmin`) for local dev only. These are not used anywhere in production.
+- AWS credentials for the application containers come from the EC2 instance profile via IMDS; no static access keys live in the repo, `.env` files, or Secrets Manager.
+
 ## License
 
 Apache-2.0.

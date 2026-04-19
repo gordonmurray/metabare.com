@@ -16,7 +16,7 @@ Firn docs live at `github.com/gordonmurray/firnflow`; consult that repo before t
 - Object store: Cloudflare R2 to AWS S3, with CloudFront for image delivery.
 - `/latest`: full-table scan on lance to Firn's cursor-paginated `/list` endpoint (available in Firn v0.3.0).
 - TLS / public ingress: Fly edge to ALB + ACM cert.
-- Secrets: Fly secrets to AWS Secrets Manager.
+- Credentials: Fly secrets to EC2 instance profile via IMDS (no static keys in env or Secrets Manager).
 
 **Explicitly unchanged**
 
@@ -61,8 +61,7 @@ If any of these feel tempting mid-way, stop and re-read this section.
 
 - **ALB + ACM** terminates TLS for `metabare.com` and forwards to nginx on the instance.
 - **CloudFront + S3 OAC** serves image bytes from `cdn.metabare.com`. Origin is the same S3 bucket as the Lance data; OAC keeps the bucket private.
-- **Instance profile IAM role** grants the EC2 box `s3:{Get,Put,List,Delete}Object` on the bucket and `secretsmanager:GetSecretValue` on the migration's secrets. No AWS access keys in env.
-- **Secrets Manager** holds anything not IAM-role-granted. Current footprint is small, with no R2 creds to carry forward.
+- **Instance profile IAM role** grants the EC2 box `s3:{Get,Put,List,Delete}Object` on the bucket. Firn's `object_store`, boto3, and lancedb-rs all fall through to the default AWS credential chain when no explicit keys are set, so the containers reach S3 over IMDS with no static credentials anywhere.
 - **SSM Session Manager** is the access path to the instance. No public port 22.
 
 **Why CloudFront does not impede showing Firn's performance**: image bytes never traverse Firn. Only the `/search` and `/list` JSON does. Keeping image delivery on a separate, cached path means `/search` latency in devtools is a clean Firn number, not polluted by image transfer time.
