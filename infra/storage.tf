@@ -45,4 +45,25 @@ resource "aws_s3_bucket_lifecycle_configuration" "data" {
       days_after_initiation = 7
     }
   }
+
+  # Deletes user-uploaded images 30 days after PutObject. The
+  # upload sync tags new image objects with retention=auto-expire;
+  # the existing seed set is untagged and kept indefinitely.
+  rule {
+    id     = "expire-user-uploads"
+    status = "Enabled"
+
+    filter {
+      and {
+        prefix = "lance/images/"
+        tags = {
+          retention = "auto-expire"
+        }
+      }
+    }
+
+    expiration {
+      days = 30
+    }
+  }
 }

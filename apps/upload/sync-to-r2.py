@@ -53,7 +53,14 @@ def sync_folder():
 
                 if should_upload(local_path, s3_key):
                     logging.info(f"Uploading {s3_key}")
-                    s3.upload_file(local_path, R2_BUCKET, s3_key)
+                    extra_args = {}
+                    # Tag only image binaries so the 30-day
+                    # lifecycle rule expires user uploads. The
+                    # existing seed set lacks this tag and is kept.
+                    # Lance data files are never tagged.
+                    if s3_key.startswith("lance/images/"):
+                        extra_args["Tagging"] = "retention=auto-expire"
+                    s3.upload_file(local_path, R2_BUCKET, s3_key, ExtraArgs=extra_args)
 
         logging.info("Sync completed successfully")
     except Exception as e:
