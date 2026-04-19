@@ -4,12 +4,12 @@
 
 ## Features
 
-* 🔍 Plain HTML/CSS/JS frontend — no build tooling
-* 📤 Upload API backed by FastAPI + Lance
-* 📁 R2-compatible storage sync
-* 🔎 Search API
-* 📊 Optional analytics for image views/clicks (In progress)
-* 🚀 Fly.io ready: each app is containerized and deployable independently
+* Plain HTML/CSS/JS frontend, no build tooling
+* Upload API backed by FastAPI + Lance
+* R2-compatible storage sync
+* Search API
+* Optional analytics for image views/clicks (in progress)
+* Fly.io ready: each app is containerized and deployable independently
 
 ## Structure
 
@@ -40,7 +40,7 @@ fly apps create metabare-search
 fly deploy
 ```
 
-> 📝 Note: Persistent volume needed for `upload` app to store LanceDB.
+> Note: persistent volume needed for `upload` app to store LanceDB.
 
 ## Usage
 
