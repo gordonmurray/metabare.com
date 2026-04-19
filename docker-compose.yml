@@ -106,6 +106,23 @@ services:
       retries: 10
       start_period: 120s
 
+  frontend:
+    build: ./apps/frontend
+    container_name: metabare-frontend
+    depends_on:
+      upload:
+        condition: service_healthy
+      search:
+        condition: service_healthy
+    ports:
+      - "8082:80"
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q -O- http://localhost/health > /dev/null || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+
 volumes:
   minio-data:
   upload-storage:

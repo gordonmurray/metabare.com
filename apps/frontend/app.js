@@ -4,7 +4,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const fileInput = document.getElementById("file-input");
 
   // Fetch and display the latest 9 images
-  fetch("https://search.metabare.com/latest")
+  fetch("/latest")
     .then(res => res.json())
     .then(data => {
       gallery.innerHTML = "";
@@ -27,7 +27,7 @@ document.addEventListener("DOMContentLoaded", () => {
       if (!query) return;
 
       searchTimeout = setTimeout(() => {
-        fetch(`https://search.metabare.com/search?text=${encodeURIComponent(query)}`)
+        fetch(`/search?text=${encodeURIComponent(query)}`)
           .then(res => res.json())
           .then(data => {
             gallery.innerHTML = "";
@@ -55,7 +55,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const formData = new FormData();
     formData.append("file", file);
 
-    fetch("https://upload.metabare.com/upload", {
+    fetch("/upload", {
       method: "POST",
       body: formData,
     })

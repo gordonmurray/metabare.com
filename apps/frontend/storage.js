@@ -1,4 +1,4 @@
-fetch("https://upload.metabare.com/storage/files")
+fetch("/storage/files")
   .then(res => res.json())
   .then(data => {
     const container = document.getElementById("lance-container");
@@ -50,6 +50,6 @@ fetch("https://upload.metabare.com/storage/files")
     const summary = document.createElement("p");
     summary.style.marginTop = "2em";
     summary.style.fontStyle = "italic";
-    summary.textContent = `${data.lance.count} files — ${(data.lance.total_size / 1024).toFixed(1)} KB total`;
+    summary.textContent = `${data.lance.count} files, ${(data.lance.total_size / 1024).toFixed(1)} KB total`;
     container.appendChild(summary);
   });
