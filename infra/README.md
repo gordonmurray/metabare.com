@@ -27,40 +27,24 @@ user-data.sh.tpl # EC2 first-boot script
 
 ## Apply procedure
 
-The DNS provider for `metabare.com` is Namecheap, so ACM validation
-records have to be added by hand. Run apply in two stages:
+The hosted zone for `metabare.com` is in Route 53 (Namecheap is now
+just the registrar pointing at AWS NS), so DNS records and ACM
+validation are fully automated. One apply does the whole thing:
 
 ```bash
 cd infra
 terraform init
 terraform plan -var "git_repo=https://github.com/gordonmurray/metabare.com.git"
-
-# Stage 1: only request the certs.
-terraform apply \
-    -var "git_repo=https://github.com/gordonmurray/metabare.com.git" \
-    -target=aws_acm_certificate.alb \
-    -target=aws_acm_certificate.cdn
-
-# Show the CNAMEs to copy into Namecheap.
-terraform output acm_validation_records_alb
-terraform output acm_validation_records_cdn
-```
-
-Add those CNAMEs in Namecheap. ACM polls every minute or so; once
-validated (usually 5-10 min after the records propagate), continue:
-
-```bash
-# Stage 2: everything else. Validation resources will poll until
-# the certs are issued, then the rest of the stack rolls out.
 terraform apply -var "git_repo=https://github.com/gordonmurray/metabare.com.git"
 ```
 
-Final step is the public DNS cutover:
+The apply creates the cert validation records, waits for ACM to see
+them and issue the certs (usually a few minutes once the registrar's
+NS change has propagated), then rolls out the ALB, EC2, CloudFront,
+and the apex / www / cdn DNS records.
 
-- `metabare.com` and `www.metabare.com` -> CNAME -> output
-  `alb_dns_name`. (Namecheap requires CNAMEs at subdomains; for the
-  apex use ALIAS-equivalent record.)
-- `cdn.metabare.com` -> CNAME -> output `cloudfront_domain`.
+Total wall clock on a fresh apply is about 20 minutes; CloudFront
+is the slow piece (initial propagation is ~15 min).
 
 ## Verifying the box came up
 
