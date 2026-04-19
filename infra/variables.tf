@@ -48,3 +48,15 @@ variable "firn_namespace" {
   default     = "images"
   description = "Firn namespace name. Multi-tenant deployments will use distinct values."
 }
+
+variable "vpc_id" {
+  type        = string
+  default     = "vpc-00bd949065ee5abe0"
+  description = "Existing VPC in eu-west-1. The account is at its VPC-per-region quota, so this stack reuses an existing one."
+}
+
+variable "public_subnet_ids" {
+  type        = list(string)
+  default     = ["subnet-0fbc5328c0af9a3f5", "subnet-06a8dd0d8bb30de13"]
+  description = "Public subnets (one per AZ) used by the ALB and the EC2 instance."
+}

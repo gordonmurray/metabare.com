@@ -1,64 +1,18 @@
-# Dedicated VPC for metabare. The cloudfloe account's default VPC
-# has no subnets, so we create our own minimal public networking.
-resource "aws_vpc" "main" {
-  cidr_block           = "10.20.0.0/16"
-  enable_dns_hostnames = true
-  enable_dns_support   = true
-
-  tags = {
-    Name = "metabare"
-  }
+# Existing VPC (the cloudfloe account is at its VPC quota). Routing
+# and internet gateway are already managed outside this stack.
+data "aws_vpc" "main" {
+  id = var.vpc_id
 }
 
-resource "aws_internet_gateway" "main" {
-  vpc_id = aws_vpc.main.id
-
-  tags = {
-    Name = "metabare"
-  }
-}
-
-# ALBs need at least two subnets in different AZs.
-resource "aws_subnet" "public" {
-  for_each = {
-    a = { az = "eu-west-1a", cidr = "10.20.1.0/24" }
-    b = { az = "eu-west-1b", cidr = "10.20.2.0/24" }
-  }
-
-  vpc_id                  = aws_vpc.main.id
-  cidr_block              = each.value.cidr
-  availability_zone       = each.value.az
-  map_public_ip_on_launch = true
-
-  tags = {
-    Name = "metabare-public-${each.key}"
-  }
-}
-
-resource "aws_route_table" "public" {
-  vpc_id = aws_vpc.main.id
-
-  route {
-    cidr_block = "0.0.0.0/0"
-    gateway_id = aws_internet_gateway.main.id
-  }
-
-  tags = {
-    Name = "metabare-public"
-  }
-}
-
-resource "aws_route_table_association" "public" {
-  for_each = aws_subnet.public
-
-  subnet_id      = each.value.id
-  route_table_id = aws_route_table.public.id
+data "aws_subnet" "public" {
+  for_each = toset(var.public_subnet_ids)
+  id       = each.key
 }
 
 resource "aws_security_group" "alb" {
   name        = "metabare-alb"
   description = "Public 80/443 ingress for the metabare ALB"
-  vpc_id      = aws_vpc.main.id
+  vpc_id      = data.aws_vpc.main.id
 
   ingress {
     description = "https"
@@ -87,7 +41,7 @@ resource "aws_security_group" "alb" {
 resource "aws_security_group" "instance" {
   name        = "metabare-instance"
   description = "Frontend port from ALB SG only; egress unrestricted for SSM and image pulls"
-  vpc_id      = aws_vpc.main.id
+  vpc_id      = data.aws_vpc.main.id
 
   ingress {
     description     = "frontend nginx (target group port)"

@@ -3,14 +3,14 @@ resource "aws_lb" "main" {
   internal           = false
   load_balancer_type = "application"
   security_groups    = [aws_security_group.alb.id]
-  subnets            = [for s in aws_subnet.public : s.id]
+  subnets            = var.public_subnet_ids
 }
 
 resource "aws_lb_target_group" "frontend" {
   name        = "metabare-frontend"
   port        = 8082
   protocol    = "HTTP"
-  vpc_id      = aws_vpc.main.id
+  vpc_id      = data.aws_vpc.main.id
   target_type = "instance"
 
   health_check {
