@@ -21,7 +21,6 @@ app.add_middleware(
     allow_origins=[
         "https://metabare.com",
         "https://www.metabare.com",
-        "https://metabare-frontend.fly.dev"
     ],
     allow_credentials=True,
     allow_methods=["GET", "POST", "OPTIONS"],
