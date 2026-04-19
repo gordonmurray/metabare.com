@@ -112,7 +112,8 @@ services:
       GF_AUTH_DISABLE_LOGIN_FORM: "true"
       GF_SECURITY_ALLOW_EMBEDDING: "true"
       GF_USERS_DEFAULT_THEME: dark
-      GF_SERVER_ROOT_URL: "%(protocol)s://%(domain)s/grafana/"
+      GF_SERVER_DOMAIN: metabare.com
+      GF_SERVER_ROOT_URL: "https://metabare.com/grafana/"
       GF_SERVER_SERVE_FROM_SUB_PATH: "true"
     restart: unless-stopped
 
