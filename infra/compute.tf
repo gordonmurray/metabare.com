@@ -1,9 +1,10 @@
 resource "aws_instance" "main" {
-  ami                    = data.aws_ami.al2023.id
-  instance_type          = var.instance_type
-  iam_instance_profile   = aws_iam_instance_profile.instance.name
-  vpc_security_group_ids = [aws_security_group.instance.id]
-  subnet_id              = var.public_subnet_ids[0]
+  ami                         = data.aws_ami.al2023.id
+  instance_type               = var.instance_type
+  iam_instance_profile        = aws_iam_instance_profile.instance.name
+  vpc_security_group_ids      = [aws_security_group.instance.id]
+  subnet_id                   = var.private_subnet_ids[0]
+  associate_public_ip_address = false
 
   user_data = templatefile("${path.module}/user-data.sh.tpl", {
     region         = var.region

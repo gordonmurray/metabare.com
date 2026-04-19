@@ -58,5 +58,11 @@ variable "vpc_id" {
 variable "public_subnet_ids" {
   type        = list(string)
   default     = ["subnet-0fbc5328c0af9a3f5", "subnet-06a8dd0d8bb30de13"]
-  description = "Public subnets (one per AZ) used by the ALB and the EC2 instance."
+  description = "Public subnets (one per AZ) used by the ALB."
+}
+
+variable "private_subnet_ids" {
+  type        = list(string)
+  default     = ["subnet-02d67b789b9ba177d"]
+  description = "Private subnet(s) with a NAT route. The EC2 instance lives here so it is not directly addressable from the internet."
 }
