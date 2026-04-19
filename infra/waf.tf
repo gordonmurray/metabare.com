@@ -77,6 +77,10 @@ resource "aws_wafv2_web_acl" "main" {
   }
 
   # OWASP-lite baseline: SQLi, XSS, path traversal attempts.
+  # A handful of rules in the managed set conflict with binary
+  # file uploads (the 8 KB body-inspection limit and body-XSS
+  # regex pattern trip on JPEG bytes), so they are switched to
+  # count mode; everything else still blocks.
   rule {
     name     = "aws-managed-common"
     priority = 30
@@ -89,6 +93,27 @@ resource "aws_wafv2_web_acl" "main" {
       managed_rule_group_statement {
         name        = "AWSManagedRulesCommonRuleSet"
         vendor_name = "AWS"
+
+        rule_action_override {
+          name = "SizeRestrictions_BODY"
+          action_to_use {
+            count {}
+          }
+        }
+
+        rule_action_override {
+          name = "CrossSiteScripting_BODY"
+          action_to_use {
+            count {}
+          }
+        }
+
+        rule_action_override {
+          name = "GenericRFI_BODY"
+          action_to_use {
+            count {}
+          }
+        }
       }
     }
 
