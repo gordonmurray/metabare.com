@@ -28,8 +28,9 @@ variable "cdn_domain" {
 }
 
 variable "instance_type" {
-  type    = string
-  default = "t3.medium"
+  type        = string
+  default     = "m7i.large"
+  description = "Fixed-performance general-purpose instance. Baseline t3.medium hit CPU credit exhaustion under the full showcase stack."
 }
 
 variable "git_repo" {
