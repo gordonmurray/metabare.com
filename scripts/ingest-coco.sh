@@ -13,6 +13,7 @@ set -Eeuo pipefail
 
 COCO_DIR="${COCO_DIR:-/home/gordon/Downloads/coco_sample_images}"
 COUNT="${COUNT:-20}"
+OFFSET="${OFFSET:-0}"
 URL="${URL:-http://localhost:8080/upload}"
 
 if [[ ! -d "$COCO_DIR" ]]; then
@@ -20,7 +21,7 @@ if [[ ! -d "$COCO_DIR" ]]; then
     exit 1
 fi
 
-printf 'Uploading first %s image(s) from %s to %s\n\n' "$COUNT" "$COCO_DIR" "$URL"
+printf 'Uploading %s image(s), skipping first %s, from %s to %s\n\n' "$COUNT" "$OFFSET" "$COCO_DIR" "$URL"
 
 ok=0
 fail=0
@@ -34,7 +35,7 @@ while IFS= read -r f; do
         printf 'FAIL %s: %s\n' "$name" "$resp"
         fail=$((fail+1))
     fi
-done < <(find "$COCO_DIR" -maxdepth 1 -name '*.jpg' -type f | sort | head -n "$COUNT")
+done < <(find "$COCO_DIR" -maxdepth 1 -name '*.jpg' -type f | sort | tail -n +$((OFFSET + 1)) | head -n "$COUNT")
 
 printf '\nUploaded: %s ok, %s failed\n' "$ok" "$fail"
 

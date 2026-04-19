@@ -56,3 +56,26 @@ resource "aws_lb_listener" "http_redirect" {
     }
   }
 }
+
+# Canonical host is the apex. Any https://www.metabare.com/* hit is
+# redirected to the same path at https://metabare.com/*.
+resource "aws_lb_listener_rule" "www_to_apex" {
+  listener_arn = aws_lb_listener.https.arn
+  priority     = 10
+
+  action {
+    type = "redirect"
+    redirect {
+      host        = var.domain
+      protocol    = "HTTPS"
+      port        = "443"
+      status_code = "HTTP_301"
+    }
+  }
+
+  condition {
+    host_header {
+      values = ["www.${var.domain}"]
+    }
+  }
+}
