@@ -73,6 +73,34 @@ resource "aws_iam_role_policy_attachment" "ssm" {
   policy_arn = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
 }
 
+# Instance-role grant used by Firn, upload, and search via IMDS.
+# The Rust object_store client and boto3 both fall through to the
+# default AWS credential chain when no explicit keys are supplied,
+# so no static access keys live in env or Secrets Manager.
+resource "aws_iam_role_policy" "instance_s3" {
+  name = "metabare-instance-s3"
+  role = aws_iam_role.instance.id
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect = "Allow"
+        Action = [
+          "s3:GetObject",
+          "s3:PutObject",
+          "s3:DeleteObject",
+          "s3:ListBucket",
+        ]
+        Resource = [
+          aws_s3_bucket.data.arn,
+          "${aws_s3_bucket.data.arn}/*",
+        ]
+      },
+    ]
+  })
+}
+
 resource "aws_iam_role_policy" "instance_secrets" {
   name = "metabare-instance-secrets"
   role = aws_iam_role.instance.id

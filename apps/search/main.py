@@ -49,16 +49,20 @@ def _encode_query(text: str):
 
 
 def _open_lance_table():
-    opts = {
-        "aws_access_key_id": R2_ACCESS,
-        "aws_secret_access_key": R2_SECRET,
-        "region": os.getenv("R2_REGION", "us-east-1"),
-        "endpoint": R2_ENDPOINT,
-    }
-    # lancedb-rs refuses plain HTTP endpoints unless allow_http is set;
-    # R2 is always https, MinIO in local dev is http.
-    if (R2_ENDPOINT or "").startswith("http://"):
-        opts["allow_http"] = "true"
+    # Only pass creds/endpoint when explicitly set. In prod on EC2
+    # we want lancedb-rs to use the default AWS credential chain
+    # (instance profile via IMDS); in local dev against MinIO, the
+    # env vars are set and we include them here. Region is always
+    # passed because lancedb-rs defaults to us-east-1 otherwise.
+    opts = {"region": os.getenv("R2_REGION", "us-east-1")}
+    if R2_ENDPOINT:
+        opts["endpoint"] = R2_ENDPOINT
+        if R2_ENDPOINT.startswith("http://"):
+            opts["allow_http"] = "true"
+    if R2_ACCESS:
+        opts["aws_access_key_id"] = R2_ACCESS
+    if R2_SECRET:
+        opts["aws_secret_access_key"] = R2_SECRET
     db = lancedb.connect(f"s3://{R2_BUCKET}/lance/lance-data/", storage_options=opts)
     try:
         return db.open_table("images")

@@ -12,17 +12,22 @@ R2_SECRET_ACCESS_KEY = os.environ.get('R2_SECRET_ACCESS_KEY')
 R2_BUCKET = os.environ.get('R2_BUCKET')
 LANCE_DIR = "/app/storage"
 
-required_vars = [R2_ENDPOINT, R2_ACCESS_KEY_ID, R2_SECRET_ACCESS_KEY, R2_BUCKET]
-if not all(required_vars):
-    logging.error("Missing required environment variables")
+if not R2_BUCKET:
+    logging.error("R2_BUCKET must be set")
     sys.exit(1)
 
-s3 = boto3.client(
-    "s3",
-    endpoint_url=R2_ENDPOINT,
-    aws_access_key_id=R2_ACCESS_KEY_ID,
-    aws_secret_access_key=R2_SECRET_ACCESS_KEY
-)
+# Endpoint and keys are optional. When unset (prod on EC2), boto3
+# uses the regional default endpoint and the default credential
+# chain (instance profile via IMDS).
+s3_kwargs = {}
+if R2_ENDPOINT:
+    s3_kwargs['endpoint_url'] = R2_ENDPOINT
+if R2_ACCESS_KEY_ID:
+    s3_kwargs['aws_access_key_id'] = R2_ACCESS_KEY_ID
+if R2_SECRET_ACCESS_KEY:
+    s3_kwargs['aws_secret_access_key'] = R2_SECRET_ACCESS_KEY
+
+s3 = boto3.client("s3", **s3_kwargs)
 
 def should_upload(local_path, s3_key):
     try:
