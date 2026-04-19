@@ -4,7 +4,7 @@
 
 Showcase Firn by cutting Metabare's live, public search path from direct-Lance-on-R2 to Firn-on-S3, deployed on a single EC2 instance in `eu-west-1`. The site remains user-facing and behaves the same from the browser; the backend proves Firn works end-to-end on real infrastructure.
 
-Firn docs live at `github.com/gordonmurray/firnflow`. Read Firn's own `CLAUDE.md` before touching Firn config; this file is authoritative for Metabare-side changes only.
+Firn docs live at `github.com/gordonmurray/firnflow`; consult that repo before touching Firn config. This file is authoritative for Metabare-side changes only.
 
 ## Scope
 
@@ -178,9 +178,9 @@ Terraform under `infra/`:
 - Remove Fly-specific files (`fly.toml`, Dockerfile adjustments for Fly volumes).
 - `fly apps destroy metabare-frontend metabare-upload metabare-search`.
 - Delete the old R2 bucket after a one-week grace period.
-- Update local `CLAUDE.md` to reflect new reality. Fly and R2 disappear from that file. `CLAUDE.md` is gitignored, so this is a local-only edit.
+- Update the local notes file to reflect the new reality (Fly and R2 references removed). The notes file is gitignored, so this is a local-only edit.
 
-**DoD**: upload path has exactly one write (to Firn) plus the image `PutObject`. No cron, no R2 code, no Fly config. Local `CLAUDE.md` matches deployed reality.
+**DoD**: upload path has exactly one write (to Firn) plus the image `PutObject`. No cron, no R2 code, no Fly config. Local notes match deployed reality.
 
 ## Decisions open during P1/P2
 
@@ -194,7 +194,7 @@ Small but load-bearing. Decide once, write the answer into this file, stop re-de
 ## Files this plan creates or changes
 
 ```
-.gitignore                             # added: ignores CLAUDE.md and local artefacts
+.gitignore                             # added: ignores local artefacts
 docker-compose.yml                     # P1
 apps/upload/firn_client.py             # P1
 apps/upload/main.py                    # edited: dual-write
@@ -208,16 +208,14 @@ infra/main.tf                          # P2
 infra/variables.tf                     # P2
 infra/outputs.tf                       # P2
 infra/user-data.sh                     # P2
-CLAUDE.md                              # edited in P4 (local-only, gitignored)
 FIRN_PLAN.md                           # deleted (superseded by this file)
 ```
 
 ## Working agreement
 
-A fresh Claude Code session in this directory:
+For anyone picking up the migration in this directory:
 
-1. Read `CLAUDE.md` first (project reality; local-only, gitignored).
-2. Read this file second (forward-looking plan).
-3. Confirm which phase is current before writing code. If unclear, ask.
-4. Propose-before-implement for anything non-trivial: one-line approach, wait for confirmation, then code.
-5. If a phase's DoD is not achievable with the current design, stop and raise it. Do not extend scope silently.
+1. Read this plan to orient on the forward direction.
+2. Confirm which phase is current before writing code; if unclear, ask.
+3. Propose-before-implement for anything non-trivial: one-line approach, wait for confirmation, then code.
+4. If a phase's DoD is not achievable with the current design, stop and raise it. Do not extend scope silently.

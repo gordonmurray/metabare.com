@@ -12,7 +12,8 @@ versions.tf      # terraform 1.10.5, AWS provider ~> 5.0
 backend.tf       # S3 backend with native locking (use_lockfile)
 providers.tf     # eu-west-1 default, us-east-1 alias for the CloudFront cert
 variables.tf
-data.tf          # default VPC + subnets, AL2023 AMI, common tags
+data.tf          # caller identity, AL2023 AMI, common tags
+locals.tf-style locals are inlined in data.tf for now
 certs.tf         # ACM certs (ALB + CloudFront)
 network.tf       # ALB and instance security groups
 storage.tf       # S3 bucket for Lance data and image binaries
@@ -32,10 +33,11 @@ records have to be added by hand. Run apply in two stages:
 ```bash
 cd infra
 terraform init
-terraform plan -var "git_repo=https://github.com/<owner>/metabare.com.git"
+terraform plan -var "git_repo=https://github.com/gordonmurray/metabare.com.git"
 
 # Stage 1: only request the certs.
-terraform apply -var "git_repo=..." \
+terraform apply \
+    -var "git_repo=https://github.com/gordonmurray/metabare.com.git" \
     -target=aws_acm_certificate.alb \
     -target=aws_acm_certificate.cdn
 
@@ -50,7 +52,7 @@ validated (usually 5-10 min after the records propagate), continue:
 ```bash
 # Stage 2: everything else. Validation resources will poll until
 # the certs are issued, then the rest of the stack rolls out.
-terraform apply -var "git_repo=..."
+terraform apply -var "git_repo=https://github.com/gordonmurray/metabare.com.git"
 ```
 
 Final step is the public DNS cutover:
@@ -75,7 +77,7 @@ sudo docker compose -f /opt/metabare/repo/docker-compose.prod.yml ps
 ## Tearing down
 
 ```bash
-terraform destroy -var "git_repo=..."
+terraform destroy -var "git_repo=https://github.com/gordonmurray/metabare.com.git"
 ```
 
 The state bucket is not managed here; remove it manually if you no
