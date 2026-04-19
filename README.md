@@ -1,49 +1,53 @@
 # metabare
 
-**metabare.com** is a lightweight digital asset manager (DAM) focused on simplicity, fast deployment, and zero-framework frontend. It enables users to upload, search, and view image metadata stored as Lance format vectors, with optional tracking of interactions and syncing to object storage like R2 (coming soon).
+A minimal image search engine showcasing [Firn](https://github.com/gordonmurray/firnflow) over [Lance](https://github.com/lancedb/lance) on AWS S3. Upload an image, CLIP turns it into a 512-dim vector, Lance stores it on S3, and Firn serves nearest-neighbour queries through a tiered RAM + NVMe cache.
 
-## Features
-
-* 🔍 Plain HTML/CSS/JS frontend — no build tooling
-* 📤 Upload API backed by FastAPI + Lance
-* 📁 R2-compatible storage sync
-* 🔎 Search API
-* 📊 Optional analytics for image views/clicks (In progress)
-* 🚀 Fly.io ready: each app is containerized and deployable independently
+Live at [metabare.com](https://metabare.com). Sample images from [COCO](https://cocodataset.org/).
 
 ## Structure
 
-```bash
-metabare.com/
-├── apps/
-│   ├── frontend/      # Static site (HTML/CSS/JS)
-│   ├── upload/        # FastAPI app for uploads + vectorization
-│   └── search/        # FastAPI search/list API
-├── README.md
+```
+apps/
+  frontend/   # nginx, static HTML/CSS/JS. Proxies API calls same-origin.
+  upload/     # FastAPI. CLIP image encoding, dual-write to Lance and Firn.
+  search/     # FastAPI. CLIP text encoding, vector search via Firn or Lance.
+monitoring/   # Prometheus + Grafana provisioning (Firn dashboard).
+infra/        # Terraform for the AWS stack. See infra/README.md.
+scripts/      # ingest-coco.sh, parity-check.sh, smoke-firn.sh.
 ```
 
-## Deployment (Fly.io)
-
-Each app folder includes its own `fly.toml`. Example:
+## Local development
 
 ```bash
-cd apps/frontend
-fly apps create metabare-frontend
-fly deploy
-
-cd ../upload
-fly apps create metabare-upload
-fly deploy
-
-cd ../search
-fly apps create metabare-search
-fly deploy
+docker compose up -d
+./scripts/smoke-firn.sh          # upsert/query/list round-trip
+COUNT=20 ./scripts/ingest-coco.sh
+./scripts/parity-check.sh        # compare Firn and direct-Lance top-k
 ```
 
-> 📝 Note: Persistent volume needed for `upload` app to store LanceDB.
+The local stack brings up MinIO, Firn, the three apps, Prometheus, and Grafana. Frontend is at `http://localhost:8082`, Grafana at `http://localhost:8082/grafana/`.
 
-## Usage
+## Production deployment
 
-* Open the UI (`frontend`) in your browser
-* Select image to upload
-* Search within your images
+Terraform under `infra/` provisions a single EC2 instance behind an ALB in `eu-west-1`, with CloudFront in front of an OAC-locked S3 bucket for image delivery. One apply does the full stack including ACM and Route 53 records. See `infra/README.md`.
+
+## Observability
+
+Firn exposes Prometheus metrics at `/metrics`. A provisioned Grafana dashboard is served at `/grafana/d/firn-overview` with cache hit rate, S3 request rate by operation, and query latency percentiles.
+
+## Search backends
+
+`/search` accepts an optional `?backend=lance|firn` query parameter. The upload path writes each image's vector to both Lance (on S3, via the upload container's sync cron) and Firn. This lets the site serve the same query through either backend so the caching win of Firn can be seen side by side.
+
+## Security posture
+
+This is a public showcase. A few endpoints and defaults that would be locked down in a private deployment are intentionally open:
+
+- `/grafana/` runs in anonymous Viewer mode: read-only dashboard access, no edits or sign-in. Serving the Firn metrics to visitors is the point of the site.
+- `/metrics` proxies Firn's Prometheus text, same argument.
+- `docker-compose.yml` uses the standard MinIO default credentials (`minioadmin:minioadmin`) for local dev only. These are not used anywhere in production.
+- AWS credentials for the application containers come from the EC2 instance profile via IMDS; no static access keys live in the repo, `.env` files, or Secrets Manager.
+
+## License
+
+Apache-2.0.

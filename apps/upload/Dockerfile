@@ -18,7 +18,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 RUN python -c "from transformers import CLIPProcessor, CLIPModel; CLIPModel.from_pretrained('openai/clip-vit-base-patch32'); CLIPProcessor.from_pretrained('openai/clip-vit-base-patch32')"
 
 # Copy the app files
-COPY main.py vectorize.py storage.py sync-to-r2.py ./
+COPY main.py vectorize.py storage.py sync-to-r2.py firn_client.py ./
 
 # Copy the cron job
 COPY metabare-cron /etc/cron.d/metabare-cron

@@ -7,7 +7,8 @@ import lancedb
 import os
 import logging
 
-# Setup
+import firn_client
+
 logging.basicConfig(level=logging.INFO)
 load_dotenv()
 
@@ -18,113 +19,142 @@ app.add_middleware(
     allow_origins=[
         "https://metabare.com",
         "https://www.metabare.com",
-        "https://metabare-search.fly.dev"
     ],
     allow_credentials=True,
     allow_methods=["GET", "POST", "OPTIONS"],
     allow_headers=["*"],
-    expose_headers=["*"]
+    expose_headers=["*"],
 )
 
-# Load CLIP model
+# CLIP text encoder (same model as the upload path)
 model = CLIPModel.from_pretrained("openai/clip-vit-base-patch32")
 processor = CLIPProcessor.from_pretrained("openai/clip-vit-base-patch32")
 
-# Environment config
+# S3 / MinIO backend for the lance path
 R2_ENDPOINT = os.getenv("R2_ENDPOINT")
 R2_BUCKET = os.getenv("R2_BUCKET")
 R2_ACCESS = os.getenv("R2_ACCESS_KEY_ID")
 R2_SECRET = os.getenv("R2_SECRET_ACCESS_KEY")
 BASE_IMAGE_URL = os.getenv("BASE_IMAGE_URL", "https://metabare.com/")
+SEARCH_BACKEND = os.getenv("SEARCH_BACKEND", "lance").lower()
 
-@app.get("/search")
-async def search_images(text: str = Query(..., description="Text to search for")):
-    if not text.strip():
-        raise HTTPException(400, "Query cannot be empty")
 
-    # Vectorize the text
+def _encode_query(text: str):
     with torch.no_grad():
-        inputs = processor(text=[text], return_tensors="pt", padding=True, truncation=True)
-        text_vec = model.get_text_features(**inputs).squeeze()
-    text_vec = (text_vec / text_vec.norm()).cpu().numpy().astype("float32")
+        inputs = processor(
+            text=[text], return_tensors="pt", padding=True, truncation=True
+        )
+        vec = model.get_text_features(**inputs).squeeze()
+    return (vec / vec.norm()).cpu().numpy().astype("float32")
 
-    logging.info(f"Query: '{text}'")
-    logging.info(f"Vector (first 5 dims): {text_vec[:5]}")
 
-    # Connect to LanceDB
-    db = lancedb.connect(
-        f"s3://{R2_BUCKET}/lance/lance-data/",
-        storage_options={
-            "aws_access_key_id": R2_ACCESS,
-            "aws_secret_access_key": R2_SECRET,
-            "region": "auto",
-            "endpoint": R2_ENDPOINT,
-        },
-    )
-
+def _open_lance_table():
+    # Only pass creds/endpoint when explicitly set. In prod on EC2
+    # we want lancedb-rs to use the default AWS credential chain
+    # (instance profile via IMDS); in local dev against MinIO, the
+    # env vars are set and we include them here. Region is always
+    # passed because lancedb-rs defaults to us-east-1 otherwise.
+    opts = {"region": os.getenv("R2_REGION", "us-east-1")}
+    if R2_ENDPOINT:
+        opts["endpoint"] = R2_ENDPOINT
+        if R2_ENDPOINT.startswith("http://"):
+            opts["allow_http"] = "true"
+    if R2_ACCESS:
+        opts["aws_access_key_id"] = R2_ACCESS
+    if R2_SECRET:
+        opts["aws_secret_access_key"] = R2_SECRET
+    db = lancedb.connect(f"s3://{R2_BUCKET}/lance/lance-data/", storage_options=opts)
     try:
-        tbl = db.open_table("images")
+        return db.open_table("images")
     except Exception as e:
         raise HTTPException(404, detail=f"Lance table not found: {e}")
 
+
+def _lance_search(text_vec, k):
+    tbl = _open_lance_table()
     try:
-        raw_results = tbl.search(text_vec).limit(10).to_arrow().to_pylist()
-
-        seen = set()
-        results = []
-        for r in raw_results:
-            r.pop("vector", None)
-            if r["id"] not in seen:
-                seen.add(r["id"])
-                results.append({
-                    "filename": r["id"],
-                    "url": f"{BASE_IMAGE_URL}lance/images/{r['id']}",
-                    **r
-                })
-            if len(results) >= 3:
-                break
-
-        logging.info(f"Top 3 result IDs: {[r['id'] for r in results]}")
-
+        rows = tbl.search(text_vec).limit(max(k * 3, 10)).to_arrow().to_pylist()
     except Exception as e:
-        raise HTTPException(500, detail=f"Vector search failed: {e}")
+        raise HTTPException(500, detail=f"Lance search failed: {e}")
 
-    return {
-        "results": results
-    }
+    seen = set()
+    results = []
+    for r in rows:
+        r.pop("vector", None)
+        if r["id"] in seen:
+            continue
+        seen.add(r["id"])
+        results.append({
+            "filename": r["id"],
+            "url": f"{BASE_IMAGE_URL}lance/images/{r['id']}",
+            "score": r.get("_distance"),
+        })
+        if len(results) >= k:
+            break
+    return results
+
+
+def _firn_search(text_vec, k):
+    try:
+        rows = firn_client.query(text_vec, k=max(k * 3, 10))
+    except Exception as e:
+        raise HTTPException(500, detail=f"Firn query failed: {e}")
+
+    seen = set()
+    results = []
+    for r in rows:
+        name = r["filename"]
+        if not name or name in seen:
+            continue
+        seen.add(name)
+        results.append({
+            "filename": name,
+            "url": f"{BASE_IMAGE_URL}lance/images/{name}",
+            "score": r["score"],
+        })
+        if len(results) >= k:
+            break
+    return results
+
+
+@app.get("/health")
+async def health():
+    return {"status": "healthy", "backend": SEARCH_BACKEND}
+
+
+@app.get("/search")
+async def search_images(
+    text: str = Query(..., description="Text to search for"),
+    backend: str = Query(None, description="Override: 'lance' or 'firn'"),
+    k: int = Query(3, ge=1, le=50),
+):
+    if not text.strip():
+        raise HTTPException(400, "Query cannot be empty")
+
+    active = (backend or SEARCH_BACKEND).lower()
+    if active not in {"lance", "firn"}:
+        raise HTTPException(400, f"Unknown backend: {active}")
+
+    text_vec = _encode_query(text)
+    logging.info("query=%r backend=%s k=%s", text, active, k)
+
+    results = _firn_search(text_vec, k) if active == "firn" else _lance_search(text_vec, k)
+    return {"results": results, "backend": active}
 
 
 @app.get("/latest")
 async def latest_images():
-    # Connect to LanceDB
-    db = lancedb.connect(
-        f"s3://{R2_BUCKET}/lance/lance-data/",
-        storage_options={
-            "aws_access_key_id": R2_ACCESS,
-            "aws_secret_access_key": R2_SECRET,
-            "region": "auto",
-            "endpoint": R2_ENDPOINT,
-        },
-    )
-
+    # Firn v0.3.0 added a cursor-paginated /list endpoint ordered
+    # by _ingested_at, so /latest goes through Firn directly. The
+    # recent.json manifest stopgap in the original plan is skipped.
     try:
-        tbl = db.open_table("images")
+        rows = firn_client.list_recent(limit=9, order="desc")
     except Exception as e:
-        raise HTTPException(404, detail=f"Lance table not found: {e}")
+        raise HTTPException(500, detail=f"Firn list failed: {e}")
 
-    try:
-        # Get latest 9 records assuming table has a `created_at` or `timestamp` field
-        data = tbl.to_arrow().to_pylist()
-        sorted_data = sorted(data, key=lambda x: x["id"], reverse=True)
-        latest = sorted_data[:9]
-        results = [
-            {
-                "filename": r["id"],
-                "url": f"{BASE_IMAGE_URL}lance/images/{r['id']}"
-            }
-            for r in latest
-        ]
-    except Exception as e:
-        raise HTTPException(500, detail=f"Failed to fetch latest images: {e}")
-
+    results = [
+        {"filename": r["filename"], "url": f"{BASE_IMAGE_URL}lance/images/{r['filename']}"}
+        for r in rows
+        if r["filename"]
+    ]
     return {"results": results}

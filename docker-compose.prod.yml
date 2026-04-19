@@ -1,0 +1,123 @@
+# Production compose for the EC2 deployment. No MinIO, no published
+# 8080/8081 ports. App credentials come from /opt/metabare/.env via
+# --env-file (rendered at boot from Secrets Manager by user-data).
+
+services:
+  firn:
+    image: ghcr.io/gordonmurray/firnflow:0.3.0
+    container_name: metabare-firn
+    environment:
+      # No FIRNFLOW_S3_ENDPOINT / ACCESS_KEY / SECRET_KEY: against
+      # real AWS, Firn leaves endpoint unset and object_store falls
+      # through to the default credential chain (instance profile
+      # via IMDS).
+      FIRNFLOW_S3_BUCKET: ${S3_BUCKET}
+      FIRNFLOW_S3_REGION: ${S3_REGION}
+      AWS_REGION: ${S3_REGION}
+      AWS_DEFAULT_REGION: ${S3_REGION}
+      FIRNFLOW_BIND: "0.0.0.0:3000"
+      RUST_LOG: info
+    restart: unless-stopped
+
+  upload:
+    build: ./apps/upload
+    container_name: metabare-upload
+    depends_on:
+      - firn
+    environment:
+      # boto3 uses the instance profile automatically when the
+      # R2_ACCESS_KEY_ID / _SECRET_ACCESS_KEY / ENDPOINT env vars
+      # are unset.
+      R2_BUCKET: ${S3_BUCKET}
+      AWS_REGION: ${S3_REGION}
+      AWS_DEFAULT_REGION: ${S3_REGION}
+      FIRN_URL: http://firn:3000
+      FIRN_NAMESPACE: ${FIRN_NAMESPACE}
+    volumes:
+      - upload-storage:/app/storage
+    healthcheck:
+      test: ["CMD-SHELL", "python3 -c \"import urllib.request as u; u.urlopen('http://localhost:8080/health').read()\" || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 90s
+    restart: unless-stopped
+
+  search:
+    build: ./apps/search
+    container_name: metabare-search
+    depends_on:
+      - firn
+    environment:
+      # lancedb-rs picks up instance-profile credentials through
+      # the default chain when the storage_options don't include
+      # explicit keys.
+      R2_BUCKET: ${S3_BUCKET}
+      R2_REGION: ${S3_REGION}
+      AWS_REGION: ${S3_REGION}
+      AWS_DEFAULT_REGION: ${S3_REGION}
+      FIRN_URL: http://firn:3000
+      FIRN_NAMESPACE: ${FIRN_NAMESPACE}
+      SEARCH_BACKEND: ${SEARCH_BACKEND}
+      BASE_IMAGE_URL: ${BASE_IMAGE_URL}
+    healthcheck:
+      test: ["CMD-SHELL", "python3 -c \"import urllib.request as u; u.urlopen('http://localhost:8080/health').read()\" || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 120s
+    restart: unless-stopped
+
+  frontend:
+    build: ./apps/frontend
+    container_name: metabare-frontend
+    depends_on:
+      upload:
+        condition: service_healthy
+      search:
+        condition: service_healthy
+    ports:
+      - "8082:80"
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q -O- http://localhost/health > /dev/null || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    restart: unless-stopped
+
+  prometheus:
+    image: prom/prometheus:v2.54.1
+    container_name: metabare-prometheus
+    volumes:
+      - ./monitoring/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - prometheus-data:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.retention.time=7d'
+    restart: unless-stopped
+
+  grafana:
+    image: grafana/grafana:11.3.0
+    container_name: metabare-grafana
+    depends_on:
+      - prometheus
+    volumes:
+      - ./monitoring/grafana/provisioning:/etc/grafana/provisioning:ro
+      - ./monitoring/grafana/dashboards:/var/lib/grafana/dashboards:ro
+      - grafana-data:/var/lib/grafana
+    environment:
+      GF_AUTH_ANONYMOUS_ENABLED: "true"
+      GF_AUTH_ANONYMOUS_ORG_ROLE: Viewer
+      GF_AUTH_DISABLE_LOGIN_FORM: "true"
+      GF_SECURITY_ALLOW_EMBEDDING: "true"
+      GF_USERS_DEFAULT_THEME: dark
+      GF_SERVER_DOMAIN: metabare.com
+      GF_SERVER_ROOT_URL: "https://metabare.com/grafana/"
+      GF_SERVER_SERVE_FROM_SUB_PATH: "true"
+    restart: unless-stopped
+
+volumes:
+  upload-storage:
+  prometheus-data:
+  grafana-data:

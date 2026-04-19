@@ -1,0 +1,22 @@
+# Local notes, not for the public repo
+CLAUDE.md
+
+# Local dev artefacts
+apps/upload/temporary/
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# Environment
+.env
+.env.local
+
+# Terraform working dir (provider binaries, local state pointer).
+# Note: .terraform.lock.hcl IS committed (provider version pin).
+.terraform/
+*.tfstate
+*.tfstate.backup
+*.tfvars
