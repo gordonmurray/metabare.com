@@ -1,7 +1,7 @@
 from fastapi import FastAPI, UploadFile, File, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from vectorize import vectorize_image
-from storage import save_image_to_local, save_vector_to_lance
+from storage import save_image_to_local, save_image_to_s3, save_vector_to_lance
 import firn_client
 import hashlib
 import os
@@ -44,6 +44,7 @@ async def upload_file(file: UploadFile = File(...)):
     try:
         logger.info(f"Processing image: {filename}")
         save_image_to_local(filename, contents)
+        save_image_to_s3(filename, contents)
         vector = vectorize_image(contents)
         save_vector_to_lance(filename, vector)
         firn_client.upsert(filename, vector)
