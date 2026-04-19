@@ -8,14 +8,16 @@ resource "aws_instance" "main" {
 
   user_data = templatefile("${path.module}/user-data.sh.tpl", {
     region         = var.region
-    secret_id      = aws_secretsmanager_secret.app_creds.name
     git_repo       = var.git_repo
     git_branch     = var.git_branch
     bucket         = aws_s3_bucket.data.bucket
     cdn_domain     = var.cdn_domain
     firn_namespace = var.firn_namespace
   })
-  user_data_replace_on_change = true
+  # Don't replace on user-data change: the bootstrap is only relevant
+  # for a fresh instance. Code updates go via `git pull` + `docker
+  # compose up` on the running instance.
+  user_data_replace_on_change = false
 
   metadata_options {
     http_tokens   = "required"
@@ -32,11 +34,8 @@ resource "aws_instance" "main" {
     Name = "metabare-${var.env}"
   }
 
-  # IAM/secret/bucket need to exist before the EC2 boots; otherwise
-  # user-data will fail to fetch credentials.
   depends_on = [
-    aws_iam_role_policy.instance_secrets,
-    aws_secretsmanager_secret_version.app_creds,
+    aws_iam_role_policy.instance_s3,
     aws_s3_bucket.data,
   ]
 }

@@ -40,8 +40,3 @@ output "instance_id" {
 output "data_bucket" {
   value = aws_s3_bucket.data.bucket
 }
-
-output "app_secret_id" {
-  value       = aws_secretsmanager_secret.app_creds.name
-  description = "Secrets Manager secret holding S3 creds for the app containers"
-}
