@@ -27,6 +27,21 @@
     </p>
 
 
+    <div class="mode-selector" role="radiogroup" aria-label="Search backend">
+      <label class="mode-option">
+        <input type="radio" name="mode" value="single" checked />
+        <span>Single-vector</span>
+      </label>
+      <label class="mode-option">
+        <input type="radio" name="mode" value="mv" />
+        <span>Multi-vector</span>
+      </label>
+      <label class="mode-option">
+        <input type="radio" name="mode" value="both" />
+        <span>Side-by-side</span>
+      </label>
+    </div>
+
     <div class="controls">
       <input type="text" id="search" placeholder="Search files..." />
       <label class="upload-btn">
@@ -34,7 +49,15 @@
         <input type="file" id="file-input" />
       </label>
     </div>
-    <div id="gallery" class="grid"></div>
+
+    <div id="single-panel" class="result-panel">
+      <h2 class="panel-heading" hidden>Single-vector</h2>
+      <div id="gallery" class="grid"></div>
+    </div>
+    <div id="mv-panel" class="result-panel" hidden>
+      <h2 class="panel-heading" hidden>Multi-vector</h2>
+      <div id="gallery-mv" class="grid"></div>
+    </div>
 
     <p style="text-align: center; margin-top: 2.5em; font-size: 0.9em;">
       <a href="/grafana/d/firn-overview" target="_blank" rel="noopener"

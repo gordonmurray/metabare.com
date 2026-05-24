@@ -8,6 +8,7 @@ import os
 import logging
 
 import firn_client
+from vectorize_mv import encode_query_mv
 
 logging.basicConfig(level=logging.INFO)
 load_dotenv()
@@ -140,6 +141,45 @@ async def search_images(
 
     results = _firn_search(text_vec, k) if active == "firn" else _lance_search(text_vec, k)
     return {"results": results, "backend": active}
+
+
+@app.get("/search-mv")
+async def search_images_mv(
+    text: str = Query(..., description="Text to search for"),
+    k: int = Query(3, ge=1, le=50),
+):
+    """Multivector text search against the multivector namespace.
+
+    The text is encoded as a bag of sub-vectors by the stub encoder
+    (CLIP-derived reshape) and posted to Firn's multivector query
+    path. Score comes back as cosine MaxSim from Firn.
+    """
+    if not text.strip():
+        raise HTTPException(400, "Query cannot be empty")
+
+    bag = encode_query_mv(text, model, processor)
+    logging.info("query=%r backend=mv k=%s bag_size=%s", text, k, len(bag))
+
+    try:
+        rows = firn_client.query_mv(bag, k=max(k * 3, 10))
+    except Exception as e:
+        raise HTTPException(500, detail=f"Firn multivector query failed: {e}")
+
+    seen = set()
+    results = []
+    for r in rows:
+        name = r["filename"]
+        if not name or name in seen:
+            continue
+        seen.add(name)
+        results.append({
+            "filename": name,
+            "url": f"{BASE_IMAGE_URL}lance/images/{name}",
+            "score": r["score"],
+        })
+        if len(results) >= k:
+            break
+    return {"results": results, "backend": "mv"}
 
 
 @app.get("/latest")

@@ -1,72 +1,134 @@
 document.addEventListener("DOMContentLoaded", () => {
-  const gallery = document.getElementById("gallery");
+  const singlePanel = document.getElementById("single-panel");
+  const mvPanel = document.getElementById("mv-panel");
+  const singleGallery = document.getElementById("gallery");
+  const mvGallery = document.getElementById("gallery-mv");
+  const singleHeading = singlePanel.querySelector(".panel-heading");
+  const mvHeading = mvPanel.querySelector(".panel-heading");
   const searchInput = document.getElementById("search");
   const fileInput = document.getElementById("file-input");
+  const modeRadios = document.querySelectorAll('input[name="mode"]');
 
-  // Fetch and display the latest 9 images
-  fetch("/latest")
-    .then(res => res.json())
-    .then(data => {
-      gallery.innerHTML = "";
-      data.results.forEach(item => {
-        const img = document.createElement("img");
-        img.src = item.url;
-        img.alt = item.filename;
-        img.className = "thumbnail";
-        gallery.appendChild(img);
+  const currentMode = () => document.querySelector('input[name="mode"]:checked').value;
+
+  const fetchJson = async (url, init) => {
+    const res = await fetch(url, init);
+    if (!res.ok) {
+      let detail = "";
+      try { detail = (await res.text()).slice(0, 200); } catch (_) {}
+      throw new Error(`${url} ${res.status}${detail ? `: ${detail}` : ""}`);
+    }
+    return res.json();
+  };
+
+  const renderError = (gallery, message) => {
+    gallery.innerHTML = "";
+    const p = document.createElement("p");
+    p.className = "error";
+    p.textContent = message;
+    gallery.appendChild(p);
+  };
+
+  const renderResults = (gallery, items) => {
+    gallery.innerHTML = "";
+    if (!items || items.length === 0) {
+      gallery.innerHTML = "<p>No results.</p>";
+      return;
+    }
+    items.forEach(item => {
+      const img = document.createElement("img");
+      img.src = item.url;
+      img.alt = item.filename;
+      img.title = item.score != null ? `score: ${item.score.toFixed(4)}` : item.filename;
+      img.className = "thumbnail";
+      gallery.appendChild(img);
+    });
+  };
+
+  const applyModeVisibility = () => {
+    const mode = currentMode();
+    const showSingle = mode === "single" || mode === "both";
+    const showMv = mode === "mv" || mode === "both";
+    singlePanel.hidden = !showSingle;
+    mvPanel.hidden = !showMv;
+    singleHeading.hidden = mode !== "both";
+    mvHeading.hidden = mode !== "both";
+  };
+
+  const loadLatest = () => {
+    fetchJson("/latest")
+      .then(data => renderResults(singleGallery, data.results))
+      .catch(err => {
+        console.error("Failed to load images:", err);
+        renderError(singleGallery, `Error loading images: ${err.message}`);
       });
-    })
-    .catch(err => {
-      console.error("Failed to load images:", err);
-      gallery.innerHTML = "<p>Error loading images.</p>";
+  };
+
+  const runSearch = (query) => {
+    if (!query) return;
+    const mode = currentMode();
+    const targets = [];
+    if (mode === "single" || mode === "both") {
+      targets.push({ url: `/search?text=${encodeURIComponent(query)}`, gallery: singleGallery });
+    }
+    if (mode === "mv" || mode === "both") {
+      targets.push({ url: `/search-mv?text=${encodeURIComponent(query)}`, gallery: mvGallery });
+    }
+    targets.forEach(t => {
+      fetchJson(t.url)
+        .then(data => renderResults(t.gallery, data.results))
+        .catch(err => {
+          console.error(`Search failed (${t.url}):`, err);
+          renderError(t.gallery, `Search failed: ${err.message}`);
+        });
     });
-    let searchTimeout;
-    searchInput.addEventListener("input", () => {
-      clearTimeout(searchTimeout);
-      const query = searchInput.value.trim();
-      if (!query) return;
+  };
 
-      searchTimeout = setTimeout(() => {
-        fetch(`/search?text=${encodeURIComponent(query)}`)
-          .then(res => res.json())
-          .then(data => {
-            gallery.innerHTML = "";
-            data.results.forEach(item => {
-              const img = document.createElement("img");
-              img.src = item.url;
-              img.alt = item.filename;
-              img.className = "thumbnail";
-              gallery.appendChild(img);
-            });
-          })
-          .catch(err => {
-            console.error("Search failed:", err);
-            gallery.innerHTML = "<p>Error loading search results.</p>";
-          });
-      }, 300); // debounce time in ms
-    });
+  applyModeVisibility();
+  if (currentMode() === "single") loadLatest();
 
+  modeRadios.forEach(r => r.addEventListener("change", () => {
+    applyModeVisibility();
+    const q = searchInput.value.trim();
+    if (q) {
+      runSearch(q);
+    } else if (currentMode() === "single") {
+      loadLatest();
+    } else {
+      singleGallery.innerHTML = "";
+      mvGallery.innerHTML = "";
+    }
+  }));
 
-  // Optional: placeholder upload handler
+  let searchTimeout;
+  searchInput.addEventListener("input", () => {
+    clearTimeout(searchTimeout);
+    const query = searchInput.value.trim();
+    if (!query) return;
+    searchTimeout = setTimeout(() => runSearch(query), 300);
+  });
+
   fileInput.addEventListener("change", () => {
     const file = fileInput.files[0];
     if (!file) return;
 
-    const formData = new FormData();
-    formData.append("file", file);
+    const mode = currentMode();
+    const endpoints = [];
+    if (mode === "single" || mode === "both") endpoints.push("/upload");
+    if (mode === "mv" || mode === "both") endpoints.push("/upload-mv");
 
-    fetch("/upload", {
-      method: "POST",
-      body: formData,
-    })
-      .then(res => res.json())
-      .then(data => {
-        alert("Upload complete.");
-        window.location.reload(); // Reload to see new image
+    Promise.all(endpoints.map(ep => {
+      const fd = new FormData();
+      fd.append("file", file);
+      return fetchJson(ep, { method: "POST", body: fd });
+    }))
+      .then(() => {
+        alert(`Upload complete (${endpoints.join(", ")}).`);
+        window.location.reload();
       })
       .catch(err => {
         console.error("Upload failed:", err);
-        alert("Upload failed.");
+        alert(`Upload failed: ${err.message}`);
       });
   });
 });

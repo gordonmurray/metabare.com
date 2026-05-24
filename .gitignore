@@ -1,8 +1,17 @@
 # Local notes, not for the public repo
 CLAUDE.md
+docs/
 
 # Local dev artefacts
 apps/upload/temporary/
+
+# arXiv corpus build outputs (PDFs + rendered page JPEGs).
+# Reproducible from scripts/arxiv-corpus/papers.json.
+scripts/arxiv-corpus/data/
+
+# Photo corpus build outputs (downloaded Unsplash/Pexels JPEGs).
+# Reproducible from scripts/photo-corpus/photos.json.
+scripts/photo-corpus/data/
 
 # Python
 __pycache__/

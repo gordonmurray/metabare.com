@@ -1,6 +1,7 @@
 from fastapi import FastAPI, UploadFile, File, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from vectorize import vectorize_image
+from vectorize_mv import vectorize_image_mv
 from storage import save_image_to_local, save_image_to_s3, save_vector_to_lance
 import firn_client
 import hashlib
@@ -54,6 +55,32 @@ async def upload_file(file: UploadFile = File(...)):
         raise HTTPException(status_code=500, detail=str(e))
 
     return {"filename": filename, "vector_saved": True}
+
+
+@app.post("/upload-mv")
+async def upload_file_mv(file: UploadFile = File(...)):
+    """Multivector ingest. Writes the image to S3 (idempotent) and
+    a bag of sub-vectors into the multivector Firn namespace. Skips
+    the local Lance write because Lance is single-vector only in
+    this app, and the multivector demo path is Firn-exclusive."""
+    if not file.content_type.startswith('image/'):
+        raise HTTPException(status_code=400, detail="File must be an image")
+
+    contents = await file.read()
+    sha256_hash = hashlib.sha256(contents).hexdigest()
+    filename = f"{sha256_hash}.jpg"
+
+    try:
+        logger.info(f"Processing image (mv): {filename}")
+        save_image_to_s3(filename, contents)
+        vectors = vectorize_image_mv(contents)
+        firn_client.upsert_mv(filename, vectors)
+        logger.info(f"Successfully processed image (mv): {filename}")
+    except Exception as e:
+        logger.error(f"Error processing image (mv) {filename}: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+    return {"filename": filename, "vectors_saved": True, "bag_size": len(vectors)}
 
 
 
