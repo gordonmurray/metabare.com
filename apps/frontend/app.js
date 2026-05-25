@@ -29,6 +29,33 @@ document.addEventListener("DOMContentLoaded", () => {
     gallery.appendChild(p);
   };
 
+  const closeLightbox = () => {
+    const overlay = document.getElementById("lightbox-overlay");
+    if (overlay) overlay.classList.remove("open");
+  };
+
+  const openLightbox = (url, alt) => {
+    let overlay = document.getElementById("lightbox-overlay");
+    if (!overlay) {
+      overlay = document.createElement("div");
+      overlay.id = "lightbox-overlay";
+      overlay.className = "lightbox-overlay";
+      overlay.addEventListener("click", closeLightbox);
+      document.body.appendChild(overlay);
+    }
+    overlay.innerHTML = "";
+    const full = document.createElement("img");
+    full.src = url;
+    full.alt = alt || "";
+    full.className = "lightbox-image";
+    overlay.appendChild(full);
+    overlay.classList.add("open");
+  };
+
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") closeLightbox();
+  });
+
   const renderResults = (gallery, items) => {
     gallery.innerHTML = "";
     if (!items || items.length === 0) {
@@ -36,12 +63,26 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
     items.forEach(item => {
+      const card = document.createElement("div");
+      card.className = "result-card";
+
       const img = document.createElement("img");
       img.src = item.url;
       img.alt = item.filename;
       img.title = item.score != null ? `score: ${item.score.toFixed(4)}` : item.filename;
       img.className = "thumbnail";
-      gallery.appendChild(img);
+      img.addEventListener("click", () => openLightbox(item.url, item.description || item.filename));
+      card.appendChild(img);
+
+      if (item.description) {
+        const caption = document.createElement("p");
+        caption.className = "result-caption";
+        caption.textContent = item.description;
+        caption.title = item.description;
+        card.appendChild(caption);
+      }
+
+      gallery.appendChild(card);
     });
   };
 

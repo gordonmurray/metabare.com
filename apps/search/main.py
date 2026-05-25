@@ -185,6 +185,7 @@ async def search_images_mv(
             "filename": name,
             "url": f"{BASE_IMAGE_URL}lance/images/{name}",
             "score": r["score"],
+            "description": r.get("description", ""),
         })
         if len(results) >= k:
             break
