@@ -4,6 +4,6 @@ python-dotenv
 transformers
 torch
 Pillow
-lancedb[s3,awss3]>=0.5
+lancedb[s3,awss3]==0.24.3
 boto3
 requests

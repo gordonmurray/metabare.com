@@ -94,6 +94,56 @@ input[type="text"] {
   line-height: 1.5;
 }
 
+.mode-selector {
+  display: flex;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+  flex-wrap: wrap;
+}
+
+.mode-option {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: white;
+  padding: 0.4rem 0.8rem;
+  border-radius: 6px;
+  border: 1px solid #d1d5db;
+  cursor: pointer;
+  font-size: 0.95rem;
+  color: #333;
+}
+
+.mode-option input[type="radio"] {
+  margin: 0;
+  cursor: pointer;
+}
+
+.result-panel {
+  margin-top: 1.5em;
+}
+
+.result-panel[hidden] {
+  display: none;
+}
+
+.panel-heading {
+  font-size: 1.1rem;
+  color: #444;
+  margin: 0 0 0.6em 0;
+  font-weight: 600;
+}
+
+.error {
+  color: #b91c1c;
+  background: #fee2e2;
+  padding: 0.6rem 0.8rem;
+  border-radius: 6px;
+  font-family: ui-monospace, SFMono-Regular, monospace;
+  font-size: 0.9rem;
+  word-break: break-word;
+}
+
 caption {
   padding: 0.5em 0;
   color: #444;

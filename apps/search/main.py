@@ -8,6 +8,7 @@ import os
 import logging
 
 import firn_client
+from vectorize_mv import encode_query_mv
 
 logging.basicConfig(level=logging.INFO)
 load_dotenv()
@@ -37,6 +38,7 @@ R2_ACCESS = os.getenv("R2_ACCESS_KEY_ID")
 R2_SECRET = os.getenv("R2_SECRET_ACCESS_KEY")
 BASE_IMAGE_URL = os.getenv("BASE_IMAGE_URL", "https://metabare.com/")
 SEARCH_BACKEND = os.getenv("SEARCH_BACKEND", "lance").lower()
+FIRN_MV_HYBRID = os.getenv("FIRN_MV_HYBRID", "true").lower() == "true"
 
 
 def _encode_query(text: str):
@@ -140,6 +142,53 @@ async def search_images(
 
     results = _firn_search(text_vec, k) if active == "firn" else _lance_search(text_vec, k)
     return {"results": results, "backend": active}
+
+
+@app.get("/search-mv")
+async def search_images_mv(
+    text: str = Query(..., description="Text to search for"),
+    k: int = Query(3, ge=1, le=50),
+):
+    """Multivector text search against the multivector namespace.
+
+    The text is encoded as a bag of sub-vectors by the encoder
+    service (ColPali v1.3, ~17 token vectors per typical query) and
+    posted to Firn's multivector query path. When FIRN_MV_HYBRID is
+    set, the raw text is also forwarded so Firn fuses MaxSim with
+    BM25 over the FTS column via RRF. Score comes back as the
+    fused rank score from Firn.
+    """
+    if not text.strip():
+        raise HTTPException(400, "Query cannot be empty")
+
+    bag = encode_query_mv(text)
+    logging.info(
+        "query=%r backend=mv k=%s bag_size=%s hybrid=%s",
+        text, k, len(bag), FIRN_MV_HYBRID,
+    )
+
+    try:
+        rows = firn_client.query_mv(
+            bag, k=max(k * 3, 10), text=text if FIRN_MV_HYBRID else None
+        )
+    except Exception as e:
+        raise HTTPException(500, detail=f"Firn multivector query failed: {e}")
+
+    seen = set()
+    results = []
+    for r in rows:
+        name = r["filename"]
+        if not name or name in seen:
+            continue
+        seen.add(name)
+        results.append({
+            "filename": name,
+            "url": f"{BASE_IMAGE_URL}lance/images/{name}",
+            "score": r["score"],
+        })
+        if len(results) >= k:
+            break
+    return {"results": results, "backend": "mv"}
 
 
 @app.get("/latest")

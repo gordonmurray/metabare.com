@@ -1,0 +1,23 @@
+# Hand-picked demo queries from photo + arXiv manifests.
+# Plus the social-media canonical example.
+# Lines starting with # are skipped.
+
+# == Attribute binding on photos (strongest expected wins) ==
+a woman with a green floral tattoo holding a white mug
+a man with a skull tattoo holding coffee
+
+# == Cluttered scenes ==
+the laptop buried in yellow paper with a succulent
+the desk with glasses on an open book and a coffee cup
+coffee on a messy desk
+
+# == Text inside a photo (ColPali's headline trick) ==
+the desk with sticky notes that say take a break
+the shop sign that says we're open
+the neon sign that says Paris coffee shop
+
+# == Document pages ==
+the encoder-decoder block diagram
+the residual block with the skip connection
+the image cut into patches feeding a transformer
+the gravitational wave chirp signal
