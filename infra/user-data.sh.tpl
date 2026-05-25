@@ -26,6 +26,13 @@ S3_REGION=${region}
 BASE_IMAGE_URL=https://${cdn_domain}/
 SEARCH_BACKEND=firn
 FIRN_NAMESPACE=${firn_namespace}
+# Firn bearer-token auth (v0.5.0+). Empty values leave the API open
+# with a startup WARN, which is the current posture: Firn is only
+# reachable from inside the compose network. Set both to lock the
+# API down (will need to be matched on upload + search callers in a
+# future compose iteration).
+FIRNFLOW_API_KEY=
+FIRNFLOW_ADMIN_API_KEY=
 EOF
 chmod 600 /opt/metabare/.env
 

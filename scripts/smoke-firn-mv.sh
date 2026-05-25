@@ -19,7 +19,11 @@
 set -Eeuo pipefail
 
 FIRN_URL="${FIRN_URL:-http://localhost:3000}"
-NS="${FIRN_SMOKE_MV_NAMESPACE:-images-mv}"
+# Default to a smoke-only namespace so this script does not collide with the
+# real demo namespace (whose sub-dim is fixed by the encoder service at first
+# upsert; smoke uses a synthetic 16x32 bag that would be rejected against the
+# demo namespace).
+NS="${FIRN_SMOKE_MV_NAMESPACE:-images-mv-smoke}"
 BAG_SIZE="${MV_BAG_SIZE:-16}"
 SUB_DIM="${MV_SUB_DIM:-32}"
 

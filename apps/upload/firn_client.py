@@ -52,18 +52,24 @@ def upsert(filename: str, vector: np.ndarray) -> None:
     logger.info("firn upsert ok (%s)", filename)
 
 
-def upsert_mv(filename: str, vectors: list[list[float]]) -> None:
+def upsert_mv(filename: str, vectors: list[list[float]], text: str = None) -> None:
     """Upsert one multivector row into the multivector namespace.
 
     vectors is a bag of sub-vectors with a fixed inner dimension.
     Firn 400s on empty bags or mixed inner dims; the namespace's
     kind and sub-dim are pinned at first upsert.
+
+    text defaults to the filename so existing call sites continue
+    to round-trip the filename on query. Callers that have richer
+    indexable text (caption, OCR, page metadata) should pass it
+    so the FTS index has something useful to score against and
+    /search-mv can fuse multivector + BM25 via Firn's RRF.
     """
     sha_hex = filename[:-4] if filename.endswith(".jpg") else filename
     row = {
         "id": sha256_to_u64(sha_hex),
         "vectors": vectors,
-        "text": filename,
+        "text": text if text else filename,
     }
     url = f"{FIRN_URL}/ns/{FIRN_MV_NAMESPACE}/upsert"
     resp = requests.post(url, json={"rows": [row]}, timeout=FIRN_TIMEOUT_SECONDS)

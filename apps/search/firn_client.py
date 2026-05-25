@@ -52,14 +52,23 @@ def query(vector: np.ndarray, k: int = 10) -> List[Dict[str, Any]]:
     return out
 
 
-def query_mv(vectors: List[List[float]], k: int = 10) -> List[Dict[str, Any]]:
+def query_mv(vectors: List[List[float]], k: int = 10, text: str = None) -> List[Dict[str, Any]]:
     """Query the multivector namespace with a bag of sub-vectors.
 
-    Returns [{"filename", "score", "firn_id"}]. Score semantics
-    follow the multivector index (cosine MaxSim) and are sorted
-    best-first by Firn.
+    When text is supplied and an FTS index exists on the namespace,
+    Firn 0.7.0 fuses the multivector and BM25 score lists via RRF
+    automatically (the "hybrid" query type). When text is omitted,
+    pure MaxSim ranking. Returns [{"filename", "score", "firn_id"}]
+    sorted best-first by Firn.
+
+    The text column stores a description (or filename as fallback)
+    on each row; recovering the filename from the text column is
+    not appropriate here. We always strip the .jpg-derived text
+    from the result and return the row's id-derived sha instead.
     """
     payload = {"vectors": vectors, "k": k}
+    if text and text.strip():
+        payload["text"] = text.strip()
     url = f"{FIRN_URL}/ns/{FIRN_MV_NAMESPACE}/query"
     resp = requests.post(url, json=payload, timeout=FIRN_TIMEOUT_SECONDS)
     resp.raise_for_status()
@@ -67,8 +76,17 @@ def query_mv(vectors: List[List[float]], k: int = 10) -> List[Dict[str, Any]]:
 
     out: List[Dict[str, Any]] = []
     for row in body.get("results", []):
+        # Text column is "<filename>\n<description>" on rows that
+        # carry a caption, just "<filename>" otherwise. Split on the
+        # first newline; filename is line 1, description (if any)
+        # is the rest.
+        raw_text = row.get("text") or ""
+        parts = raw_text.split("\n", 1)
+        filename = parts[0] if parts[0].endswith(".jpg") else ""
+        description = parts[1] if len(parts) > 1 else ""
         out.append({
-            "filename": row.get("text") or "",
+            "filename": filename,
+            "description": description,
             "score": row.get("score", 0.0),
             "firn_id": row.get("id"),
         })

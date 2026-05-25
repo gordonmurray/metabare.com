@@ -1,4 +1,5 @@
-from fastapi import FastAPI, UploadFile, File, HTTPException
+from typing import Optional
+from fastapi import FastAPI, UploadFile, File, Form, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from vectorize import vectorize_image
 from vectorize_mv import vectorize_image_mv
@@ -58,29 +59,51 @@ async def upload_file(file: UploadFile = File(...)):
 
 
 @app.post("/upload-mv")
-async def upload_file_mv(file: UploadFile = File(...)):
+async def upload_file_mv(
+    file: UploadFile = File(...),
+    text: Optional[str] = Form(None),
+):
     """Multivector ingest. Writes the image to S3 (idempotent) and
     a bag of sub-vectors into the multivector Firn namespace. Skips
     the local Lance write because Lance is single-vector only in
-    this app, and the multivector demo path is Firn-exclusive."""
+    this app, and the multivector demo path is Firn-exclusive.
+
+    Optional text form field carries an indexable description for
+    the row (caption, OCR, page metadata). Used by Firn's FTS path
+    so /search-mv can fuse multivector + BM25 scores via RRF. When
+    omitted, the filename is stored so filename-round-trip on query
+    still works.
+    """
     if not file.content_type.startswith('image/'):
         raise HTTPException(status_code=400, detail="File must be an image")
 
     contents = await file.read()
     sha256_hash = hashlib.sha256(contents).hexdigest()
     filename = f"{sha256_hash}.jpg"
+    description = text.strip() if text and text.strip() else None
+    # Composite text column carries both for FTS plus filename round-trip
+    # on query results. Format: "<filename>\n<description>" when there is
+    # a description; just "<filename>" otherwise. The trailing description
+    # is what BM25 actually scores against; the leading filename is one
+    # sha-like token, treated as noise by the tokeniser.
+    row_text = f"{filename}\n{description}" if description else filename
 
     try:
         logger.info(f"Processing image (mv): {filename}")
         save_image_to_s3(filename, contents)
         vectors = vectorize_image_mv(contents)
-        firn_client.upsert_mv(filename, vectors)
+        firn_client.upsert_mv(filename, vectors, text=row_text)
         logger.info(f"Successfully processed image (mv): {filename}")
     except Exception as e:
         logger.error(f"Error processing image (mv) {filename}: {str(e)}")
         raise HTTPException(status_code=500, detail=str(e))
 
-    return {"filename": filename, "vectors_saved": True, "bag_size": len(vectors)}
+    return {
+        "filename": filename,
+        "vectors_saved": True,
+        "bag_size": len(vectors),
+        "has_description": description is not None,
+    }
 
 
 

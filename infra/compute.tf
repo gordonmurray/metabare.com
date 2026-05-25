@@ -25,13 +25,23 @@ resource "aws_instance" "main" {
   }
 
   root_block_device {
-    volume_size = 30
+    volume_size = 90
     volume_type = "gp3"
     encrypted   = true
   }
 
   tags = {
     Name = "metabare-${var.env}"
+  }
+
+  # The data.aws_ami.al2023 lookup uses most_recent = true, so AWS
+  # publishing a new AL2023 revision would otherwise force-replace
+  # the instance on every plan. AMI upgrades on this stack are a
+  # deliberate operation: remove this block temporarily and apply,
+  # or `terraform taint` the resource. Routine security patches go
+  # in-place via `sudo dnf update -y` + reboot.
+  lifecycle {
+    ignore_changes = [ami]
   }
 
   depends_on = [

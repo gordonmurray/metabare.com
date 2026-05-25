@@ -54,6 +54,26 @@ services:
     ports:
       - "3000:3000"
 
+  encoder:
+    build: ./apps/encoder
+    container_name: metabare-encoder
+    environment:
+      ENCODER_MODEL: vidore/colpali-v1.3
+      ENCODER_DEVICE: cpu
+      ENCODER_DTYPE: bfloat16
+    ports:
+      - "8083:8080"
+    # Healthcheck timeout is generous because /health competes with in-flight
+    # /encode-image work in the single-process uvicorn. On a memory-constrained
+    # host an active encode can take 60+ seconds; a short healthcheck timeout
+    # would falsely flag the container unhealthy mid-inference.
+    healthcheck:
+      test: ["CMD-SHELL", "python3 -c \"import urllib.request as u; u.urlopen('http://localhost:8080/health').read()\" || exit 1"]
+      interval: 30s
+      timeout: 30s
+      retries: 10
+      start_period: 180s
+
   upload:
     build: ./apps/upload
     container_name: metabare-upload
@@ -62,6 +82,8 @@ services:
         condition: service_completed_successfully
       firn:
         condition: service_started
+      encoder:
+        condition: service_healthy
     environment:
       R2_ENDPOINT: http://minio:9000
       R2_ACCESS_KEY_ID: minioadmin
@@ -70,8 +92,7 @@ services:
       FIRN_URL: http://firn:3000
       FIRN_NAMESPACE: images
       FIRN_MV_NAMESPACE: images-mv
-      MV_BAG_SIZE: "16"
-      MV_SUB_DIM: "32"
+      ENCODER_URL: http://encoder:8080
     volumes:
       - upload-storage:/app/storage
     ports:
@@ -91,6 +112,8 @@ services:
         condition: service_completed_successfully
       firn:
         condition: service_started
+      encoder:
+        condition: service_healthy
     environment:
       R2_ENDPOINT: http://minio:9000
       R2_ACCESS_KEY_ID: minioadmin
@@ -99,8 +122,7 @@ services:
       FIRN_URL: http://firn:3000
       FIRN_NAMESPACE: images
       FIRN_MV_NAMESPACE: images-mv
-      MV_BAG_SIZE: "16"
-      MV_SUB_DIM: "32"
+      ENCODER_URL: http://encoder:8080
       SEARCH_BACKEND: firn
       BASE_IMAGE_URL: "http://localhost:9000/metabare/"
     ports:

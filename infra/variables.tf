@@ -29,8 +29,8 @@ variable "cdn_domain" {
 
 variable "instance_type" {
   type        = string
-  default     = "m7i.large"
-  description = "Fixed-performance general-purpose instance. Baseline t3.medium hit CPU credit exhaustion under the full showcase stack."
+  default     = "m7i.xlarge"
+  description = "Fixed-performance general-purpose instance. Baseline t3.medium hit CPU credit exhaustion under the full showcase stack; m7i.large was tight once the ColPali encoder container landed (~5 GB resident), so bumped to m7i.xlarge (4 vCPU / 16 GB) to keep the encoder, upload, search, and Firn comfortable on one box."
 }
 
 variable "git_repo" {
@@ -40,8 +40,8 @@ variable "git_repo" {
 
 variable "git_branch" {
   type        = string
-  default     = "firn-integration"
-  description = "Branch the EC2 instance checks out"
+  default     = "feat/multivector"
+  description = "Branch the EC2 instance checks out. Tracks the active integration branch; bump to main once the work merges."
 }
 
 variable "firn_namespace" {

@@ -17,13 +17,42 @@ services:
       AWS_DEFAULT_REGION: ${S3_REGION}
       FIRNFLOW_BIND: "0.0.0.0:3000"
       RUST_LOG: info
+      # Firn v0.5.0+ auth. Both keys default to empty here, which
+      # keeps the API open with a startup WARN (Firn's documented
+      # fallback). Set both in /opt/metabare/.env to lock the API
+      # to bearer-token callers; the upload + search containers
+      # are inside this compose network and never call Firn from
+      # outside, so they would need the same key plumbed through.
+      # Today the public surface is nginx -> upload/search only;
+      # Firn is not internet-reachable. Keys are a defense-in-depth
+      # measure for the day that posture changes.
+      FIRNFLOW_API_KEY: ${FIRNFLOW_API_KEY:-}
+      FIRNFLOW_ADMIN_API_KEY: ${FIRNFLOW_ADMIN_API_KEY:-}
+    restart: unless-stopped
+
+  encoder:
+    build: ./apps/encoder
+    container_name: metabare-encoder
+    environment:
+      ENCODER_MODEL: ${ENCODER_MODEL:-vidore/colpali-v1.3}
+      ENCODER_DEVICE: ${ENCODER_DEVICE:-cpu}
+      ENCODER_DTYPE: ${ENCODER_DTYPE:-bfloat16}
+    healthcheck:
+      test: ["CMD-SHELL", "python3 -c \"import urllib.request as u; u.urlopen('http://localhost:8080/health').read()\" || exit 1"]
+      interval: 30s
+      timeout: 30s
+      retries: 10
+      start_period: 180s
     restart: unless-stopped
 
   upload:
     build: ./apps/upload
     container_name: metabare-upload
     depends_on:
-      - firn
+      firn:
+        condition: service_started
+      encoder:
+        condition: service_healthy
     environment:
       # boto3 uses the instance profile automatically when the
       # R2_ACCESS_KEY_ID / _SECRET_ACCESS_KEY / ENDPOINT env vars
@@ -34,8 +63,7 @@ services:
       FIRN_URL: http://firn:3000
       FIRN_NAMESPACE: ${FIRN_NAMESPACE}
       FIRN_MV_NAMESPACE: ${FIRN_MV_NAMESPACE:-images-mv}
-      MV_BAG_SIZE: "16"
-      MV_SUB_DIM: "32"
+      ENCODER_URL: http://encoder:8080
     volumes:
       - upload-storage:/app/storage
     healthcheck:
@@ -50,7 +78,10 @@ services:
     build: ./apps/search
     container_name: metabare-search
     depends_on:
-      - firn
+      firn:
+        condition: service_started
+      encoder:
+        condition: service_healthy
     environment:
       # lancedb-rs picks up instance-profile credentials through
       # the default chain when the storage_options don't include
@@ -62,8 +93,7 @@ services:
       FIRN_URL: http://firn:3000
       FIRN_NAMESPACE: ${FIRN_NAMESPACE}
       FIRN_MV_NAMESPACE: ${FIRN_MV_NAMESPACE:-images-mv}
-      MV_BAG_SIZE: "16"
-      MV_SUB_DIM: "32"
+      ENCODER_URL: http://encoder:8080
       SEARCH_BACKEND: ${SEARCH_BACKEND}
       BASE_IMAGE_URL: ${BASE_IMAGE_URL}
     healthcheck:
