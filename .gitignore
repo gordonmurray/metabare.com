@@ -13,6 +13,9 @@ scripts/arxiv-corpus/data/
 # Reproducible from scripts/photo-corpus/photos.json.
 scripts/photo-corpus/data/
 
+# COCO calibration benchmark cache (annotations + downloaded subset).
+scripts/coco-cache/
+
 # Python
 __pycache__/
 *.pyc

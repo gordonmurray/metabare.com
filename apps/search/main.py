@@ -96,9 +96,14 @@ def _lance_search(text_vec, k):
     return results
 
 
-def _firn_search(text_vec, k):
+def _firn_search(text_vec, k, semantic_cache_enabled=False, semantic_min_similarity=0.995):
     try:
-        rows = firn_client.query(text_vec, k=max(k * 3, 10))
+        rows = firn_client.query(
+            text_vec,
+            k=max(k * 3, 10),
+            semantic_cache_enabled=semantic_cache_enabled,
+            semantic_min_similarity=semantic_min_similarity,
+        )
     except Exception as e:
         raise HTTPException(500, detail=f"Firn query failed: {e}")
 
@@ -129,6 +134,8 @@ async def search_images(
     text: str = Query(..., description="Text to search for"),
     backend: str = Query(None, description="Override: 'lance' or 'firn'"),
     k: int = Query(3, ge=1, le=50),
+    semantic_cache: bool = Query(False, description="Enable Firn semantic cache"),
+    semantic_min_similarity: float = Query(0.995, gt=0.0, le=1.0),
 ):
     if not text.strip():
         raise HTTPException(400, "Query cannot be empty")
@@ -138,10 +145,30 @@ async def search_images(
         raise HTTPException(400, f"Unknown backend: {active}")
 
     text_vec = _encode_query(text)
-    logging.info("query=%r backend=%s k=%s", text, active, k)
+    logging.info(
+        "query=%r backend=%s k=%s semantic_cache=%s semantic_min_similarity=%s",
+        text,
+        active,
+        k,
+        semantic_cache if active == "firn" else False,
+        semantic_min_similarity,
+    )
 
-    results = _firn_search(text_vec, k) if active == "firn" else _lance_search(text_vec, k)
-    return {"results": results, "backend": active}
+    results = (
+        _firn_search(
+            text_vec,
+            k,
+            semantic_cache_enabled=semantic_cache,
+            semantic_min_similarity=semantic_min_similarity,
+        )
+        if active == "firn"
+        else _lance_search(text_vec, k)
+    )
+    return {
+        "results": results,
+        "backend": active,
+        "semantic_cache": semantic_cache if active == "firn" else False,
+    }
 
 
 @app.get("/search-mv")
