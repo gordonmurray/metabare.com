@@ -28,15 +28,26 @@ FIRN_URL = os.getenv("FIRN_URL", "http://firn:3000")
 FIRN_NAMESPACE = os.getenv("FIRN_NAMESPACE", "images")
 FIRN_MV_NAMESPACE = os.getenv("FIRN_MV_NAMESPACE", "images-mv")
 FIRN_TIMEOUT_SECONDS = float(os.getenv("FIRN_TIMEOUT_SECONDS", "10"))
+DEFAULT_SEMANTIC_MIN_SIMILARITY = float(os.getenv("FIRN_SEMANTIC_MIN_SIMILARITY", "0.995"))
 
 
-def query(vector: np.ndarray, k: int = 10) -> List[Dict[str, Any]]:
+def query(
+    vector: np.ndarray,
+    k: int = 10,
+    semantic_cache_enabled: bool = False,
+    semantic_min_similarity: float = DEFAULT_SEMANTIC_MIN_SIMILARITY,
+) -> List[Dict[str, Any]]:
     """Query Firn for nearest neighbours of vector.
 
     Returns [{"filename", "score", "firn_id"}] ordered ascending by
     score (L2 distance). Raises on HTTP error.
     """
     payload = {"vector": vector.astype("float32").tolist(), "k": k}
+    if semantic_cache_enabled:
+        payload["semantic_cache"] = {
+            "enabled": True,
+            "min_similarity": semantic_min_similarity,
+        }
     url = f"{FIRN_URL}/ns/{FIRN_NAMESPACE}/query"
     resp = requests.post(url, json=payload, timeout=FIRN_TIMEOUT_SECONDS)
     resp.raise_for_status()
