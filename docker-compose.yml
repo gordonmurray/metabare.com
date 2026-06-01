@@ -39,7 +39,7 @@ services:
       "
 
   firn:
-    image: ghcr.io/gordonmurray/firnflow:0.7.0
+    image: ghcr.io/gordonmurray/firnflow:0.8.0
     container_name: metabare-firn
     depends_on:
       minio-init:
