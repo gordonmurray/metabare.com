@@ -2,7 +2,7 @@
   "title": "Firn on S3 - Metabare showcase",
   "uid": "firn-overview",
   "schemaVersion": 39,
-  "version": 2,
+  "version": 3,
   "timezone": "browser",
   "time": {
     "from": "now-1h",
@@ -195,7 +195,7 @@
         {
           "refId": "A",
           "datasource": { "type": "prometheus", "uid": "prometheus" },
-          "expr": "sum(rate(firnflow_semantic_cache_hits_total[5m])) / (sum(rate(firnflow_semantic_cache_hits_total[5m])) + sum(rate(firnflow_semantic_cache_misses_total[5m])))",
+          "expr": "sum(rate(firnflow_semantic_cache_hits_total[5m])) / (sum(rate(firnflow_semantic_cache_hits_total[5m])) + (sum(rate(firnflow_semantic_cache_misses_total[5m])) or vector(0)))",
           "legendFormat": "hit rate"
         }
       ],
