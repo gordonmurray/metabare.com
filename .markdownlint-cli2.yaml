@@ -18,3 +18,6 @@ globs:
 ignores:
   - ".venv/**"
   - "node_modules/**"
+  # Vendored upstream modules from `terraform init`. Gitignored, so CI never
+  # sees them, but a local run after an init would otherwise lint them.
+  - "**/.terraform/**"
