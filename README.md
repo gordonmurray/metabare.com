@@ -9,6 +9,8 @@ and retrieval layer.
 > no GPU path, no OCR, no autoscaling and no benchmark data yet. Nothing here
 > claims a measured performance or cost result that has not actually been
 > measured, and the benchmark sections below say "planned" for that reason.
+>
+> [PLAN.md](PLAN.md) lists the remaining work in the order it will be built.
 
 ## The problem
 
