@@ -1,0 +1,32 @@
+# Copy to backend.hcl and edit. backend.hcl is gitignored.
+#
+#   cp backend.hcl.example backend.hcl
+#   make init ENV=dev
+#
+# The bucket must already exist and is not managed by this configuration:
+# Terraform cannot create the bucket that holds its own state.
+#
+#   aws s3api create-bucket \
+#     --bucket <your-state-bucket> \
+#     --region eu-west-1 \
+#     --create-bucket-configuration LocationConstraint=eu-west-1
+#   aws s3api put-bucket-versioning \
+#     --bucket <your-state-bucket> \
+#     --versioning-configuration Status=Enabled
+
+bucket = "your-terraform-state-bucket"
+
+# Use a key nothing else writes to. Sharing a bucket between environments is
+# fine; sharing a key means one apply can destroy another environment.
+key = "metabare/eks-dev.tfstate"
+
+region = "eu-west-1"
+
+# Optional. Omit to use the default AWS credential chain, including the
+# AWS_PROFILE environment variable.
+# profile = "your-profile"
+
+encrypt = true
+
+# S3 native locking, so no DynamoDB table is needed. Requires Terraform 1.10+.
+use_lockfile = true

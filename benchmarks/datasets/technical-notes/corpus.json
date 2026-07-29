@@ -1,0 +1,180 @@
+{
+  "name": "technical-notes",
+  "version": "1",
+  "created": "2026-07-29",
+  "licence": "Synthetic, written for this project. Freely reusable.",
+  "purpose": "A small, fully synthetic corpus of the kind of technical English MetaBare indexes: terminal output, cloud console errors, infrastructure notes. Used to sanity-check candidate text embedding models. It is deliberately NOT a relevance benchmark: 24 documents cannot separate models that differ by a few points on MTEB. It exists to catch a model that is obviously wrong for this domain, and to measure operational characteristics on realistic technical text.",
+  "warning": "Contains no real account identifiers, hostnames, credentials or personal data. Every value is invented.",
+  "documents": [
+    {
+      "id": "doc-01",
+      "text": "$ terraform destroy\nError: deleting EC2 Subnet (subnet-0abc123): DependencyViolation: The subnet 'subnet-0abc123' has dependencies and cannot be deleted.\nstatus code: 400\n\nThe load balancer controller left an orphaned network interface behind. Delete the ENI manually, then re-run destroy."
+    },
+    {
+      "id": "doc-02",
+      "text": "Karpenter did not provision a node for the pending pod. The NodeClaim stayed in Unknown for eleven minutes.\n\nkubectl get nodeclaims\nNAME            TYPE   ZONE   READY   AGE\ndefault-x7k2q   -      -      Unknown 11m\n\nRoot cause: the subnet had no free IP addresses left. The /27 CIDR was far too small once each pod took an ENI secondary address."
+    },
+    {
+      "id": "doc-03",
+      "text": "Spot interruption notice received. The instance metadata endpoint returned a termination time two minutes ahead.\n\ncurl -s http://169.254.169.254/latest/meta-data/spot/instance-action\n{\"action\": \"terminate\", \"time\": \"2026-05-02T14:22:00Z\"}\n\nThe node drained cleanly and the in-flight batch went back on the queue. No work was lost, but the visibility timeout had to be longer than the drain."
+    },
+    {
+      "id": "doc-04",
+      "text": "DocumentDB refused to build the index. The collection had documents whose indexed field exceeded the key size limit.\n\nMongoServerError: index key too large for index entry\n\nShortening the field to a hash of its value fixed it. Worth remembering that DocumentDB is not MongoDB and its limits differ."
+    },
+    {
+      "id": "doc-05",
+      "text": "The NAT Gateway was the single largest line on the bill. Thirty-five dollars a month in eu-west-1 before a byte of data was processed, for a workload that mostly talked to S3.\n\nAn S3 gateway endpoint is free. Switching the traffic to it removed the need for the gateway entirely in the development environment."
+    },
+    {
+      "id": "doc-06",
+      "text": "CPUUtilization on the writer instance sat at 94 percent for the whole window. The read replica was almost idle at 6 percent.\n\nCloudWatch showed the imbalance clearly across the two-week range. Nothing was routing reads to the replica because the application used the cluster endpoint for everything."
+    },
+    {
+      "id": "doc-07",
+      "text": "Pod stuck in ImagePullBackOff.\n\nkubectl describe pod api-7d9f\nFailed to pull image: rpc error: code = Unknown desc = failed to pull and unpack image: unexpected status: 401 Unauthorized\n\nThe node role had no ecr:GetAuthorizationToken permission. Adding the managed policy to the node instance profile resolved it."
+    },
+    {
+      "id": "doc-08",
+      "text": "The GPU node took four minutes and ten seconds to go from a pending pod to a first successful inference. The inference itself took eight hundred milliseconds.\n\nMost of the four minutes was the container image pull. The image was six gigabytes because it carried CUDA wheels the model never used."
+    },
+    {
+      "id": "doc-09",
+      "text": "kubectl get pods -n kube-system\nNAME                       READY   STATUS             RESTARTS   AGE\ncoredns-5d78c9869d-4kqxz   0/1     CrashLoopBackOff   7          12m\n\nCoreDNS could not start because the cluster had no schedulable node with enough memory. Everything else in the cluster failed in confusing ways downstream of that."
+    },
+    {
+      "id": "doc-10",
+      "text": "S3 lifecycle transition to Glacier Instant Retrieval cost more than it saved. The objects averaged eleven kilobytes, and the per-object transition charge dominated the storage saving.\n\nThe minimum billable object size for the class is 128 KB, so each small object was billed as if it were 128 KB anyway."
+    },
+    {
+      "id": "doc-11",
+      "text": "Prometheus disk filled up. The time series database had grown to forty gigabytes while the application data it was observing was under two gigabytes.\n\nRetention was set to fifteen days with a scrape interval of fifteen seconds across too many high-cardinality labels. A pod-level label on a metric with per-request identity was the main offender."
+    },
+    {
+      "id": "doc-12",
+      "text": "aws eks update-kubeconfig --name metabare-dev --region eu-west-1\nUpdated context arn:aws:eks:eu-west-1:000000000000:cluster/metabare-dev in /home/user/.kube/config\n\nkubectl get nodes\nerror: You must be logged in to the server (Unauthorized)\n\nThe IAM principal was not in the cluster access entries. Creating an access entry with the AmazonEKSClusterAdminPolicy fixed it."
+    },
+    {
+      "id": "doc-13",
+      "text": "Grafana dashboard showing queue depth, node count and GPU utilisation on one aligned timeline. The queue rises sharply after a batch upload, a node appears roughly ninety seconds later, GPU utilisation climbs to full, the queue drains, and the node disappears."
+    },
+    {
+      "id": "doc-14",
+      "text": "The KEDA ScaledObject would not scale from zero. minReplicaCount was set to 1, so there was always one pod running and the scale-to-zero claim was not true.\n\nSetting minReplicaCount to 0 and using the SQS queue length trigger with an activation threshold made it genuinely zero when idle."
+    },
+    {
+      "id": "doc-15",
+      "text": "Architecture diagram: an upload API writing to object storage, an event fanning out to two queues, CPU workers doing extraction on one and GPU workers doing image encoding on the other, both writing to a shared search index backed by the same object store."
+    },
+    {
+      "id": "doc-16",
+      "text": "The Lambda function timed out after fifteen minutes. It was iterating over every object in a bucket with a ListObjectsV2 paginator and calling HeadObject for each one.\n\nEleven million objects at roughly forty milliseconds per head request was never going to finish. Switching to S3 Inventory turned it into a nightly Parquet read."
+    },
+    {
+      "id": "doc-17",
+      "text": "helm upgrade --install kube-prometheus-stack prometheus-community/kube-prometheus-stack --version 65.1.0\nError: UPGRADE FAILED: cannot patch \"prometheus-kube-prometheus-prometheus\" with kind Prometheus: admission webhook denied the request\n\nThe CRDs were from an older chart version. Helm does not upgrade CRDs on its own; they had to be applied manually first."
+    },
+    {
+      "id": "doc-18",
+      "text": "Terraform state was locked by a run that had been killed. \n\nError acquiring the state lock: ConditionalCheckFailedException\nLock Info:\n  ID:        7f3a1c2e-9b44\n  Operation: OperationTypeApply\n  Created:   2026-04-11 09:14:02\n\nterraform force-unlock 7f3a1c2e-9b44 released it, after confirming no apply was actually running."
+    },
+    {
+      "id": "doc-19",
+      "text": "Note on embedding models: the query prefix matters. BGE is trained with an instruction on the query side only. Encoding indexed passages with the same prefix measurably degraded retrieval, and omitting it on queries did too. The two paths need separate code."
+    },
+    {
+      "id": "doc-20",
+      "text": "The RDS instance ran out of burst credits. IOPS fell off a cliff at 03:40 and stayed at baseline for the rest of the night while the nightly batch job ran.\n\ngp2 credit accumulation depends on volume size. The fix was moving to gp3 with provisioned IOPS decoupled from capacity."
+    },
+    {
+      "id": "doc-21",
+      "text": "OCR on terminal screenshots was much worse than on console screenshots. Anti-aliased white-on-black monospace text at a small point size confused the recogniser badly, with l and 1 and I frequently swapped.\n\nUpscaling the image before recognition helped more than any model change."
+    },
+    {
+      "id": "doc-22",
+      "text": "docker build failed on the final stage.\n\nCOPY --from=builder /app/.venv /app/.venv\nfailed to compute cache key: failed to calculate checksum: \"/app/.venv\": not found\n\nThe builder stage had installed into a different path because the working directory was set after the install step, not before."
+    },
+    {
+      "id": "doc-23",
+      "text": "Cost per thousand screenshots processed on g4dn.xlarge Spot came out lower than on g5.xlarge Spot for small batches, because the g5 spent proportionally more of its billed lifetime starting up than working.\n\nFor a ten thousand image backfill the ranking reversed."
+    },
+    {
+      "id": "doc-24",
+      "text": "The vector search returned nothing at all for every query. The namespace had rows and the vector-only path worked fine.\n\nAdding a text field to the request turned a working query into a 500. The namespace had no full-text index, and one has to be built explicitly after the first write."
+    }
+  ],
+  "queries": [
+    {
+      "id": "q-01",
+      "text": "Where did Terraform fail to delete a resource?",
+      "relevant": ["doc-01"],
+      "note": "Lexically strong: 'Terraform', 'delete'. Also tests that doc-18 (also Terraform) does not outrank it."
+    },
+    {
+      "id": "q-02",
+      "text": "Find notes about EKS Spot interruptions",
+      "relevant": ["doc-03"],
+      "note": "One of the motivating example queries for the project."
+    },
+    {
+      "id": "q-03",
+      "text": "the screenshot containing the DocumentDB index error",
+      "relevant": ["doc-04"],
+      "note": "One of the motivating example queries for the project."
+    },
+    {
+      "id": "q-04",
+      "text": "why did the GPU node take so long to start",
+      "relevant": ["doc-08"],
+      "note": "Semantic: the document never uses the words 'why' or 'long'."
+    },
+    {
+      "id": "q-05",
+      "text": "kubernetes pod cannot pull its container image",
+      "relevant": ["doc-07"],
+      "note": "Paraphrase of ImagePullBackOff without using the term."
+    },
+    {
+      "id": "q-06",
+      "text": "monitoring storage grew larger than the application data",
+      "relevant": ["doc-11"],
+      "note": "Purely semantic; 'monitoring' does not appear in the document."
+    },
+    {
+      "id": "q-07",
+      "text": "cheaper storage class turned out to cost more",
+      "relevant": ["doc-10"],
+      "note": "Requires understanding the outcome, not matching a term."
+    },
+    {
+      "id": "q-08",
+      "text": "scale to zero was not actually zero",
+      "relevant": ["doc-14"],
+      "note": "Tests negation-ish phrasing."
+    },
+    {
+      "id": "q-09",
+      "text": "networking cost more than the workload",
+      "relevant": ["doc-05"],
+      "note": "Overlaps conceptually with doc-11 and doc-10; tests discrimination."
+    },
+    {
+      "id": "q-10",
+      "text": "full text search returned an internal server error",
+      "relevant": ["doc-24"],
+      "note": "The Firn FTS index trap, in the corpus because it is the sort of thing this system exists to find again."
+    },
+    {
+      "id": "q-11",
+      "text": "ran out of IP addresses in the subnet",
+      "relevant": ["doc-02"],
+      "note": "Competes with doc-01, which is also about subnets."
+    },
+    {
+      "id": "q-12",
+      "text": "which GPU instance family was cheaper per job",
+      "relevant": ["doc-23"],
+      "note": "Domain-specific comparison."
+    }
+  ]
+}

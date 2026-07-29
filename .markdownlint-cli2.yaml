@@ -1,0 +1,20 @@
+# Markdown lint configuration.
+config:
+  # Long prose lines are fine; this is documentation, not code.
+  MD013: false
+  # Repeated headings across sibling sections are fine.
+  MD024:
+    siblings_only: true
+  # Inline HTML is occasionally the only way to get a table to render.
+  MD033: false
+  # The first line of a file need not be a top-level heading.
+  MD041: false
+  # Bare URLs are fine in reference material.
+  MD034: false
+
+globs:
+  - "**/*.md"
+
+ignores:
+  - ".venv/**"
+  - "node_modules/**"
