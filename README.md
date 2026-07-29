@@ -75,20 +75,10 @@ encoding and nothing else.
 | **Karpenter** | Removes the GPU node once the pod is gone. Without this, "scale to zero" is just an idle instance still being billed. |
 | **ONNX Runtime** (not PyTorch) for the CPU encoder | A torch image is roughly 2 GB and drags in CUDA wheels a CPU node will never use. Image size is `container_image_pull_seconds` in the cold-start budget. |
 
-Not used, deliberately: vLLM (this workload needs embeddings, not token
-generation), a service mesh, and a GitOps controller. Each additional
-component has to earn its place through a concrete requirement, and none of
-those do yet.
-
 ## What it costs to run
 
-**The idle platform costs more than the workload it runs.** For a personal
-search system handling a handful of screenshots a day, the fixed cost is about
-**$145 a month before a single screenshot is ingested**. The GPU work this
-project is nominally about will cost cents per batch.
-
-That is not a reason to abandon it — measuring exactly this is one of the
-goals — but it belongs at the top rather than buried.
+The dev environment costs about **$145 a month idle**, before anything is
+ingested.
 
 ### Dev environment, idle
 
@@ -103,8 +93,8 @@ goals — but it belongs at the top rather than buried.
 | SQS, VPC, S3 gateway endpoint, CloudWatch log group, Budget | | **$0.00** |
 | **Total** | | **≈ $144.86** |
 
-Deliberately **not** created: NAT Gateway ($35.04/mo — an S3 gateway endpoint
-is free and carries the dominant dependency), interface VPC endpoints ($8.03/mo
+Not created: NAT Gateway ($35.04/mo, an S3 gateway endpoint is free and
+carries the workload's main dependency), interface VPC endpoints ($8.03/mo
 each per AZ), a load balancer (~$18/mo), multi-AZ node groups, and any GPU
 capacity.
 
@@ -116,24 +106,8 @@ Reproduce them with:
 AWS_PROFILE=<profile> uv run --with boto3 python scripts/aws-prices.py
 ```
 
-### Cost per unit of work
-
-Amortising the fixed platform over 1,000 screenshots in a month gives **$0.145
-per item**, against marginal storage and request costs well under $0.001 per
-item. At personal scale the fixed cost dominates by two orders of magnitude,
-so optimising the ingestion path is invisible in the bill until the fixed cost
-is addressed.
-
-### Reducing it
-
-1. **Destroy the cluster between sessions.** At roughly $0.20/hour all-in, a
-   cluster that exists 20 hours a week costs about $16/month rather than $145.
-   `make destroy` is a supported, tested path, not an afterthought.
-2. **Shrink the stable node.** `t3.medium` halves node cost but is likely too
-   small once a Prometheus stack lands. Measure before choosing.
-3. **Question EKS itself.** For this workload, ECS or a single EC2 instance
-   would be dramatically cheaper. EKS is here because learning EKS is an
-   explicit goal, not because the workload needs it.
+At roughly $0.20/hour all-in, `make destroy` between sessions brings a cluster
+used 20 hours a week to about $16/month.
 
 ### Guardrails
 
@@ -142,10 +116,9 @@ one, and a CI check that fails the build on an unbounded NodePool, a
 `ScaledObject` that does not scale to zero, or a NAT Gateway added without an
 explicit cost acknowledgement.
 
-**Opt-in, and worth opting into:** budget alerting. No AWS Budget is created
-unless you set `budget_alert_email`, because Terraform cannot invent an
-address to notify. Set it and you get alerts at 80% of actual spend and 100%
-of forecast:
+Budget alerting is opt-in. No AWS Budget is created unless you set
+`budget_alert_email`. With it set, you get alerts at 80% of actual spend and
+100% of forecast:
 
 ```bash
 terraform -chdir=infra/environments/dev apply -var 'budget_alert_email=you@example.com'
@@ -297,9 +270,3 @@ Before this rebuild, metabare.com was a Firn-on-S3 **image** search demo
 (CLIP and ColPali over a COCO corpus, on a single EC2 instance). That code is
 preserved on the `archive/image-search-showcase` branch and tagged
 [`v0.1.0-image-search`](https://github.com/gordonmurray/metabare.com/releases/tag/v0.1.0-image-search).
-Its AWS resources are still running and still serve the live site; this
-rebuild has not touched them.
-
-## Licence
-
-Apache-2.0. See [LICENSE](LICENSE).
