@@ -1,0 +1,188 @@
+# Firn: the search index, backed by S3.
+#
+# One replica. Firn documents compare-and-swap safety for concurrent writers,
+# but that has not been validated here, and an unvalidated safety property is
+# not a safety property. The honest consequence is a brief search outage
+# during a rolling update.
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: firn
+  namespace: metabare
+  # No annotations: EKS Pod Identity associates the role by cluster,
+  # namespace and service-account name, set in Terraform. Unlike IRSA there is
+  # no role ARN annotation here, so this manifest is not coupled to an
+  # account id.
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: firn
+  namespace: metabare
+  labels:
+    app.kubernetes.io/name: firn
+spec:
+  selector:
+    app.kubernetes.io/name: firn
+  ports:
+    - name: http
+      port: 3000
+      targetPort: http
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: firn
+  namespace: metabare
+  labels:
+    app.kubernetes.io/name: firn
+    app.kubernetes.io/part-of: metabare
+spec:
+  replicas: 1
+  strategy:
+    # Recreate, not RollingUpdate. With one replica a rolling update would
+    # briefly run two Firn processes against the same S3 prefix, which is
+    # exactly the concurrent-writer situation that has not been validated.
+    # Trading a few seconds of downtime for that certainty is the right way
+    # round in a lab.
+    type: Recreate
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: firn
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: firn
+        app.kubernetes.io/part-of: metabare
+    spec:
+      serviceAccountName: firn
+      nodeSelector:
+        metabare.com/pool: system
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 10001
+        runAsGroup: 10001
+        fsGroup: 10001
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+        - name: firn
+          image: ghcr.io/gordonmurray/firnflow:0.9.4
+          imagePullPolicy: IfNotPresent
+          ports:
+            - name: http
+              containerPort: 3000
+          env:
+            # DATA_BUCKET must come FIRST. Kubernetes expands $(VAR) only from
+            # variables defined earlier in this list; a forward reference is
+            # left as the literal string "$(DATA_BUCKET)", which Firn then
+            # cheerfully accepts as a bucket name.
+            - name: DATA_BUCKET
+              valueFrom:
+                configMapKeyRef:
+                  name: metabare-config
+                  key: data_bucket
+            # The prefix keeps Firn's tables under firn/ in the shared bucket,
+            # matching the bucket's prefix layout and the IAM policy that
+            # scopes Firn to that prefix and nothing else.
+            - name: FIRNFLOW_STORAGE_URI
+              value: s3://$(DATA_BUCKET)/firn
+            # Pinned explicitly. Firn falls back to us-east-1 when no region
+            # is resolvable, and before v0.9.1 it ignored AWS_REGION entirely.
+            - name: FIRNFLOW_S3_REGION
+              valueFrom:
+                configMapKeyRef:
+                  name: metabare-config
+                  key: region
+            - name: FIRNFLOW_BIND
+              value: "0.0.0.0:3000"
+            # The object cache is what lets a novel query over already-read
+            # data avoid repeating S3 GETs. The result cache only helps exact
+            # repeats. On emptyDir deliberately: it is disposable, and proving
+            # that is part of the point.
+            - name: FIRNFLOW_OBJECT_CACHE_ENABLED
+              value: "true"
+            - name: FIRNFLOW_OBJECT_CACHE_DIR
+              value: /var/cache/firn
+            # Firn has TWO cache paths, not one. This is foyer's tiered
+            # RAM-then-NVMe *result* cache, distinct from the object cache
+            # above, and the image defaults it to /var/lib/firnflow/cache.
+            # It is not in the published configuration documentation; it was
+            # found by inspecting the image after Firn crashed on startup with
+            # "hybrid build: I/O error ... Read-only file system".
+            #
+            # Set explicitly rather than relying on the image default, so the
+            # path and the volume mount below cannot drift apart.
+            - name: FIRNFLOW_CACHE_NVME_PATH
+              value: /var/lib/firnflow/cache
+            - name: FIRNFLOW_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: firn-auth
+                  key: api-key
+            - name: FIRNFLOW_ADMIN_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: firn-auth
+                  key: admin-api-key
+            - name: RUST_LOG
+              value: info
+          resources:
+            requests:
+              cpu: 200m
+              memory: 512Mi
+            limits:
+              # No CPU limit. Firn is latency-sensitive and CFS throttling on a
+              # mostly idle node buys nothing. Memory is limited because an
+              # unbounded cache would evict everything else on the node.
+              memory: 2Gi
+          # Firn exposes no readiness endpoint distinct from /health, so both
+          # probes use it with different timings: readiness fails fast so
+          # traffic stops, liveness is tolerant so a busy Firn is not killed
+          # for being busy.
+          startupProbe:
+            httpGet:
+              path: /health
+              port: http
+            periodSeconds: 3
+            failureThreshold: 30
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: http
+            periodSeconds: 5
+            timeoutSeconds: 3
+            failureThreshold: 2
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: http
+            periodSeconds: 20
+            timeoutSeconds: 5
+            failureThreshold: 6
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop: ["ALL"]
+          volumeMounts:
+            - name: object-cache
+              mountPath: /var/cache/firn
+            - name: result-cache
+              mountPath: /var/lib/firnflow/cache
+            - name: tmp
+              mountPath: /tmp
+      volumes:
+        # Both caches are emptyDir on purpose. They are disposable by design,
+        # and demonstrating that compute and cache can be destroyed without
+        # losing data is one of the things this project sets out to show.
+        - name: object-cache
+          emptyDir:
+            sizeLimit: 8Gi
+        - name: result-cache
+          emptyDir:
+            sizeLimit: 2Gi
+        - name: tmp
+          emptyDir:
+            sizeLimit: 1Gi

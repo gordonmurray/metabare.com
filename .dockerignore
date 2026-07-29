@@ -1,0 +1,30 @@
+# Keep the build context small: it is uploaded to the daemon on every build,
+# and anything here that changes invalidates cached layers.
+.git
+.github
+.venv
+.uv-cache
+**/__pycache__
+**/*.py[cod]
+.pytest_cache
+.ruff_cache
+.mypy_cache
+
+infra
+deploy
+docs
+dashboards
+benchmarks
+demo
+tests
+
+**/.terraform
+**/*.tfstate*
+**/*.tfvars
+.env
+.env.*
+*.pem
+*.key
+
+models/cache
+scratch

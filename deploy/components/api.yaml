@@ -1,0 +1,132 @@
+# The upload and search API.
+#
+# Runs on stable CPU capacity. This is load-bearing: the query encoder lives
+# in this process, so search stays usable when no GPU exists, which is most of
+# the time.
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: api
+  namespace: metabare
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: api
+  namespace: metabare
+  labels:
+    app.kubernetes.io/name: api
+spec:
+  selector:
+    app.kubernetes.io/name: api
+  ports:
+    - name: http
+      port: 8080
+      targetPort: http
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: api
+  namespace: metabare
+  labels:
+    app.kubernetes.io/name: api
+    app.kubernetes.io/part-of: metabare
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: api
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: api
+        app.kubernetes.io/part-of: metabare
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "8080"
+        prometheus.io/path: /metrics
+    spec:
+      serviceAccountName: api
+      nodeSelector:
+        metabare.com/pool: system
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 10001
+        runAsGroup: 10001
+        fsGroup: 10001
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+        - name: api
+          image: METABARE_API_IMAGE # replaced at deploy time by scripts/deploy-eks.sh
+          imagePullPolicy: IfNotPresent
+          ports:
+            - name: http
+              containerPort: 8080
+          envFrom:
+            - configMapRef:
+                name: metabare-config
+          env:
+            - name: FIRN_URL
+              value: http://firn:3000
+            - name: FIRN_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: firn-auth
+                  key: api-key
+            - name: FIRN_ADMIN_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: firn-auth
+                  key: admin-api-key
+            # No AWS credentials. Pod Identity injects them; §22.2 forbids
+            # static keys in a Secret.
+          resources:
+            requests:
+              # The encoder is 8.5 ms per query on one thread, so a fraction of
+              # a core is genuinely enough. Memory is the binding constraint:
+              # the ONNX session plus the model is a few hundred megabytes.
+              cpu: 100m
+              memory: 512Mi
+            limits:
+              memory: 1Gi
+          startupProbe:
+            httpGet:
+              path: /healthz
+              port: http
+            # The model is baked into the image, so startup is an ONNX session
+            # load rather than a download: sub-second locally. The allowance is
+            # still generous because a cold image pull precedes it.
+            periodSeconds: 5
+            failureThreshold: 24
+          readinessProbe:
+            httpGet:
+              path: /readyz
+              port: http
+            periodSeconds: 10
+            timeoutSeconds: 5
+          livenessProbe:
+            # /healthz deliberately checks nothing external. A liveness probe
+            # that fails when S3 blips would restart a pod that was working.
+            httpGet:
+              path: /healthz
+              port: http
+            periodSeconds: 20
+            failureThreshold: 6
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop: ["ALL"]
+          volumeMounts:
+            # The model lives in the image at /opt/metabare/models, so no
+            # cache volume is needed for it. /tmp is writable only because
+            # some libraries insist on a scratch path even when offline.
+            - name: tmp
+              mountPath: /tmp
+      volumes:
+        - name: tmp
+          emptyDir:
+            sizeLimit: 512Mi

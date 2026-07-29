@@ -1,0 +1,189 @@
+{
+  "corpus": {
+    "name": "technical-notes",
+    "version": "1",
+    "documents": 24,
+    "queries": 12
+  },
+  "runtime": "onnxruntime CPUExecutionProvider, intra_op_num_threads=1",
+  "candidates": [
+    {
+      "model_id": "BAAI/bge-small-en-v1.5",
+      "licence": "MIT",
+      "dimension": 384,
+      "pooling": "cls",
+      "query_prefix": "Represent this sentence for searching relevant passages: ",
+      "passage_prefix": "",
+      "onnx_file": "onnx/model.onnx"
+    },
+    {
+      "model_id": "sentence-transformers/all-MiniLM-L6-v2",
+      "licence": "Apache-2.0",
+      "dimension": 384,
+      "pooling": "mean",
+      "query_prefix": "",
+      "passage_prefix": "",
+      "onnx_file": "onnx/model.onnx"
+    },
+    {
+      "model_id": "intfloat/e5-small-v2",
+      "licence": "MIT",
+      "dimension": 384,
+      "pooling": "mean",
+      "query_prefix": "query: ",
+      "passage_prefix": "passage: ",
+      "onnx_file": "model.onnx"
+    },
+    {
+      "model_id": "BAAI/bge-base-en-v1.5",
+      "licence": "MIT",
+      "dimension": 768,
+      "pooling": "cls",
+      "query_prefix": "Represent this sentence for searching relevant passages: ",
+      "passage_prefix": "",
+      "onnx_file": "onnx/model.onnx"
+    }
+  ],
+  "results": [
+    {
+      "model_id": "BAAI/bge-small-en-v1.5",
+      "licence": "MIT",
+      "dimension": 384,
+      "pooling": "cls",
+      "uses_query_prefix": true,
+      "onnx_bytes": 133093490,
+      "load_seconds": 0.559,
+      "index_seconds_for_corpus": 1.51,
+      "query_latency_ms": {
+        "p50": 11.3,
+        "mean": 11.25,
+        "max": 12.75
+      },
+      "retrieval": {
+        "recall_at_1": 0.833,
+        "recall_at_3": 1.0,
+        "mrr": 0.903,
+        "ndcg_at_5": 0.928
+      },
+      "misses": [
+        {
+          "query": "ran out of IP addresses in the subnet",
+          "expected": [
+            "doc-02"
+          ],
+          "got": "doc-01",
+          "rank_of_expected": 3
+        },
+        {
+          "query": "which GPU instance family was cheaper per job",
+          "expected": [
+            "doc-23"
+          ],
+          "got": "doc-08",
+          "rank_of_expected": 2
+        }
+      ]
+    },
+    {
+      "model_id": "sentence-transformers/all-MiniLM-L6-v2",
+      "licence": "Apache-2.0",
+      "dimension": 384,
+      "pooling": "mean",
+      "uses_query_prefix": false,
+      "onnx_bytes": 90405214,
+      "load_seconds": 0.325,
+      "index_seconds_for_corpus": 0.767,
+      "query_latency_ms": {
+        "p50": 3.55,
+        "mean": 3.83,
+        "max": 5.1
+      },
+      "retrieval": {
+        "recall_at_1": 0.833,
+        "recall_at_3": 0.917,
+        "mrr": 0.896,
+        "ndcg_at_5": 0.922
+      },
+      "misses": [
+        {
+          "query": "ran out of IP addresses in the subnet",
+          "expected": [
+            "doc-02"
+          ],
+          "got": "doc-01",
+          "rank_of_expected": 4
+        },
+        {
+          "query": "which GPU instance family was cheaper per job",
+          "expected": [
+            "doc-23"
+          ],
+          "got": "doc-08",
+          "rank_of_expected": 2
+        }
+      ]
+    },
+    {
+      "model_id": "intfloat/e5-small-v2",
+      "licence": "MIT",
+      "dimension": 384,
+      "pooling": "mean",
+      "uses_query_prefix": true,
+      "onnx_bytes": 133093468,
+      "load_seconds": 0.356,
+      "index_seconds_for_corpus": 1.525,
+      "query_latency_ms": {
+        "p50": 8.55,
+        "mean": 8.73,
+        "max": 10.43
+      },
+      "retrieval": {
+        "recall_at_1": 0.917,
+        "recall_at_3": 1.0,
+        "mrr": 0.958,
+        "ndcg_at_5": 0.969
+      },
+      "misses": [
+        {
+          "query": "ran out of IP addresses in the subnet",
+          "expected": [
+            "doc-02"
+          ],
+          "got": "doc-01",
+          "rank_of_expected": 2
+        }
+      ]
+    },
+    {
+      "model_id": "BAAI/bge-base-en-v1.5",
+      "licence": "MIT",
+      "dimension": 768,
+      "pooling": "cls",
+      "uses_query_prefix": true,
+      "onnx_bytes": 435811539,
+      "load_seconds": 0.614,
+      "index_seconds_for_corpus": 5.206,
+      "query_latency_ms": {
+        "p50": 40.44,
+        "mean": 40.47,
+        "max": 44.71
+      },
+      "retrieval": {
+        "recall_at_1": 0.917,
+        "recall_at_3": 1.0,
+        "mrr": 0.958,
+        "ndcg_at_5": 0.969
+      },
+      "misses": [
+        {
+          "query": "ran out of IP addresses in the subnet",
+          "expected": [
+            "doc-02"
+          ],
+          "got": "doc-01",
+          "rank_of_expected": 2
+        }
+      ]
+    }
+  ]
+}
