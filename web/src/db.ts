@@ -39,6 +39,22 @@ const VERSION = 1;
 
 export class QuotaError extends Error {}
 
+/**
+ * A thumbnail as stored: bytes and type, not a Blob. WebKit can fail to
+ * commit a transaction that stores a Blob in IndexedDB (it hung in Playwright's
+ * WebKit, whose contexts are ephemeral like private browsing), and an
+ * ArrayBuffer stores everywhere.
+ */
+interface StoredThumb {
+    type: string;
+    bytes: ArrayBuffer;
+}
+
+function toBlob(t: StoredThumb | Blob | undefined): Blob | undefined {
+    if (!t) return undefined;
+    return t instanceof Blob ? t : new Blob([t.bytes], { type: t.type });
+}
+
 function request<T>(r: IDBRequest<T>): Promise<T> {
     return new Promise((resolve, reject) => {
         r.onsuccess = () => resolve(r.result);
@@ -83,10 +99,16 @@ export class Library {
     }
 
     async put(item: Item, vectors: Vectors, thumb: Blob | null): Promise<void> {
+        // Read the thumbnail's bytes before the transaction starts: an
+        // IndexedDB transaction commits as soon as it has no pending requests,
+        // so nothing may be awaited inside it.
+        const stored: StoredThumb | null = thumb
+            ? { type: thumb.type, bytes: await thumb.arrayBuffer() }
+            : null;
         const tx = this.db.transaction(["items", "vectors", "thumbs"], "readwrite");
         tx.objectStore("items").put(item);
         tx.objectStore("vectors").put(vectors);
-        if (thumb) tx.objectStore("thumbs").put(thumb, item.id);
+        if (stored) tx.objectStore("thumbs").put(stored, item.id);
         await done(tx);
     }
 
@@ -109,12 +131,15 @@ export class Library {
             request(store.getAllKeys()),
             request(store.getAll()),
         ]);
-        keys.forEach((k, i) => thumbs.set(String(k), blobs[i] as Blob));
+        keys.forEach((k, i) => {
+            const blob = toBlob(blobs[i] as StoredThumb);
+            if (blob) thumbs.set(String(k), blob);
+        });
         return { items, vectors, thumbs };
     }
 
     async thumb(id: string): Promise<Blob | undefined> {
-        return request(this.db.transaction("thumbs").objectStore("thumbs").get(id));
+        return toBlob(await request(this.db.transaction("thumbs").objectStore("thumbs").get(id)));
     }
 
     async count(): Promise<number> {
