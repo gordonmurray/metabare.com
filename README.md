@@ -7,8 +7,8 @@ running in your browser. Nothing you add leaves your device.
 
 ## What it does
 
-Drop in a folder of images (PNG, JPEG, WebP) and notes (`.txt`, `.md`), then
-search them in plain words: "a bar chart", "a terminal showing an error",
+Choose a folder or files, or drop files onto the page: images (PNG, JPEG,
+WebP) and notes (`.txt`, `.md`). Then search them in plain words: "a bar chart", "a terminal showing an error",
 "terraform destroy failed". Each result shows why it matched: what the picture
 shows, what the note means, or the words it contains.
 
@@ -43,18 +43,19 @@ browser offers it.
 
 ## Performance
 
-Measured on a laptop with Intel Iris Xe graphics, Linux, Chrome 154 and
-Firefox 155, on 2026-10-07. Raw results are in `web/results/` and
-`spike/results/`.
+Measured on a laptop with Intel Iris Xe graphics, Linux, on 2026-10-07.
+Embedding and download figures come from the browser test page
+(`spike/results/`), in Chrome 154. The rest come from the app
+(`web/results/`), in Playwright's builds of Chromium 153 and Firefox 155.
 
 | Measure | Result |
 | --- | --- |
 | Embedding an image, WebAssembly | 125 ms |
 | Embedding an image, WebGPU | 232 ms |
 | Embedding a search query, both models | 27 ms |
-| Searching 1,000 / 10,000 / 50,000 items | 1 / 10 / 46 ms in Chrome, 1 / 9 / 54 ms in Firefox |
-| Peak memory, first visit adding 50 images and 30 notes | 0.69 to 0.84 GB in Chrome, 1.36 to 1.44 GB in Firefox |
 | Download, every model and the runtime, compressed | 139.5 MB, once |
+| Searching 1,000 / 10,000 / 50,000 items | 1 / 10 / 46 ms in Chromium, 1 / 9 / 54 ms in Firefox |
+| Peak memory, first visit adding 50 images and 30 notes | 0.69 to 0.84 GB in Chromium, 1.36 to 1.44 GB in Firefox |
 
 On the demo library, image queries find 68% of the relevant images within as
 many results as there are relevant images (recall@R 0.68), and note queries
@@ -64,7 +65,7 @@ many results as there are relevant images (recall@R 0.68), and note queries
 
 | Browser | Works | Tested |
 | --- | --- | --- |
-| Chrome, Edge | Yes | Chrome 154 |
+| Chrome, Edge | Yes | Chrome 154, Chromium 153 |
 | Firefox | Yes | Firefox 155 |
 | Safari | Yes, through WebKit | Playwright's WebKit build |
 
@@ -107,7 +108,7 @@ Billing console, or with `aws ce update-cost-allocation-tags-status`.
 
 ## Run it locally
 
-Needs Node.js 24.
+Needs Node.js 24, Bash, `curl` and `jq`, on Linux, macOS or WSL.
 
 ```bash
 models/fetch.sh '_model_q4f16|^onnx/model_quantized|json$'   # about 150 MB
@@ -115,6 +116,7 @@ cd web
 ONNXRUNTIME_NODE_INSTALL=skip npm ci
 npm run dev                  # http://localhost:5173
 npm test                     # unit tests
+npx playwright install --with-deps chromium
 npx playwright test          # browser tests, Chromium by default
 ```
 
@@ -130,9 +132,9 @@ the domain.
 # Once: a bucket for Terraform state, kept separate from the site.
 terraform -chdir=infra/bootstrap init && terraform -chdir=infra/bootstrap apply
 
-# Point the site's state at it, and set an address for budget alerts.
+# Point the site's state at it, and set the domain and an address for budget alerts.
 cp infra/site/backend.hcl.example infra/site/backend.hcl      # fill in the bucket
-echo 'budget_alert_email = "you@example.com"' > infra/site/terraform.tfvars
+cp infra/site/example.tfvars infra/site/terraform.tfvars      # fill in both values
 
 terraform -chdir=infra/site init -backend-config=backend.hcl
 terraform -chdir=infra/site apply
@@ -140,5 +142,7 @@ terraform -chdir=infra/site apply
 ./scripts/deploy.sh
 ```
 
-`terraform -chdir=infra/site destroy` removes the bucket, distribution,
-certificate, DNS records and budget. The state bucket stays.
+To take the site offline quickly, set `enabled = false` on the CloudFront
+distribution in `infra/site/main.tf` and apply. `terraform -chdir=infra/site
+destroy` removes the bucket, distribution, certificate, DNS records and
+budget; the state bucket stays.

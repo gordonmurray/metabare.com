@@ -52,11 +52,10 @@ split between live memory and uncollected garbage is not known.
 These runs filled memory on the machine they ran on, which is a reason not to
 repeat them on a laptop in use.
 
-## What follows
+## Outcome
 
-The 1.5 GB budget fails for Firefox first visits. That is assigned to plan
-item 7 (ingestion), whose done-when includes passing it: load the three models
-one at a time, release each downloaded file before the next, and load the
-text-only models when they are first needed rather than up front. Phones have
-less memory than this laptop, so the phone run in plan item 6 is where this
-matters most.
+The app loads each model the first time it is needed instead of all three up
+front, so adding images never loads the text models. Its first visit, adding
+50 images and 30 notes, peaks at 0.69 to 0.84 GB in Chrome and 1.36 to 1.44 GB
+in Firefox over five cold runs each (`web/results/memory/`), inside the 1.5 GB
+budget.

@@ -300,7 +300,8 @@ resource "aws_route53_record" "site" {
 
 # Budget, filtered to resources tagged Project=metabare. Budgets notify; they
 # do not stop spending. To take the site down quickly, disable the
-# distribution (see README).
+# distribution: set enabled = false on aws_cloudfront_distribution.site and
+# apply.
 
 resource "aws_budgets_budget" "site" {
   name         = "metabare-monthly"

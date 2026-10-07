@@ -6,6 +6,10 @@
 set -euo pipefail
 
 cd "$(dirname "$0")"
+
+# Portable across Linux and macOS: no GNU-only stat or sha256sum.
+size_of() { wc -c < "$1" | tr -d ' '; }
+sha256() { if command -v sha256sum > /dev/null; then sha256sum "$@"; else shasum -a 256 "$@"; fi; }
 dest=files
 only=${1:-.}
 
@@ -18,19 +22,19 @@ jq -c '.[]' models.lock.json | while read -r entry; do
   out="$dest/$repo/$file"
   [[ "$file" =~ $only ]] || continue
 
-  if [[ ! -f "$out" || $(stat -c %s "$out") != "$size" ]]; then
+  if [[ ! -f "$out" || $(size_of "$out") != "$size" ]]; then
     mkdir -p "$(dirname "$out")"
     echo "fetch $repo/$file"
     curl -fsSL -o "$out.part" "https://huggingface.co/${repo}/resolve/${rev}/${file}"
     mv "$out.part" "$out"
   fi
 
-  got_size=$(stat -c %s "$out")
+  got_size=$(size_of "$out")
   if [[ "$got_size" != "$size" ]]; then
     echo "size mismatch for $out: $got_size != $size" >&2
     exit 1
   fi
-  got=$(sha256sum "$out" | cut -d' ' -f1)
+  got=$(sha256 "$out" | cut -d' ' -f1)
   if [[ "$got" != "$want" ]]; then
     echo "sha256 mismatch for $out" >&2
     exit 1
