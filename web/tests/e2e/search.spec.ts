@@ -49,12 +49,13 @@ function queries(): Query[] {
 
 async function run(page: Page, text: string): Promise<string[]> {
     await page.fill("#query", text);
-    const before = await page.locator("#search-status").textContent();
     await page.click("#search-button");
-    await expect(page.locator("#search-status")).not.toHaveText(before ?? "", { timeout: 120_000 });
-    await expect(page.locator("#search-status")).not.toHaveText("Searching…", {
-        timeout: 120_000,
-    });
+    // Wait for this query's run to finish, and fail on a search error rather
+    // than reading the previous query's results.
+    const status = page.locator("#search-status");
+    await expect(status).toHaveAttribute("data-query", text.trim(), { timeout: 120_000 });
+    await expect(status).not.toHaveAttribute("data-state", "searching", { timeout: 120_000 });
+    await expect(status, (await status.textContent()) ?? "").toHaveAttribute("data-state", "done");
     return page.locator("#results .card .meta").allTextContents();
 }
 
@@ -73,7 +74,7 @@ for (const floors of ["on", "none"]) {
             const p10 = names.slice(0, 10).filter((n) => relevant.has(n)).length;
             const s = (scores[q.set] ??= { recall: [], precision10: [] });
             s.recall.push(recall / relevant.size);
-            s.precision10.push(p10 / Math.min(10, relevant.size));
+            s.precision10.push(p10 / 10);
             perQuery.push({ ...q, top10: names.slice(0, 10) });
         }
         const mean = (xs: number[]) => xs.reduce((a, b) => a + b, 0) / xs.length;
