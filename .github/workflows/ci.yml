@@ -37,6 +37,37 @@ jobs:
         with:
           globs: '**/*.md'
 
+  terraform:
+    name: Terraform
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v7
+      - uses: hashicorp/setup-terraform@v4
+        with:
+          terraform_version: 1.16.5
+          terraform_wrapper: false
+      - uses: terraform-linters/setup-tflint@v6
+        with:
+          tflint_version: v0.64.0
+      - name: fmt
+        run: terraform fmt -check -recursive infra
+      # -backend=false, so validation needs no AWS credentials or state.
+      - name: validate
+        run: |
+          for dir in infra/bootstrap infra/site; do
+            terraform -chdir="$dir" init -backend=false -input=false
+            terraform -chdir="$dir" validate
+          done
+      - name: tflint
+        working-directory: infra
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: |
+          # Child modules do not inherit this directory's .tflint.hcl, so the
+          # path is passed explicitly.
+          tflint --init --config "$(pwd)/.tflint.hcl"
+          tflint --recursive --config "$(pwd)/.tflint.hcl" --minimum-failure-severity=warning
+
   spike-python:
     name: Spike scripts (Ruff)
     runs-on: ubuntu-24.04

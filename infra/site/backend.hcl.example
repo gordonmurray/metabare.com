@@ -1,0 +1,3 @@
+bucket = "<state bucket from infra/bootstrap>"
+key    = "site/terraform.tfstate"
+region = "eu-west-1"

@@ -145,7 +145,7 @@ def is_mobile(run: dict) -> bool:
 
 
 def cell(status: str) -> str:
-    return {"pass": "pass", "fail": "**FAIL**", "incomplete": "*INCOMPLETE*"}[status]
+    return {"pass": "pass", "fail": "**FAIL**", "incomplete": "*INCOMPLETE*", "-": "-"}[status]
 
 
 def load(path: Path) -> dict:
@@ -295,36 +295,52 @@ def main() -> None:
 
     # Download: payload of a real cold load, and a gzip estimate of the same files.
     cold_cand = [r for r in cold if (r["dtype"], r["embed_dtype"]) == CANDIDATE]
+    # The download gate is what a first visit to the deployed site transfers,
+    # compressed, from runs whose label starts with "deployed". Local runs
+    # are served uncompressed by the dev server, so they only give the
+    # uncompressed size, reported alongside.
+    deployed = [r for r in cold_cand if r["_name"].startswith("deployed")]
+    for r in deployed:
+        net = (r["bytes"]["models_network"] + r["bytes"]["runtime_network"]) / 1e6
+        gates.append(
+            (
+                "First visit to the deployed site, models and runtime, as transferred",
+                r["_name"],
+                f"{net:.1f} MB",
+                f"{BUDGET['download_mb']} MB",
+                "pass" if net <= BUDGET["download_mb"] else "fail",
+            )
+        )
+    if not deployed:
+        gates.append(
+            (
+                "First visit to the deployed site, models and runtime, as transferred",
+                "-",
+                "no deployed cold run",
+                f"{BUDGET['download_mb']} MB",
+                "incomplete",
+            )
+        )
     if cold_cand:
         r = cold_cand[0]
         payload = (r["bytes"]["models_payload"] + r["bytes"]["runtime_payload"]) / 1e6
         gates.append(
             (
-                "First-visit models and runtime, uncompressed",
+                "Same files, uncompressed (for reference)",
                 r["_name"],
                 f"{payload:.1f} MB",
-                f"{BUDGET['download_mb']} MB",
-                "pass" if payload <= BUDGET["download_mb"] else "fail",
-            )
-        )
-    else:
-        gates.append(
-            (
-                "First-visit models and runtime, uncompressed",
                 "-",
-                "no cold run",
-                f"{BUDGET['download_mb']} MB",
-                "incomplete",
+                "-",
             )
         )
     est = gzip_mb([*candidate_files(clip, embed), ORT_WASM])
     gates.append(
         (
-            "Same files after gzip -6 (estimate)",
+            "Same files after gzip -6, estimated before deployment",
             "-",
             "files not present" if est is None else f"{est:.1f} MB",
-            f"{BUDGET['download_mb']} MB",
-            "incomplete" if est is None else ("pass" if est <= BUDGET["download_mb"] else "fail"),
+            "-",
+            "-",
         )
     )
 

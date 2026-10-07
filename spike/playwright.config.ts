@@ -8,9 +8,12 @@ export default defineConfig({
   timeout: 30 * 60 * 1000,
   workers: 1,
   reporter: "list",
-  webServer: {
-    command: "npx vite --port 5173 --strictPort",
-    url: "http://localhost:5173",
-    reuseExistingServer: true,
-  },
+  // No local server when testing a deployed page.
+  webServer: process.env.SPIKE_URL
+    ? undefined
+    : {
+        command: "npx vite --port 5173 --strictPort",
+        url: "http://localhost:5173",
+        reuseExistingServer: true,
+      },
 });
