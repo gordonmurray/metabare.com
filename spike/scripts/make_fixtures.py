@@ -3,7 +3,7 @@
 Fifty images in ten categories, thirty notes on ten topics, and queries for
 each with the category or topic they should retrieve. The images exist to give
 the encoders varied input, so that rankings mean something when comparing
-backends. They are not the evaluation set; that is plan item 2.
+backends. They are too small and too synthetic to judge relevance with.
 
 Run with: uv run --with pillow==12.3.0 python scripts/make_fixtures.py
 """

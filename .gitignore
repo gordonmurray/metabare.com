@@ -1,63 +1,39 @@
-# Local only, never committed
-CLAUDE.md
-docs/
-scratch/
-
-# Personal data: never commit real images or notes
-demo/data/
-demo/private/
-
-# Model weights and large datasets, fetched and verified from lock files
-models/cache/
-models/export/*.onnx
-models/files/
-*.safetensors
-*.bin
-benchmarks/datasets/*/data/
-benchmarks/results/raw/
-spike/results/ci/
-
-# Node
+# Dependencies and build output
 node_modules/
 dist/
-build/
 playwright-report/
 test-results/
 
-# Python
+# Python, for the spike's analysis scripts
 __pycache__/
-*.py[cod]
 .venv/
-.pytest_cache/
 .ruff_cache/
-.mypy_cache/
-.coverage
-.coverage.*
-coverage.xml
-htmlcov/
-coverage/
 
-# Terraform; .terraform.lock.hcl is committed
+# Model files, fetched and verified by models/fetch.sh
+models/files/
+spike/results/ci/
+
+# Terraform: state, local settings and saved plans stay local.
+# .terraform.lock.hcl is committed.
 .terraform/
 *.tfstate
 *.tfstate.*
 *.tfvars
 !example.tfvars
+backend.hcl
+tfplan
+*.tfplan
 crash.log
 override.tf
 override.tf.json
-tfplan
-*.tfplan
-backend.hcl
 
 # Secrets
 .env
 .env.*
-!.env.example
 *.pem
 *.key
 
-# Editors and OS
+# Editors and operating systems
 .DS_Store
 .idea/
 .vscode/

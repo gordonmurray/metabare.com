@@ -1,8 +1,9 @@
-# Browser inference spike
+# Browser inference test page
 
-Can a browser embed images and text well enough, fast enough and consistently
-enough for MetaBare to drop server-side inference? This directory answers
-that for one candidate pair of models before anything else is built.
+Measures how well, how fast and how consistently a browser embeds images and
+text with the models MetaBare uses, on WebGPU and on WebAssembly. It is served
+at [metabare.com/spike/](https://metabare.com/spike/), so any device can run
+it.
 
 - Image and query encoder: CLIP ViT-B/32 (`Xenova/clip-vit-base-patch32`, ONNX
   export of `openai/clip-vit-base-patch32`), 512 dimensions.
@@ -30,7 +31,7 @@ For each device, backend and precision, on 50 synthetic images, 30 notes and
 The fixtures exist to give the encoders varied input. They are not a relevance
 evaluation.
 
-## Findings so far
+## Findings
 
 On a laptop with Intel Iris Xe graphics (Linux, Chrome 154 and Firefox 155),
 measured 2026-10-07. Every number is in [`results/summary.md`](results/summary.md),
@@ -69,7 +70,7 @@ uncompressed. Image times are warm medians.
   cause, and under a hard memory limit the first load did not complete within
   1.6 GB: see [`results/memory/`](results/memory/README.md). Fixing it is
   assigned to the ingestion work.
-- Not yet measured: a phone, a discrete GPU, Safari.
+- Not measured: a phone, a discrete GPU, Safari on a device.
 
 ## Browser support
 
