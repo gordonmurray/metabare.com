@@ -100,7 +100,7 @@ cross-origin isolation.
 
 ```bash
 npm ci
-./scripts/fetch-models.sh        # about 1.3 GB, verified against models.lock.json
+../models/fetch.sh               # about 1.3 GB, verified against models/models.lock.json
 npm run dev                      # http://localhost:5173
 ```
 
@@ -157,8 +157,6 @@ differ elsewhere, which is why the images are committed.
 | `src/worker.ts` | Loads the models and embeds everything |
 | `src/main.ts` | Page, settings, memory sampling, result download |
 | `tests/spike.spec.ts` | Playwright driver for the matrix |
-| `scripts/lock-models.sh` | Writes `models.lock.json` from the Hugging Face API |
-| `scripts/fetch-models.sh` | Downloads and verifies model files |
 | `scripts/reference.py` | PyTorch reference vectors |
 | `scripts/analyse.py` | Agreement, similarity and gates into `results/summary.md` |
 | `results/` | Raw runs (gzipped JSON) and the generated summary |

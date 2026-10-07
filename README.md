@@ -36,10 +36,28 @@ it, scoped to the device, browser and date it was measured on.
 | Path | What |
 | --- | --- |
 | [`spike/`](spike/README.md) | A feasibility test: embeds images and text in the browser on WebGPU and WebAssembly and measures speed, download size, memory and whether results agree across backends |
+| `web/` | The app: add images and notes, embedded and stored in the browser. Search is not built yet |
+| `models/` | `models.lock.json` pins every model file by revision and SHA-256; `fetch.sh` downloads and verifies them |
 | `infra/` | Terraform for the hosting: S3 and CloudFront for metabare.com |
 | `scripts/deploy.sh` | Builds and uploads the site |
-| `web/` | The home page |
 | `eval/technical-notes.json` | 24 synthetic technical notes and 12 queries with relevance labels, for evaluating text search |
+
+## Run it locally
+
+Needs Node.js 24.
+
+```bash
+models/fetch.sh '_model_q4f16|^onnx/model_quantized|json$'   # about 150 MB, the app's models
+cd web
+npm ci
+npm run dev                  # http://localhost:5173
+npm test                     # unit tests
+npx playwright test          # browser tests, Chromium by default
+```
+
+Set `ONNXRUNTIME_NODE_INSTALL=skip` before `npm ci` to stop a Node-only
+dependency of Transformers.js downloading CUDA libraries the browser never
+uses.
 
 ## Hosting
 
@@ -53,8 +71,9 @@ test page has been measured on, one thread was 3.4 times slower than four
 (417 ms against 124 ms per image, `spike/results/deployed-laptop-iris-xe*`).
 
 Model files are stored gzip-compressed, because CloudFront does not compress
-files over 10 MB. A first visit transfers 139.5 MB of models and runtime; later
-visits load them from the browser's cache. All four precisions the test page
+files over 10 MB. The test page loads all three models on a first visit, which
+transferred 139.5 MB of models and runtime; the app fetches each model the
+first time it needs one. Later visits load them from the browser's cache. All four precisions the test page
 offers are deployed, about 1.1 GB compressed; a browser only downloads the
 ones it uses.
 
@@ -74,8 +93,8 @@ Prices for `eu-west-1` and CloudFront Europe, from the AWS Price List API on
 
 So the fixed cost is about $0.52 a month, and the variable cost is mostly model
 downloads by new visitors. CloudFront's free tier covers the first 1 TB of
-transfer a month, about 7,000 first visits. An AWS Budget emails the owner at
-80% of $10 actual or 100% forecast. It filters on the `Project` cost allocation
+transfer a month, about 7,000 first visits that load every model. An AWS
+Budget emails the owner at 80% of $10 actual or 100% forecast. It filters on the `Project` cost allocation
 tag, which has to be activated once in the Billing console, or with
 `aws ce update-cost-allocation-tags-status`, before tagged spending shows up.
 
@@ -94,7 +113,7 @@ echo 'budget_alert_email = "you@example.com"' > infra/site/terraform.tfvars
 
 terraform -chdir=infra/site init -backend-config=backend.hcl
 terraform -chdir=infra/site apply
-(cd spike && npm ci)
+(cd spike && npm ci) && (cd web && npm ci)
 ./scripts/deploy.sh
 ```
 

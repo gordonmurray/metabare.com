@@ -10,7 +10,7 @@ demo/private/
 # Model weights and large datasets, fetched and verified from lock files
 models/cache/
 models/export/*.onnx
-spike/public/models/
+models/files/
 *.safetensors
 *.bin
 benchmarks/datasets/*/data/

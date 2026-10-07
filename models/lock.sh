@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
 # Writes models.lock.json: the exact revision, size and SHA-256 of every model
 # file the spike uses, read from the Hugging Face API. Run once per model
-# change; fetch-models.sh downloads and verifies against the result.
+# change; fetch.sh downloads and verifies against the result.
 set -euo pipefail
 
-cd "$(dirname "$0")/.."
+cd "$(dirname "$0")"
 
 # repo, revision, then the files wanted from it.
 declare -A REVISION=(

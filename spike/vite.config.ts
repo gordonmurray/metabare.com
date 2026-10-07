@@ -1,4 +1,5 @@
-import { cpSync, readFileSync } from "node:fs";
+import { cpSync, existsSync, readFileSync } from "node:fs";
+import { resolve } from "node:path";
 import basicSsl from "@vitejs/plugin-basic-ssl";
 import { defineConfig, type Plugin } from "vite";
 
@@ -13,6 +14,7 @@ const isolation = {
 // middleware ahead of Vite's own, because Vite rewrites the runtime's dynamic
 // import of a /public module and returns an HTML error page instead.
 const ORT_DIR = "node_modules/onnxruntime-web/dist";
+const MODELS_DIR = resolve(__dirname, "../models/files");
 const ORT_FILES = [
   "ort-wasm-simd-threaded.asyncify.mjs",
   "ort-wasm-simd-threaded.asyncify.wasm",
@@ -30,6 +32,16 @@ function selfHostOrt(): Plugin {
         res.setHeader("Content-Type", name.endsWith(".wasm") ? "application/wasm" : "text/javascript");
         for (const [k, v] of Object.entries(isolation)) res.setHeader(k, v);
         res.end(readFileSync(`${ORT_DIR}/${name}`));
+      });
+      // Model files live in models/files at the repository root, fetched by
+      // models/fetch.sh and shared with the app.
+      server.middlewares.use("/models", (req, res, next) => {
+        const path = decodeURIComponent((req.url ?? "").split("?")[0]);
+        const file = resolve(MODELS_DIR, `.${path}`);
+        if (!file.startsWith(`${MODELS_DIR}/`) || !existsSync(file)) return next();
+        res.setHeader("Content-Type", file.endsWith(".json") ? "application/json" : "application/octet-stream");
+        for (const [k, v] of Object.entries(isolation)) res.setHeader(k, v);
+        res.end(readFileSync(file));
       });
     },
     // A build copies only the fixtures from public/, not the 1.3 GB of model

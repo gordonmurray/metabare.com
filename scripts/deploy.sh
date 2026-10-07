@@ -4,7 +4,7 @@
 #   AWS_PROFILE=<profile> ./scripts/deploy.sh
 #
 # Layout in the bucket:
-#   /index.html                  home page, never cached
+#   /index.html, /assets/        the app; pages never cached, hashed assets cached forever
 #   /spike/                      the browser inference test page
 #   /models/<set>/<repo>/<file>  model files, gzip-compressed, cached forever
 #   /runtime/ort-<version>/      ONNX Runtime WASM files, gzip-compressed, cached forever
@@ -31,14 +31,14 @@ stage=$(mktemp -d)
 trap 'rm -rf "$stage"' EXIT
 
 echo "==> models"
-(cd spike && ./scripts/fetch-models.sh "$models_filter")
+./models/fetch.sh "$models_filter"
 model_set=$(jq -r --arg re "$models_filter" \
-  '[.[] | select(.file | test($re)) | .sha256] | join("\n")' spike/models.lock.json |
+  '[.[] | select(.file | test($re)) | .sha256] | join("\n")' models/models.lock.json |
   sha256sum | cut -c1-12)
-jq -r --arg re "$models_filter" '.[] | select(.file | test($re)) | "\(.repo)/\(.file)"' spike/models.lock.json |
+jq -r --arg re "$models_filter" '.[] | select(.file | test($re)) | "\(.repo)/\(.file)"' models/models.lock.json |
   while read -r path; do
     mkdir -p "$stage/models/$model_set/$(dirname "$path")"
-    gzip -9 -n -c "spike/public/models/$path" > "$stage/models/$model_set/$path"
+    gzip -9 -n -c "models/files/$path" > "$stage/models/$model_set/$path"
   done
 
 echo "==> runtime"
@@ -57,8 +57,11 @@ echo "==> spike page"
 # loads the copy under /runtime/ instead, so this one is never requested.
 rm -f "$stage"/site/spike/assets/*.wasm
 
-echo "==> home page"
-cp web/index.html "$stage/site/index.html"
+echo "==> app"
+(cd web && VITE_MODEL_BASE="/models/$model_set/" VITE_ORT_BASE="/$runtime/" \
+  npx vite build --outDir "$stage/app" --emptyOutDir --logLevel warn)
+rm -f "$stage"/app/assets/*.wasm
+cp -r "$stage/app/." "$stage/site/"
 
 immutable="public, max-age=31536000, immutable"
 
@@ -81,10 +84,10 @@ echo "==> upload site"
 # there yet, then the pages, which are never cached. Old assets are left in
 # place for anyone still holding the previous page.
 aws s3 sync "$stage/site" "s3://$bucket" --only-show-errors \
-  --exclude '*' --include '*/assets/*' --cache-control "$immutable"
+  --exclude '*' --include 'assets/*' --include '*/assets/*' --cache-control "$immutable"
 aws s3 sync "$stage/site" "s3://$bucket" --only-show-errors --delete \
   --exclude 'models/*' --exclude 'runtime/*' \
-  --exclude '*/assets/*' --cache-control "no-cache"
+  --exclude 'assets/*' --exclude '*/assets/*' --cache-control "no-cache"
 
 echo "==> remove model sets and runtimes the pages no longer use"
 aws s3 rm "s3://$bucket/models/" --recursive --only-show-errors --exclude "$model_set/*"
