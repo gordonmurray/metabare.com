@@ -1,0 +1,22 @@
+{
+ "browser": "firefox",
+ "user_agent": "Mozilla/5.0 (X11; Linux x86_64; rv:155.0) Gecko/20100101 Firefox/155.0",
+ "note": "Half images (512-d), half notes (384-d), random unit vectors; median of 7 searches.",
+ "results": [
+  {
+   "n": 1000,
+   "build_ms": 8.460000000000036,
+   "search_median_ms": 1.259999999999991
+  },
+  {
+   "n": 10000,
+   "build_ms": 53.91999999999996,
+   "search_median_ms": 9.220000000000027
+  },
+  {
+   "n": 50000,
+   "build_ms": 305.70000000000005,
+   "search_median_ms": 53.59999999999991
+  }
+ ]
+}

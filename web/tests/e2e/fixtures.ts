@@ -27,7 +27,27 @@ export function notePaths(): string[] {
     });
 }
 
+const EVAL = resolve(import.meta.dirname, "../../../eval/technical-notes.json");
+
+/** The 24 synthetic technical notes from eval/, written out as text files. */
+export function technicalNotePaths(): string[] {
+    const corpus: { documents: { id: string; text: string }[] } = JSON.parse(
+        readFileSync(EVAL, "utf8"),
+    );
+    const dir = join(tmpdir(), "metabare-e2e-technical");
+    mkdirSync(dir, { recursive: true });
+    return corpus.documents.map((d) => {
+        const path = join(dir, `${d.id}.txt`);
+        writeFileSync(path, `${d.text}\n`);
+        return path;
+    });
+}
+
 export async function ready(page: Page, query = "") {
+    page.on("console", (m) => {
+        if (m.type() === "error") console.log(`console error: ${m.text()}`);
+    });
+    page.on("pageerror", (e) => console.log(`page error: ${e.message}`));
     await page.goto(`/${query}`);
     await expect(page.locator("body[data-ready='1']")).toBeAttached({ timeout: 60_000 });
 }

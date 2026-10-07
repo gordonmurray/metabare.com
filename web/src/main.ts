@@ -1,7 +1,9 @@
-import { Library, QuotaError } from "./db";
+import { MODELS } from "./config";
+import { Library, QuotaError, type Item } from "./db";
 import { Embedder, type LoadEvent } from "./embedder";
 import { ingest, type Summary } from "./ingest";
 import type { Device } from "./protocol";
+import { Index, type Hit, type Stage } from "./search";
 import { exportLibrary, IMPORT_LIMITS, importLibrary } from "./transfer";
 
 const $ = <T extends HTMLElement>(id: string) => document.getElementById(id) as T;
@@ -95,14 +97,67 @@ async function main() {
         }
     });
 
-    // Library view.
+    // Cards, for the library and for search results.
+    const STAGE_LABEL: Record<Stage, [string, string]> = {
+        image: ["picture", "what the image shows"],
+        text: ["meaning", "what the note means"],
+        words: ["words", "words in the note or file name"],
+    };
+    async function card(item: Item, urls: string[], hit?: Hit): Promise<HTMLLIElement> {
+        const li = document.createElement("li");
+        li.className = "card";
+        li.dataset.id = item.id;
+        li.title = item.path;
+        if (item.kind === "image") {
+            const img = document.createElement("img");
+            const thumb = await library.thumb(item.id);
+            if (thumb) {
+                const url = URL.createObjectURL(thumb);
+                urls.push(url);
+                img.src = url;
+            }
+            img.alt = item.name;
+            img.loading = "lazy";
+            li.append(img);
+        } else {
+            const note = document.createElement("div");
+            note.className = "note";
+            note.textContent = item.excerpt;
+            li.append(note);
+        }
+        const meta = document.createElement("div");
+        meta.className = "meta";
+        meta.textContent = item.name;
+        li.append(meta);
+        if (hit) {
+            const chips = document.createElement("div");
+            chips.className = "chips";
+            for (const [stage, rank] of Object.entries(hit.ranks) as [Stage, number][]) {
+                const chip = document.createElement("span");
+                chip.className = "chip";
+                chip.dataset.stage = stage;
+                const [label, means] = STAGE_LABEL[stage];
+                chip.textContent = label;
+                chip.title = `Ranked ${rank} by ${means}`;
+                chips.append(chip);
+            }
+            li.append(chips);
+        }
+        return li;
+    }
+
+    // Library view. Any change to the library also drops the search index,
+    // which is rebuilt on the next search.
+    let index: Index | null = null;
     const grid = $<HTMLUListElement>("grid");
     let urls: string[] = [];
     async function render() {
+        index = null;
         for (const u of urls) URL.revokeObjectURL(u);
         urls = [];
         const items = (await library.items()).sort((a, b) => b.added - a.added);
         $("empty").hidden = items.length > 0;
+        $("demo").hidden = items.length > 0;
         const images = items.filter((i) => i.kind === "image").length;
         let stats = `${items.length} items: ${images} images, ${items.length - images} notes.`;
         if (navigator.storage?.estimate) {
@@ -111,37 +166,7 @@ async function main() {
         }
         $("library-stats").textContent = stats;
         const shown = items.slice(0, GRID_LIMIT);
-        const cards = await Promise.all(
-            shown.map(async (item) => {
-                const li = document.createElement("li");
-                li.className = "card";
-                li.dataset.id = item.id;
-                li.title = item.path;
-                if (item.kind === "image") {
-                    const img = document.createElement("img");
-                    const thumb = await library.thumb(item.id);
-                    if (thumb) {
-                        const url = URL.createObjectURL(thumb);
-                        urls.push(url);
-                        img.src = url;
-                    }
-                    img.alt = item.name;
-                    img.loading = "lazy";
-                    li.append(img);
-                } else {
-                    const note = document.createElement("div");
-                    note.className = "note";
-                    note.textContent = item.excerpt;
-                    li.append(note);
-                }
-                const meta = document.createElement("div");
-                meta.className = "meta";
-                meta.textContent = item.name;
-                li.append(meta);
-                return li;
-            }),
-        );
-        grid.replaceChildren(...cards);
+        grid.replaceChildren(...(await Promise.all(shown.map((item) => card(item, urls)))));
         const more = $("more");
         more.hidden = items.length <= GRID_LIMIT;
         more.textContent = `Showing the ${GRID_LIMIT} most recently added of ${items.length}.`;
@@ -151,7 +176,7 @@ async function main() {
     // library, so only one runs at a time and the controls for the others are
     // disabled meanwhile.
     let busy = false;
-    const busyControls = ["files", "folder", "import", "export", "clear"].map((id) =>
+    const busyControls = ["files", "folder", "import", "export", "clear", "load-demo"].map((id) =>
         $<HTMLInputElement | HTMLButtonElement>(id),
     );
     async function exclusive(work: () => Promise<void>): Promise<void> {
@@ -292,6 +317,117 @@ async function main() {
             await render();
         }),
     );
+
+    // Search.
+    const results = $<HTMLUListElement>("results");
+    const searchStatus = $("search-status");
+    let resultUrls: string[] = [];
+    let searching = 0;
+    async function search(query: string) {
+        query = query.trim();
+        if (!query) return;
+        const run = ++searching;
+        searchStatus.textContent = "Searching…";
+        if (!index) {
+            const snap = await library.snapshot();
+            index = new Index(snap.items, snap.vectors);
+        }
+        if (index.size === 0) {
+            searchStatus.textContent = "The library is empty. Add some images or notes first.";
+            return;
+        }
+        const t0 = performance.now();
+        const vectors = await embedder.query(query);
+        const t1 = performance.now();
+        // ?floors=none turns off the similarity floors, to measure what they do.
+        const hits =
+            params.get("floors") === "none"
+                ? index.search(query, vectors, 24, { image: -1, text: -1 })
+                : index.search(query, vectors);
+        const t2 = performance.now();
+        if (run !== searching) return;
+        for (const u of resultUrls) URL.revokeObjectURL(u);
+        resultUrls = [];
+        results.replaceChildren(
+            ...(await Promise.all(hits.map((h) => card(h.item, resultUrls, h)))),
+        );
+        searchStatus.textContent = hits.length
+            ? `${hits.length} results. Reading the query took ${Math.round(t1 - t0)} ms, ` +
+              `searching ${index.size} items ${Math.round(t2 - t1)} ms.`
+            : "Nothing matched closely enough.";
+        searchStatus.dataset.results = String(hits.length);
+    }
+    $<HTMLFormElement>("search-form").addEventListener("submit", (e) => {
+        e.preventDefault();
+        void search($<HTMLInputElement>("query").value).catch((err) => {
+            searchStatus.textContent = `Search failed: ${err instanceof Error ? err.message : err}`;
+        });
+    });
+
+    // The demo library: synthetic images and notes, built by
+    // tests/e2e/demo.build.spec.ts with the same models.
+    $("load-demo").addEventListener("click", () =>
+        exclusive(async () => {
+            searchStatus.textContent = "Loading the demo library…";
+            try {
+                const res = await fetch(`${import.meta.env.BASE_URL}demo/library.json`);
+                if (!res.ok) throw new Error(`HTTP ${res.status}`);
+                const added = await importLibrary(library, await res.json());
+                searchStatus.textContent = `Added ${added} demo items. Try a search such as "a bar chart" or "terraform destroy failed".`;
+            } catch (err) {
+                searchStatus.textContent = `Could not load the demo: ${err instanceof Error ? err.message : err}`;
+            }
+            await render();
+        }),
+    );
+
+    // Benchmark hook: ?bench exposes brute-force search timing over random
+    // vectors, for measuring how search scales with library size.
+    if (params.has("bench")) {
+        (window as unknown as Record<string, unknown>).metabareBench = (n: number) => {
+            const random = (dims: number) => {
+                const v = new Float32Array(dims).map(() => Math.random() - 0.5);
+                const norm = Math.hypot(...v);
+                return v.map((x) => x / norm);
+            };
+            const items: Item[] = [];
+            const vectors = [];
+            for (let i = 0; i < n; i++) {
+                const id = i.toString(16).padStart(64, "0");
+                const kind = i % 2 ? "image" : "note";
+                items.push({
+                    id,
+                    kind,
+                    name: `item-${i}`,
+                    path: `item-${i}`,
+                    type: "",
+                    size: 0,
+                    modified: 0,
+                    added: 0,
+                    text: kind === "note" ? `note number ${i} about topic ${i % 97}` : "",
+                    excerpt: "",
+                    space: "",
+                });
+                vectors.push(
+                    kind === "image"
+                        ? { id, image: random(MODELS.clip.dims) }
+                        : { id, text: random(MODELS.text.dims) },
+                );
+            }
+            const t0 = performance.now();
+            const ix = new Index(items, vectors);
+            const t1 = performance.now();
+            const q = { clip: random(MODELS.clip.dims), text: random(MODELS.text.dims) };
+            const times = [];
+            for (let r = 0; r < 7; r++) {
+                const s = performance.now();
+                ix.search("topic 42", q);
+                times.push(performance.now() - s);
+            }
+            times.sort((a, b) => a - b);
+            return { n, build_ms: t1 - t0, search_median_ms: times[3] };
+        };
+    }
 
     await render();
     document.body.dataset.ready = "1";

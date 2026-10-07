@@ -23,6 +23,30 @@
     <main>
       <p id="warning" class="warning" hidden></p>
 
+      <section id="search" class="panel" aria-labelledby="search-title">
+        <h2 id="search-title">Search</h2>
+        <form id="search-form" class="search" role="search">
+          <input
+            id="query"
+            type="search"
+            name="q"
+            autocomplete="off"
+            placeholder="Describe what you are looking for, e.g. a bar chart"
+            aria-label="Search your library"
+          />
+          <button id="search-button" type="submit">Search</button>
+        </form>
+        <p id="search-status" class="muted small" aria-live="polite"></p>
+        <div id="demo" class="demo" hidden>
+          <p>
+            Your library is empty. Add your own images and notes below, or try a demo library of 50
+            synthetic images and 54 notes.
+          </p>
+          <button id="load-demo" type="button">Try the demo library</button>
+        </div>
+        <ul id="results" class="grid results"></ul>
+      </section>
+
       <section id="add" class="panel" aria-labelledby="add-title">
         <h2 id="add-title">Add images and notes</h2>
         <div id="drop" class="drop" tabindex="0">
