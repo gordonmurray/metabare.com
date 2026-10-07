@@ -1,81 +1,88 @@
 # MetaBare
 
-Semantic search over your own images and notes, with the machine learning
-running in your browser.
+Search your own images and notes by what is in them, with the machine learning
+running in your browser. Nothing you add leaves your device.
 
-> **Status: early.** [metabare.com](https://metabare.com) works in Chrome,
-> Edge, Firefox and WebKit, the engine behind Safari (tested with Playwright's
-> WebKit build, not yet in Safari on a Mac or iPhone): add images and notes, or
-> load the demo library, and search them. Everything stays in your browser.
+[metabare.com](https://metabare.com)
 
-## The idea
+## What it does
 
-Searching images by what is in them needs an embedding model: something that
-turns a picture, or a phrase like "a terminal showing an error", into a vector
-that can be compared with others. Usually that model runs on a server, often
-on a GPU, and someone pays for it whether or not anyone is searching.
+Drop in a folder of images (PNG, JPEG, WebP) and notes (`.txt`, `.md`), then
+search them in plain words: "a bar chart", "a terminal showing an error",
+"terraform destroy failed". Each result shows why it matched: what the picture
+shows, what the note means, or the words it contains.
 
-MetaBare will run the models in the browser instead, on the device's GPU
-through WebGPU, or on its CPU through WebAssembly where WebGPU is not
-available. The server's job shrinks to storing files and vectors.
+A demo library of 50 synthetic images and 54 synthetic notes loads with one
+click.
 
-The plan:
+## How it works
 
-1. **Local-only search.** Drop a folder of images or notes into the page; they
-   are embedded and searched on your device, and nothing is uploaded.
-2. **A saved library.** Optionally store originals in Amazon S3 and vectors in
-   [Firn](https://github.com/gordonmurray/firnflow), an S3-backed search engine,
-   so a library survives a cleared browser and is reachable from another
-   device.
+Two embedding models run in the browser, in a Web Worker, through
+[Transformers.js](https://huggingface.co/docs/transformers.js) and ONNX
+Runtime Web:
 
-Every claim about speed, size or cost will link to the raw measurements behind
-it, scoped to the device, browser and date it was measured on.
+| Model | Used for | Precision |
+| --- | --- | --- |
+| CLIP ViT-B/32 | Images, and the words of a search, in one shared space | q4f16 |
+| all-MiniLM-L6-v2 | Notes, and the words of a search | q8 |
 
-## In this repository
+A search runs three rankings and fuses them with Reciprocal Rank Fusion:
 
-| Path | What |
+1. images by CLIP similarity to the query;
+2. notes by MiniLM similarity to the query;
+3. every item by BM25 over note text and file names.
+
+Each model loads the first time it is needed and is then cached by the
+browser. The library (records, vectors and thumbnails) is stored in the
+browser's IndexedDB and can be exported to a single file and imported into
+another browser. Originals are not copied: the library keeps a thumbnail,
+the file name and path, and for notes the text.
+
+The models run on WebAssembly by default. WebGPU is a setting, used when the
+browser offers it.
+
+## Performance
+
+Measured on a laptop with Intel Iris Xe graphics, Linux, Chrome 154 and
+Firefox 155, on 2026-10-07. Raw results are in `web/results/` and
+`spike/results/`.
+
+| Measure | Result |
 | --- | --- |
-| [`spike/`](spike/README.md) | A feasibility test: embeds images and text in the browser on WebGPU and WebAssembly and measures speed, download size, memory and whether results agree across backends |
-| `web/` | The app: add images and notes, embedded, stored and searched in the browser |
-| `models/` | `models.lock.json` pins every model file by revision and SHA-256; `fetch.sh` downloads and verifies them |
-| `infra/` | Terraform for the hosting: S3 and CloudFront for metabare.com |
-| `scripts/deploy.sh` | Builds and uploads the site |
-| `eval/technical-notes.json` | 24 synthetic technical notes and 12 queries with relevance labels, for evaluating text search |
+| Embedding an image, WebAssembly | 125 ms |
+| Embedding an image, WebGPU | 232 ms |
+| Embedding a search query, both models | 27 ms |
+| Searching 1,000 / 10,000 / 50,000 items | 1 / 10 / 46 ms in Chrome, 1 / 9 / 54 ms in Firefox |
+| Peak memory, first visit adding 50 images and 30 notes | 0.69 to 0.84 GB in Chrome, 1.36 to 1.44 GB in Firefox |
+| Download, every model and the runtime, compressed | 139.5 MB, once |
 
-## Run it locally
+On the demo library, image queries find 68% of the relevant images within as
+many results as there are relevant images (recall@R 0.68), and note queries
+62%. The scores are identical in Chrome, Firefox and WebKit.
 
-Needs Node.js 24.
+## Browsers
 
-```bash
-models/fetch.sh '_model_q4f16|^onnx/model_quantized|json$'   # about 150 MB, the app's models
-cd web
-npm ci
-npm run dev                  # http://localhost:5173
-npm test                     # unit tests
-npx playwright test          # browser tests, Chromium by default
-```
+| Browser | Works | Tested |
+| --- | --- | --- |
+| Chrome, Edge | Yes | Chrome 154 |
+| Firefox | Yes | Firefox 155 |
+| Safari | Yes, through WebKit | Playwright's WebKit build |
 
-Set `ONNXRUNTIME_NODE_INSTALL=skip` before `npm ci` to stop a Node-only
-dependency of Transformers.js downloading CUDA libraries the browser never
-uses.
+Any current browser with WebAssembly, IndexedDB and Web Workers runs the app.
+Whether WebGPU is offered depends on the browser and platform; see the
+[WebGPU implementation status](https://github.com/gpuweb/gpuweb/wiki/Implementation-Status).
 
 ## Hosting
 
-The site is static: a private S3 bucket behind CloudFront, with no server. The
-browser downloads the page, the models and the ONNX Runtime files, then does
-all the work itself.
+The site is static: a private S3 bucket behind CloudFront, with no server.
 
 CloudFront adds `Cross-Origin-Opener-Policy` and `Cross-Origin-Embedder-Policy`
-headers, which let WebAssembly use more than one thread. On the laptop the
-test page has been measured on, one thread was 3.4 times slower than four
-(417 ms against 124 ms per image, `spike/results/deployed-laptop-iris-xe*`).
+headers, which let WebAssembly use more than one thread. One thread is 3.4
+times slower than four (417 ms against 124 ms per image).
 
 Model files are stored gzip-compressed, because CloudFront does not compress
-files over 10 MB. The test page loads all three models on a first visit, which
-transferred 139.5 MB of models and runtime; the app fetches each model the
-first time it needs one. Later visits load them from the browser's cache. All four precisions the test page
-offers are deployed, about 1.1 GB compressed; a browser only downloads the
-ones it uses.
+files over 10 MB, under paths named for their content, so they are cached
+forever.
 
 ### What it costs
 
@@ -91,14 +98,30 @@ Prices for `eu-west-1` and CloudFront Europe, from the AWS Price List API on
 | CloudFront Function, one per page request | $0.10 per million | negligible |
 | Certificate, budget | no charge | $0.00 |
 
-So the fixed cost is about $0.52 a month, and the variable cost is mostly model
+The fixed cost is about $0.52 a month; the variable cost is mostly model
 downloads by new visitors. CloudFront's free tier covers the first 1 TB of
 transfer a month, about 7,000 first visits that load every model. An AWS
-Budget emails the owner at 80% of $10 actual or 100% forecast. It filters on the `Project` cost allocation
-tag, which has to be activated once in the Billing console, or with
-`aws ce update-cost-allocation-tags-status`, before tagged spending shows up.
+Budget emails the owner at 80% of $10 actual or 100% forecast. It filters on
+the `Project` cost allocation tag, which has to be activated once in the
+Billing console, or with `aws ce update-cost-allocation-tags-status`.
 
-### Deploy
+## Run it locally
+
+Needs Node.js 24.
+
+```bash
+models/fetch.sh '_model_q4f16|^onnx/model_quantized|json$'   # about 150 MB
+cd web
+ONNXRUNTIME_NODE_INSTALL=skip npm ci
+npm run dev                  # http://localhost:5173
+npm test                     # unit tests
+npx playwright test          # browser tests, Chromium by default
+```
+
+`ONNXRUNTIME_NODE_INSTALL=skip` stops a Node-only dependency of
+Transformers.js downloading CUDA libraries the browser never uses.
+
+## Deploy
 
 Needs Terraform 1.16, the AWS CLI, Node.js 24 and a Route 53 hosted zone for
 the domain.
@@ -117,10 +140,5 @@ terraform -chdir=infra/site apply
 ./scripts/deploy.sh
 ```
 
-To take the site down, `terraform -chdir=infra/site destroy` removes the
-bucket, distribution, certificate, DNS records and budget. The state bucket is
-left in place.
-
-## Licence
-
-[Apache 2.0](LICENSE).
+`terraform -chdir=infra/site destroy` removes the bucket, distribution,
+certificate, DNS records and budget. The state bucket stays.
