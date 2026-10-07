@@ -36,3 +36,66 @@ jobs:
       - uses: DavidAnson/markdownlint-cli2-action@v24
         with:
           globs: '**/*.md'
+
+  spike-python:
+    name: Spike scripts (Ruff)
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v7
+      - uses: astral-sh/setup-uv@v10
+      - name: Ruff
+        working-directory: spike
+        run: |
+          uvx ruff@0.16.10 check scripts
+          uvx ruff@0.16.10 format --check scripts
+
+  spike:
+    name: Browser inference spike (${{ matrix.browser }}, WASM)
+    runs-on: ubuntu-24.04
+    strategy:
+      fail-fast: false
+      matrix:
+        browser: [chromium, firefox, webkit]
+    defaults:
+      run:
+        working-directory: spike
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: spike/package-lock.json
+
+      - run: npm ci
+
+      - name: Type check
+        run: npx tsc --noEmit
+
+      # Only the precisions this job runs: CLIP at q4f16, MiniLM at q8.
+      - uses: actions/cache@v6
+        with:
+          path: spike/public/models
+          key: spike-models-${{ hashFiles('spike/models.lock.json') }}-q4f16-q8
+
+      - name: Fetch and verify models
+        run: ./scripts/fetch-models.sh '_model_q4f16|^onnx/model_quantized|json$'
+
+      - name: Install ${{ matrix.browser }}
+        run: npx playwright install --with-deps ${{ matrix.browser }}
+
+      # A CI runner has no GPU, so this covers the WASM path in each engine.
+      # WebGPU results come from real devices.
+      - name: Run the spike page
+        env:
+          SPIKE_LABEL: ci
+          SPIKE_BROWSER: ${{ matrix.browser }}
+          SPIKE_RUNS: wasm:q4f16:q8
+        run: npx playwright test
+
+      - uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: spike-ci-${{ matrix.browser }}
+          path: spike/results/ci/

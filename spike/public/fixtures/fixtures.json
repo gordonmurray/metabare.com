@@ -1,0 +1,521 @@
+{
+  "seed": 20261007,
+  "images": [
+    {
+      "file": "images/terminal-error-0.png",
+      "category": "terminal-error"
+    },
+    {
+      "file": "images/terminal-error-1.png",
+      "category": "terminal-error"
+    },
+    {
+      "file": "images/terminal-error-2.png",
+      "category": "terminal-error"
+    },
+    {
+      "file": "images/terminal-error-3.png",
+      "category": "terminal-error"
+    },
+    {
+      "file": "images/terminal-error-4.png",
+      "category": "terminal-error"
+    },
+    {
+      "file": "images/terminal-ok-0.png",
+      "category": "terminal-ok"
+    },
+    {
+      "file": "images/terminal-ok-1.png",
+      "category": "terminal-ok"
+    },
+    {
+      "file": "images/terminal-ok-2.png",
+      "category": "terminal-ok"
+    },
+    {
+      "file": "images/terminal-ok-3.png",
+      "category": "terminal-ok"
+    },
+    {
+      "file": "images/terminal-ok-4.png",
+      "category": "terminal-ok"
+    },
+    {
+      "file": "images/bar-chart-0.png",
+      "category": "bar-chart"
+    },
+    {
+      "file": "images/bar-chart-1.png",
+      "category": "bar-chart"
+    },
+    {
+      "file": "images/bar-chart-2.png",
+      "category": "bar-chart"
+    },
+    {
+      "file": "images/bar-chart-3.png",
+      "category": "bar-chart"
+    },
+    {
+      "file": "images/bar-chart-4.png",
+      "category": "bar-chart"
+    },
+    {
+      "file": "images/line-chart-0.png",
+      "category": "line-chart"
+    },
+    {
+      "file": "images/line-chart-1.png",
+      "category": "line-chart"
+    },
+    {
+      "file": "images/line-chart-2.png",
+      "category": "line-chart"
+    },
+    {
+      "file": "images/line-chart-3.png",
+      "category": "line-chart"
+    },
+    {
+      "file": "images/line-chart-4.png",
+      "category": "line-chart"
+    },
+    {
+      "file": "images/red-circles-0.png",
+      "category": "red-circles"
+    },
+    {
+      "file": "images/red-circles-1.png",
+      "category": "red-circles"
+    },
+    {
+      "file": "images/red-circles-2.png",
+      "category": "red-circles"
+    },
+    {
+      "file": "images/red-circles-3.png",
+      "category": "red-circles"
+    },
+    {
+      "file": "images/red-circles-4.png",
+      "category": "red-circles"
+    },
+    {
+      "file": "images/blue-squares-0.png",
+      "category": "blue-squares"
+    },
+    {
+      "file": "images/blue-squares-1.png",
+      "category": "blue-squares"
+    },
+    {
+      "file": "images/blue-squares-2.png",
+      "category": "blue-squares"
+    },
+    {
+      "file": "images/blue-squares-3.png",
+      "category": "blue-squares"
+    },
+    {
+      "file": "images/blue-squares-4.png",
+      "category": "blue-squares"
+    },
+    {
+      "file": "images/diagram-0.png",
+      "category": "diagram"
+    },
+    {
+      "file": "images/diagram-1.png",
+      "category": "diagram"
+    },
+    {
+      "file": "images/diagram-2.png",
+      "category": "diagram"
+    },
+    {
+      "file": "images/diagram-3.png",
+      "category": "diagram"
+    },
+    {
+      "file": "images/diagram-4.png",
+      "category": "diagram"
+    },
+    {
+      "file": "images/table-0.png",
+      "category": "table"
+    },
+    {
+      "file": "images/table-1.png",
+      "category": "table"
+    },
+    {
+      "file": "images/table-2.png",
+      "category": "table"
+    },
+    {
+      "file": "images/table-3.png",
+      "category": "table"
+    },
+    {
+      "file": "images/table-4.png",
+      "category": "table"
+    },
+    {
+      "file": "images/sunset-0.png",
+      "category": "sunset"
+    },
+    {
+      "file": "images/sunset-1.png",
+      "category": "sunset"
+    },
+    {
+      "file": "images/sunset-2.png",
+      "category": "sunset"
+    },
+    {
+      "file": "images/sunset-3.png",
+      "category": "sunset"
+    },
+    {
+      "file": "images/sunset-4.png",
+      "category": "sunset"
+    },
+    {
+      "file": "images/document-0.png",
+      "category": "document"
+    },
+    {
+      "file": "images/document-1.png",
+      "category": "document"
+    },
+    {
+      "file": "images/document-2.png",
+      "category": "document"
+    },
+    {
+      "file": "images/document-3.png",
+      "category": "document"
+    },
+    {
+      "file": "images/document-4.png",
+      "category": "document"
+    }
+  ],
+  "notes": [
+    {
+      "id": "spot-0",
+      "topic": "spot",
+      "text": "The spot node was reclaimed after a two minute interruption notice."
+    },
+    {
+      "id": "spot-1",
+      "topic": "spot",
+      "text": "Karpenter replaced the interrupted spot instance within ninety seconds."
+    },
+    {
+      "id": "spot-2",
+      "topic": "spot",
+      "text": "Drain pods before a spot interruption to avoid losing work."
+    },
+    {
+      "id": "terraform-0",
+      "topic": "terraform",
+      "text": "Terraform failed to delete the security group because an ENI still used it."
+    },
+    {
+      "id": "terraform-1",
+      "topic": "terraform",
+      "text": "terraform destroy hung on the VPC until the load balancer was removed."
+    },
+    {
+      "id": "terraform-2",
+      "topic": "terraform",
+      "text": "Import the bucket into state before running terraform apply again."
+    },
+    {
+      "id": "lifecycle-0",
+      "topic": "lifecycle",
+      "text": "S3 lifecycle rules moved old objects to Glacier after ninety days."
+    },
+    {
+      "id": "lifecycle-1",
+      "topic": "lifecycle",
+      "text": "Small objects cost more to transition than they save in storage."
+    },
+    {
+      "id": "lifecycle-2",
+      "topic": "lifecycle",
+      "text": "Abort incomplete multipart uploads after seven days."
+    },
+    {
+      "id": "docker-0",
+      "topic": "docker",
+      "text": "The docker build cache was invalidated by copying the whole repository first."
+    },
+    {
+      "id": "docker-1",
+      "topic": "docker",
+      "text": "Use a multi-stage Dockerfile to keep the runtime image small."
+    },
+    {
+      "id": "docker-2",
+      "topic": "docker",
+      "text": "Pin the base image digest so rebuilds are reproducible."
+    },
+    {
+      "id": "postgres-0",
+      "topic": "postgres",
+      "text": "The query planner ignored the index until ANALYZE ran on the table."
+    },
+    {
+      "id": "postgres-1",
+      "topic": "postgres",
+      "text": "Add a partial index for rows where deleted_at is null."
+    },
+    {
+      "id": "postgres-2",
+      "topic": "postgres",
+      "text": "VACUUM reclaimed space after the bulk delete."
+    },
+    {
+      "id": "dns-0",
+      "topic": "dns",
+      "text": "The DNS change took an hour because the old TTL was 3600 seconds."
+    },
+    {
+      "id": "dns-1",
+      "topic": "dns",
+      "text": "Lower the record TTL a day before migrating the domain."
+    },
+    {
+      "id": "dns-2",
+      "topic": "dns",
+      "text": "The CNAME at the zone apex was rejected; use an alias record."
+    },
+    {
+      "id": "python-0",
+      "topic": "python",
+      "text": "uv lock resolved the dependency conflict between numpy and torch."
+    },
+    {
+      "id": "python-1",
+      "topic": "python",
+      "text": "The wheel failed to build without the system compiler installed."
+    },
+    {
+      "id": "python-2",
+      "topic": "python",
+      "text": "Use a virtual environment per project to avoid package clashes."
+    },
+    {
+      "id": "git-0",
+      "topic": "git",
+      "text": "An interactive rebase squashed the fixup commits before merge."
+    },
+    {
+      "id": "git-1",
+      "topic": "git",
+      "text": "git bisect found the commit that broke the build in six steps."
+    },
+    {
+      "id": "git-2",
+      "topic": "git",
+      "text": "Force push with lease so you do not overwrite a colleague's work."
+    },
+    {
+      "id": "tls-0",
+      "topic": "tls",
+      "text": "The certificate expired because the renewal cron job had stopped."
+    },
+    {
+      "id": "tls-1",
+      "topic": "tls",
+      "text": "Let's Encrypt rate limits blocked reissuing the wildcard certificate."
+    },
+    {
+      "id": "tls-2",
+      "topic": "tls",
+      "text": "The client rejected the chain because the intermediate was missing."
+    },
+    {
+      "id": "cooking-0",
+      "topic": "cooking",
+      "text": "Salt the pasta water generously before it boils."
+    },
+    {
+      "id": "cooking-1",
+      "topic": "cooking",
+      "text": "Rest the steak for five minutes after cooking."
+    },
+    {
+      "id": "cooking-2",
+      "topic": "cooking",
+      "text": "Toast the spices in a dry pan to bring out the flavour."
+    }
+  ],
+  "image_queries": [
+    {
+      "text": "a terminal showing an error message",
+      "relevant": "terminal-error"
+    },
+    {
+      "text": "command line output with a failure in red",
+      "relevant": "terminal-error"
+    },
+    {
+      "text": "terminal with successful command output",
+      "relevant": "terminal-ok"
+    },
+    {
+      "text": "green text in a dark console",
+      "relevant": "terminal-ok"
+    },
+    {
+      "text": "a bar chart",
+      "relevant": "bar-chart"
+    },
+    {
+      "text": "vertical bars on a graph",
+      "relevant": "bar-chart"
+    },
+    {
+      "text": "a line graph",
+      "relevant": "line-chart"
+    },
+    {
+      "text": "two lines plotted over time",
+      "relevant": "line-chart"
+    },
+    {
+      "text": "red circles on a white background",
+      "relevant": "red-circles"
+    },
+    {
+      "text": "red dots",
+      "relevant": "red-circles"
+    },
+    {
+      "text": "blue squares",
+      "relevant": "blue-squares"
+    },
+    {
+      "text": "dark blue rectangles",
+      "relevant": "blue-squares"
+    },
+    {
+      "text": "an architecture diagram with boxes and arrows",
+      "relevant": "diagram"
+    },
+    {
+      "text": "flowchart",
+      "relevant": "diagram"
+    },
+    {
+      "text": "a table listing cloud instances",
+      "relevant": "table"
+    },
+    {
+      "text": "a spreadsheet with rows of text",
+      "relevant": "table"
+    },
+    {
+      "text": "a sunset over the sea",
+      "relevant": "sunset"
+    },
+    {
+      "text": "orange evening sky",
+      "relevant": "sunset"
+    },
+    {
+      "text": "a page of text",
+      "relevant": "document"
+    },
+    {
+      "text": "a printed document",
+      "relevant": "document"
+    }
+  ],
+  "note_queries": [
+    {
+      "text": "spot instance interruption",
+      "relevant": "spot"
+    },
+    {
+      "text": "node reclaimed by AWS",
+      "relevant": "spot"
+    },
+    {
+      "text": "terraform destroy failed",
+      "relevant": "terraform"
+    },
+    {
+      "text": "infrastructure as code state problem",
+      "relevant": "terraform"
+    },
+    {
+      "text": "archive old objects to cheaper storage",
+      "relevant": "lifecycle"
+    },
+    {
+      "text": "multipart uploads cleanup",
+      "relevant": "lifecycle"
+    },
+    {
+      "text": "container image build is slow",
+      "relevant": "docker"
+    },
+    {
+      "text": "smaller container images",
+      "relevant": "docker"
+    },
+    {
+      "text": "database index not used",
+      "relevant": "postgres"
+    },
+    {
+      "text": "reclaim disk space in the database",
+      "relevant": "postgres"
+    },
+    {
+      "text": "domain name change slow to propagate",
+      "relevant": "dns"
+    },
+    {
+      "text": "apex record",
+      "relevant": "dns"
+    },
+    {
+      "text": "python dependency conflict",
+      "relevant": "python"
+    },
+    {
+      "text": "package installation failed",
+      "relevant": "python"
+    },
+    {
+      "text": "find the commit that broke things",
+      "relevant": "git"
+    },
+    {
+      "text": "clean up commit history",
+      "relevant": "git"
+    },
+    {
+      "text": "https certificate expired",
+      "relevant": "tls"
+    },
+    {
+      "text": "certificate chain error",
+      "relevant": "tls"
+    },
+    {
+      "text": "how to cook pasta",
+      "relevant": "cooking"
+    },
+    {
+      "text": "kitchen tips",
+      "relevant": "cooking"
+    }
+  ]
+}
