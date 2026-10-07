@@ -3,10 +3,11 @@
 Semantic search over your own images and notes, with the machine learning
 running in your browser.
 
-> **Status: early.** [metabare.com](https://metabare.com) serves a test page,
-> [metabare.com/spike/](https://metabare.com/spike/), that runs the models in
-> your browser and reports how they did. The search app itself is not built
-> yet. This README describes each part as it lands.
+> **Status: early.** [metabare.com](https://metabare.com) works in Chrome,
+> Edge and Firefox: add images and notes, or load the demo library, and search
+> them. Everything stays in your browser. **Safari and other WebKit browsers
+> do not work yet**: the image model downloads but never starts, which is
+> being investigated.
 
 ## The idea
 
@@ -36,7 +37,7 @@ it, scoped to the device, browser and date it was measured on.
 | Path | What |
 | --- | --- |
 | [`spike/`](spike/README.md) | A feasibility test: embeds images and text in the browser on WebGPU and WebAssembly and measures speed, download size, memory and whether results agree across backends |
-| `web/` | The app: add images and notes, embedded and stored in the browser. Search is not built yet |
+| `web/` | The app: add images and notes, embedded, stored and searched in the browser |
 | `models/` | `models.lock.json` pins every model file by revision and SHA-256; `fetch.sh` downloads and verifies them |
 | `infra/` | Terraform for the hosting: S3 and CloudFront for metabare.com |
 | `scripts/deploy.sh` | Builds and uploads the site |

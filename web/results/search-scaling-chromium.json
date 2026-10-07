@@ -1,0 +1,22 @@
+{
+ "browser": "chromium",
+ "user_agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/153.0.8010.12 Safari/537.36",
+ "note": "Half images (512-d), half notes (384-d), random unit vectors; median of 7 searches.",
+ "results": [
+  {
+   "n": 1000,
+   "build_ms": 5.314999999478459,
+   "search_median_ms": 1.0800000000745058
+  },
+  {
+   "n": 10000,
+   "build_ms": 36.294999999925494,
+   "search_median_ms": 10.089999999850988
+  },
+  {
+   "n": 50000,
+   "build_ms": 194.24500000104308,
+   "search_median_ms": 45.83999999985099
+  }
+ ]
+}
