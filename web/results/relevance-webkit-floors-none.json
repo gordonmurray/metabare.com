@@ -1,0 +1,1131 @@
+{
+ "browser": "webkit",
+ "floors": "none",
+ "summary": {
+  "images": {
+   "queries": 20,
+   "recall_at_r": 0.29,
+   "precision_at_10": 0.5599999999999999
+  },
+  "notes": {
+   "queries": 20,
+   "recall_at_r": 0.5833333333333333,
+   "precision_at_10": 0.7666666666666666
+  },
+  "technical-notes": {
+   "queries": 12,
+   "recall_at_r": 0.4166666666666667,
+   "precision_at_10": 1
+  }
+ },
+ "queries": [
+  {
+   "set": "images",
+   "text": "a terminal showing an error message",
+   "relevant": [
+    "terminal-error-0.png",
+    "terminal-error-1.png",
+    "terminal-error-2.png",
+    "terminal-error-3.png",
+    "terminal-error-4.png"
+   ],
+   "top10": [
+    "doc-21.txt",
+    "doc-01.txt",
+    "doc-12.txt",
+    "dns-2.md",
+    "doc-18.txt",
+    "doc-07.txt",
+    "terminal-error-3.png",
+    "terminal-error-0.png",
+    "doc-13.txt",
+    "terminal-error-2.png"
+   ]
+  },
+  {
+   "set": "images",
+   "text": "command line output with a failure in red",
+   "relevant": [
+    "terminal-error-0.png",
+    "terminal-error-1.png",
+    "terminal-error-2.png",
+    "terminal-error-3.png",
+    "terminal-error-4.png"
+   ],
+   "top10": [
+    "doc-21.txt",
+    "doc-20.txt",
+    "doc-03.txt",
+    "doc-16.txt",
+    "python-1.md",
+    "spot-0.md",
+    "doc-09.txt",
+    "doc-24.txt",
+    "doc-22.txt",
+    "spot-1.md"
+   ]
+  },
+  {
+   "set": "images",
+   "text": "terminal with successful command output",
+   "relevant": [
+    "terminal-ok-0.png",
+    "terminal-ok-1.png",
+    "terminal-ok-2.png",
+    "terminal-ok-3.png",
+    "terminal-ok-4.png"
+   ],
+   "top10": [
+    "doc-21.txt",
+    "git-2.md",
+    "python-1.md",
+    "terminal-ok-2.png",
+    "terminal-error-3.png",
+    "terminal-error-0.png",
+    "terminal-ok-3.png",
+    "terminal-ok-1.png",
+    "terminal-ok-4.png",
+    "terminal-error-1.png"
+   ]
+  },
+  {
+   "set": "images",
+   "text": "green text in a dark console",
+   "relevant": [
+    "terminal-ok-0.png",
+    "terminal-ok-1.png",
+    "terminal-ok-2.png",
+    "terminal-ok-3.png",
+    "terminal-ok-4.png"
+   ],
+   "top10": [
+    "doc-21.txt",
+    "doc-16.txt",
+    "doc-03.txt",
+    "doc-07.txt",
+    "doc-12.txt",
+    "doc-20.txt",
+    "doc-13.txt",
+    "spot-0.md",
+    "doc-18.txt",
+    "doc-02.txt"
+   ]
+  },
+  {
+   "set": "images",
+   "text": "a bar chart",
+   "relevant": [
+    "bar-chart-0.png",
+    "bar-chart-1.png",
+    "bar-chart-2.png",
+    "bar-chart-3.png",
+    "bar-chart-4.png"
+   ],
+   "top10": [
+    "bar-chart-1.png",
+    "bar-chart-0.png",
+    "doc-13.txt",
+    "bar-chart-4.png",
+    "bar-chart-2.png",
+    "bar-chart-3.png",
+    "doc-15.txt",
+    "doc-17.txt",
+    "doc-12.txt",
+    "doc-21.txt"
+   ]
+  },
+  {
+   "set": "images",
+   "text": "vertical bars on a graph",
+   "relevant": [
+    "bar-chart-0.png",
+    "bar-chart-1.png",
+    "bar-chart-2.png",
+    "bar-chart-3.png",
+    "bar-chart-4.png"
+   ],
+   "top10": [
+    "doc-13.txt",
+    "doc-21.txt",
+    "doc-15.txt",
+    "doc-23.txt",
+    "doc-12.txt",
+    "postgres-1.md",
+    "doc-02.txt",
+    "doc-20.txt",
+    "spot-2.md",
+    "doc-05.txt"
+   ]
+  },
+  {
+   "set": "images",
+   "text": "a line graph",
+   "relevant": [
+    "line-chart-0.png",
+    "line-chart-1.png",
+    "line-chart-2.png",
+    "line-chart-3.png",
+    "line-chart-4.png"
+   ],
+   "top10": [
+    "doc-05.txt",
+    "doc-13.txt",
+    "doc-15.txt",
+    "doc-21.txt",
+    "doc-12.txt",
+    "postgres-1.md",
+    "doc-03.txt",
+    "spot-2.md",
+    "spot-0.md",
+    "line-chart-4.png"
+   ]
+  },
+  {
+   "set": "images",
+   "text": "two lines plotted over time",
+   "relevant": [
+    "line-chart-0.png",
+    "line-chart-1.png",
+    "line-chart-2.png",
+    "line-chart-3.png",
+    "line-chart-4.png"
+   ],
+   "top10": [
+    "doc-11.txt",
+    "doc-03.txt",
+    "doc-13.txt",
+    "line-chart-4.png",
+    "line-chart-0.png",
+    "line-chart-3.png",
+    "line-chart-1.png",
+    "spot-0.md",
+    "line-chart-2.png",
+    "git-2.md"
+   ]
+  },
+  {
+   "set": "images",
+   "text": "red circles on a white background",
+   "relevant": [
+    "red-circles-0.png",
+    "red-circles-1.png",
+    "red-circles-2.png",
+    "red-circles-3.png",
+    "red-circles-4.png"
+   ],
+   "top10": [
+    "doc-21.txt",
+    "doc-13.txt",
+    "doc-15.txt",
+    "red-circles-3.png",
+    "red-circles-4.png",
+    "doc-17.txt",
+    "red-circles-2.png",
+    "red-circles-0.png",
+    "red-circles-1.png",
+    "doc-23.txt"
+   ]
+  },
+  {
+   "set": "images",
+   "text": "red dots",
+   "relevant": [
+    "red-circles-0.png",
+    "red-circles-1.png",
+    "red-circles-2.png",
+    "red-circles-3.png",
+    "red-circles-4.png"
+   ],
+   "top10": [
+    "red-circles-4.png",
+    "red-circles-3.png",
+    "red-circles-2.png",
+    "red-circles-0.png",
+    "red-circles-1.png",
+    "doc-17.txt",
+    "spot-0.md",
+    "spot-2.md",
+    "spot-1.md",
+    "doc-13.txt"
+   ]
+  },
+  {
+   "set": "images",
+   "text": "blue squares",
+   "relevant": [
+    "blue-squares-0.png",
+    "blue-squares-1.png",
+    "blue-squares-2.png",
+    "blue-squares-3.png",
+    "blue-squares-4.png"
+   ],
+   "top10": [
+    "blue-squares-1.png",
+    "blue-squares-4.png",
+    "blue-squares-3.png",
+    "blue-squares-2.png",
+    "blue-squares-0.png",
+    "spot-2.md",
+    "lifecycle-2.md",
+    "cooking-0.md",
+    "spot-0.md",
+    "doc-21.txt"
+   ]
+  },
+  {
+   "set": "images",
+   "text": "dark blue rectangles",
+   "relevant": [
+    "blue-squares-0.png",
+    "blue-squares-1.png",
+    "blue-squares-2.png",
+    "blue-squares-3.png",
+    "blue-squares-4.png"
+   ],
+   "top10": [
+    "blue-squares-1.png",
+    "blue-squares-4.png",
+    "blue-squares-3.png",
+    "blue-squares-0.png",
+    "blue-squares-2.png",
+    "spot-0.md",
+    "doc-21.txt",
+    "spot-2.md",
+    "lifecycle-1.md",
+    "doc-23.txt"
+   ]
+  },
+  {
+   "set": "images",
+   "text": "an architecture diagram with boxes and arrows",
+   "relevant": [
+    "diagram-0.png",
+    "diagram-1.png",
+    "diagram-2.png",
+    "diagram-3.png",
+    "diagram-4.png"
+   ],
+   "top10": [
+    "doc-15.txt",
+    "doc-19.txt",
+    "doc-13.txt",
+    "doc-21.txt",
+    "doc-08.txt",
+    "diagram-1.png",
+    "diagram-2.png",
+    "diagram-4.png",
+    "doc-17.txt",
+    "diagram-3.png"
+   ]
+  },
+  {
+   "set": "images",
+   "text": "flowchart",
+   "relevant": [
+    "diagram-0.png",
+    "diagram-1.png",
+    "diagram-2.png",
+    "diagram-3.png",
+    "diagram-4.png"
+   ],
+   "top10": [
+    "diagram-4.png",
+    "doc-13.txt",
+    "diagram-3.png",
+    "spot-0.md",
+    "diagram-0.png",
+    "doc-05.txt",
+    "diagram-2.png",
+    "spot-2.md",
+    "diagram-1.png",
+    "lifecycle-0.md"
+   ]
+  },
+  {
+   "set": "images",
+   "text": "a table listing cloud instances",
+   "relevant": [
+    "table-0.png",
+    "table-1.png",
+    "table-2.png",
+    "table-3.png",
+    "table-4.png"
+   ],
+   "top10": [
+    "doc-06.txt",
+    "doc-03.txt",
+    "doc-15.txt",
+    "doc-10.txt",
+    "doc-20.txt",
+    "doc-16.txt",
+    "doc-12.txt",
+    "table-4.png",
+    "doc-11.txt",
+    "terraform-2.md"
+   ]
+  },
+  {
+   "set": "images",
+   "text": "a spreadsheet with rows of text",
+   "relevant": [
+    "table-0.png",
+    "table-1.png",
+    "table-2.png",
+    "table-3.png",
+    "table-4.png"
+   ],
+   "top10": [
+    "postgres-1.md",
+    "doc-21.txt",
+    "doc-24.txt",
+    "doc-13.txt",
+    "doc-16.txt",
+    "doc-23.txt",
+    "doc-05.txt",
+    "spot-2.md",
+    "doc-11.txt",
+    "doc-19.txt"
+   ]
+  },
+  {
+   "set": "images",
+   "text": "a sunset over the sea",
+   "relevant": [
+    "sunset-0.png",
+    "sunset-1.png",
+    "sunset-2.png",
+    "sunset-3.png",
+    "sunset-4.png"
+   ],
+   "top10": [
+    "doc-16.txt",
+    "doc-03.txt",
+    "doc-21.txt",
+    "doc-12.txt",
+    "spot-0.md",
+    "dns-2.md",
+    "doc-17.txt",
+    "doc-15.txt",
+    "cooking-2.md",
+    "docker-1.md"
+   ]
+  },
+  {
+   "set": "images",
+   "text": "orange evening sky",
+   "relevant": [
+    "sunset-0.png",
+    "sunset-1.png",
+    "sunset-2.png",
+    "sunset-3.png",
+    "sunset-4.png"
+   ],
+   "top10": [
+    "doc-06.txt",
+    "sunset-2.png",
+    "doc-21.txt",
+    "sunset-1.png",
+    "doc-03.txt",
+    "sunset-4.png",
+    "cooking-2.md",
+    "sunset-0.png",
+    "doc-20.txt",
+    "sunset-3.png"
+   ]
+  },
+  {
+   "set": "images",
+   "text": "a page of text",
+   "relevant": [
+    "document-0.png",
+    "document-1.png",
+    "document-2.png",
+    "document-3.png",
+    "document-4.png"
+   ],
+   "top10": [
+    "doc-21.txt",
+    "doc-15.txt",
+    "doc-13.txt",
+    "doc-11.txt",
+    "doc-05.txt",
+    "doc-08.txt",
+    "spot-2.md",
+    "doc-24.txt",
+    "doc-16.txt",
+    "doc-04.txt"
+   ]
+  },
+  {
+   "set": "images",
+   "text": "a printed document",
+   "relevant": [
+    "document-0.png",
+    "document-1.png",
+    "document-2.png",
+    "document-3.png",
+    "document-4.png"
+   ],
+   "top10": [
+    "doc-21.txt",
+    "doc-04.txt",
+    "doc-15.txt",
+    "doc-13.txt",
+    "doc-06.txt",
+    "document-2.png",
+    "document-0.png",
+    "spot-2.md",
+    "document-3.png",
+    "lifecycle-2.md"
+   ]
+  },
+  {
+   "set": "notes",
+   "text": "spot instance interruption",
+   "relevant": [
+    "spot-0.md",
+    "spot-1.md",
+    "spot-2.md"
+   ],
+   "top10": [
+    "doc-03.txt",
+    "spot-1.md",
+    "spot-2.md",
+    "spot-0.md",
+    "doc-06.txt",
+    "doc-20.txt",
+    "doc-23.txt",
+    "doc-07.txt",
+    "terminal-ok-3.png",
+    "terminal-error-4.png"
+   ]
+  },
+  {
+   "set": "notes",
+   "text": "node reclaimed by AWS",
+   "relevant": [
+    "spot-0.md",
+    "spot-1.md",
+    "spot-2.md"
+   ],
+   "top10": [
+    "spot-0.md",
+    "doc-12.txt",
+    "postgres-2.md",
+    "doc-02.txt",
+    "doc-03.txt",
+    "doc-01.txt",
+    "doc-07.txt",
+    "doc-18.txt",
+    "doc-13.txt",
+    "docker-0.md"
+   ]
+  },
+  {
+   "set": "notes",
+   "text": "terraform destroy failed",
+   "relevant": [
+    "terraform-0.md",
+    "terraform-1.md",
+    "terraform-2.md"
+   ],
+   "top10": [
+    "terraform-1.md",
+    "doc-01.txt",
+    "terraform-0.md",
+    "terraform-2.md",
+    "doc-18.txt",
+    "doc-22.txt",
+    "python-1.md",
+    "doc-09.txt",
+    "doc-07.txt",
+    "doc-17.txt"
+   ]
+  },
+  {
+   "set": "notes",
+   "text": "infrastructure as code state problem",
+   "relevant": [
+    "terraform-0.md",
+    "terraform-1.md",
+    "terraform-2.md"
+   ],
+   "top10": [
+    "doc-18.txt",
+    "terraform-2.md",
+    "doc-09.txt",
+    "doc-01.txt",
+    "doc-10.txt",
+    "doc-19.txt",
+    "doc-13.txt",
+    "doc-22.txt",
+    "doc-07.txt",
+    "spot-0.md"
+   ]
+  },
+  {
+   "set": "notes",
+   "text": "archive old objects to cheaper storage",
+   "relevant": [
+    "lifecycle-0.md",
+    "lifecycle-1.md",
+    "lifecycle-2.md"
+   ],
+   "top10": [
+    "lifecycle-1.md",
+    "doc-10.txt",
+    "lifecycle-0.md",
+    "doc-15.txt",
+    "doc-16.txt",
+    "doc-11.txt",
+    "doc-08.txt",
+    "doc-04.txt",
+    "doc-17.txt",
+    "docker-1.md"
+   ]
+  },
+  {
+   "set": "notes",
+   "text": "multipart uploads cleanup",
+   "relevant": [
+    "lifecycle-0.md",
+    "lifecycle-1.md",
+    "lifecycle-2.md"
+   ],
+   "top10": [
+    "lifecycle-2.md",
+    "doc-15.txt",
+    "doc-13.txt",
+    "blue-squares-1.png",
+    "blue-squares-4.png",
+    "blue-squares-3.png",
+    "postgres-2.md",
+    "blue-squares-0.png",
+    "docker-1.md",
+    "blue-squares-2.png"
+   ]
+  },
+  {
+   "set": "notes",
+   "text": "container image build is slow",
+   "relevant": [
+    "docker-0.md",
+    "docker-1.md",
+    "docker-2.md"
+   ],
+   "top10": [
+    "doc-08.txt",
+    "doc-22.txt",
+    "doc-07.txt",
+    "docker-1.md",
+    "docker-2.md",
+    "docker-0.md",
+    "doc-04.txt",
+    "git-1.md",
+    "doc-10.txt",
+    "doc-23.txt"
+   ]
+  },
+  {
+   "set": "notes",
+   "text": "smaller container images",
+   "relevant": [
+    "docker-0.md",
+    "docker-1.md",
+    "docker-2.md"
+   ],
+   "top10": [
+    "doc-08.txt",
+    "docker-1.md",
+    "docker-2.md",
+    "doc-07.txt",
+    "doc-23.txt",
+    "doc-15.txt",
+    "doc-21.txt",
+    "terminal-error-1.png",
+    "terminal-error-0.png",
+    "terminal-error-3.png"
+   ]
+  },
+  {
+   "set": "notes",
+   "text": "database index not used",
+   "relevant": [
+    "postgres-0.md",
+    "postgres-1.md",
+    "postgres-2.md"
+   ],
+   "top10": [
+    "doc-04.txt",
+    "postgres-0.md",
+    "doc-24.txt",
+    "doc-19.txt",
+    "postgres-1.md",
+    "doc-12.txt",
+    "doc-11.txt",
+    "terraform-0.md",
+    "dns-2.md",
+    "doc-06.txt"
+   ]
+  },
+  {
+   "set": "notes",
+   "text": "reclaim disk space in the database",
+   "relevant": [
+    "postgres-0.md",
+    "postgres-1.md",
+    "postgres-2.md"
+   ],
+   "top10": [
+    "postgres-2.md",
+    "doc-11.txt",
+    "spot-0.md",
+    "lifecycle-1.md",
+    "doc-01.txt",
+    "doc-10.txt",
+    "doc-03.txt",
+    "doc-08.txt",
+    "postgres-1.md",
+    "doc-16.txt"
+   ]
+  },
+  {
+   "set": "notes",
+   "text": "domain name change slow to propagate",
+   "relevant": [
+    "dns-0.md",
+    "dns-1.md",
+    "dns-2.md"
+   ],
+   "top10": [
+    "dns-0.md",
+    "dns-1.md",
+    "doc-24.txt",
+    "dns-2.md",
+    "doc-02.txt",
+    "lifecycle-0.md",
+    "doc-08.txt",
+    "doc-21.txt",
+    "doc-19.txt",
+    "doc-12.txt"
+   ]
+  },
+  {
+   "set": "notes",
+   "text": "apex record",
+   "relevant": [
+    "dns-0.md",
+    "dns-1.md",
+    "dns-2.md"
+   ],
+   "top10": [
+    "dns-2.md",
+    "dns-1.md",
+    "sunset-0.png",
+    "sunset-3.png",
+    "line-chart-3.png",
+    "doc-15.txt",
+    "bar-chart-2.png",
+    "cooking-1.md",
+    "sunset-1.png",
+    "postgres-2.md"
+   ]
+  },
+  {
+   "set": "notes",
+   "text": "python dependency conflict",
+   "relevant": [
+    "python-0.md",
+    "python-1.md",
+    "python-2.md"
+   ],
+   "top10": [
+    "python-2.md",
+    "python-0.md",
+    "python-1.md",
+    "doc-01.txt",
+    "diagram-3.png",
+    "terminal-error-2.png",
+    "diagram-0.png",
+    "diagram-2.png",
+    "diagram-1.png",
+    "docker-0.md"
+   ]
+  },
+  {
+   "set": "notes",
+   "text": "package installation failed",
+   "relevant": [
+    "python-0.md",
+    "python-1.md",
+    "python-2.md"
+   ],
+   "top10": [
+    "python-1.md",
+    "doc-22.txt",
+    "python-2.md",
+    "doc-07.txt",
+    "doc-17.txt",
+    "doc-09.txt",
+    "terraform-0.md",
+    "terminal-ok-4.png",
+    "terminal-ok-3.png",
+    "terminal-error-3.png"
+   ]
+  },
+  {
+   "set": "notes",
+   "text": "find the commit that broke things",
+   "relevant": [
+    "git-0.md",
+    "git-1.md",
+    "git-2.md"
+   ],
+   "top10": [
+    "git-1.md",
+    "git-0.md",
+    "doc-18.txt",
+    "doc-09.txt",
+    "doc-03.txt",
+    "doc-04.txt",
+    "docker-0.md",
+    "tls-2.md",
+    "doc-17.txt",
+    "doc-20.txt"
+   ]
+  },
+  {
+   "set": "notes",
+   "text": "clean up commit history",
+   "relevant": [
+    "git-0.md",
+    "git-1.md",
+    "git-2.md"
+   ],
+   "top10": [
+    "git-1.md",
+    "git-0.md",
+    "doc-11.txt",
+    "lifecycle-2.md",
+    "doc-13.txt",
+    "doc-21.txt",
+    "doc-23.txt",
+    "doc-15.txt",
+    "doc-12.txt",
+    "doc-17.txt"
+   ]
+  },
+  {
+   "set": "notes",
+   "text": "https certificate expired",
+   "relevant": [
+    "tls-0.md",
+    "tls-1.md",
+    "tls-2.md"
+   ],
+   "top10": [
+    "tls-0.md",
+    "tls-1.md",
+    "doc-03.txt",
+    "red-circles-3.png",
+    "document-0.png",
+    "document-3.png",
+    "tls-2.md",
+    "document-1.png",
+    "dns-1.md",
+    "document-4.png"
+   ]
+  },
+  {
+   "set": "notes",
+   "text": "certificate chain error",
+   "relevant": [
+    "tls-0.md",
+    "tls-1.md",
+    "tls-2.md"
+   ],
+   "top10": [
+    "tls-2.md",
+    "tls-0.md",
+    "tls-1.md",
+    "doc-17.txt",
+    "doc-01.txt",
+    "terminal-error-2.png",
+    "doc-12.txt",
+    "terminal-error-3.png",
+    "doc-07.txt",
+    "doc-18.txt"
+   ]
+  },
+  {
+   "set": "notes",
+   "text": "how to cook pasta",
+   "relevant": [
+    "cooking-0.md",
+    "cooking-1.md",
+    "cooking-2.md"
+   ],
+   "top10": [
+    "cooking-0.md",
+    "cooking-2.md",
+    "cooking-1.md",
+    "dns-0.md",
+    "doc-15.txt",
+    "python-1.md",
+    "doc-02.txt",
+    "spot-2.md",
+    "doc-08.txt",
+    "doc-13.txt"
+   ]
+  },
+  {
+   "set": "notes",
+   "text": "kitchen tips",
+   "relevant": [
+    "cooking-0.md",
+    "cooking-1.md",
+    "cooking-2.md"
+   ],
+   "top10": [
+    "terminal-error-3.png",
+    "cooking-2.md",
+    "diagram-4.png",
+    "cooking-1.md",
+    "terminal-error-4.png",
+    "cooking-0.md",
+    "diagram-3.png",
+    "spot-2.md",
+    "terminal-ok-0.png",
+    "spot-1.md"
+   ]
+  },
+  {
+   "set": "technical-notes",
+   "text": "Where did Terraform fail to delete a resource?",
+   "relevant": [
+    "doc-01.txt"
+   ],
+   "top10": [
+    "terraform-0.md",
+    "doc-01.txt",
+    "terraform-2.md",
+    "doc-18.txt",
+    "doc-10.txt",
+    "postgres-1.md",
+    "doc-02.txt",
+    "postgres-2.md",
+    "doc-11.txt",
+    "terraform-1.md"
+   ]
+  },
+  {
+   "set": "technical-notes",
+   "text": "Find notes about EKS Spot interruptions",
+   "relevant": [
+    "doc-03.txt"
+   ],
+   "top10": [
+    "spot-0.md",
+    "spot-2.md",
+    "spot-1.md",
+    "doc-03.txt",
+    "doc-12.txt",
+    "doc-17.txt",
+    "lifecycle-2.md",
+    "doc-23.txt",
+    "doc-24.txt",
+    "doc-19.txt"
+   ]
+  },
+  {
+   "set": "technical-notes",
+   "text": "the screenshot containing the DocumentDB index error",
+   "relevant": [
+    "doc-04.txt"
+   ],
+   "top10": [
+    "doc-04.txt",
+    "postgres-0.md",
+    "doc-24.txt",
+    "doc-19.txt",
+    "doc-18.txt",
+    "postgres-1.md",
+    "doc-12.txt",
+    "doc-07.txt",
+    "doc-01.txt",
+    "doc-23.txt"
+   ]
+  },
+  {
+   "set": "technical-notes",
+   "text": "why did the GPU node take so long to start",
+   "relevant": [
+    "doc-08.txt"
+   ],
+   "top10": [
+    "doc-13.txt",
+    "doc-08.txt",
+    "doc-02.txt",
+    "doc-03.txt",
+    "doc-10.txt",
+    "doc-09.txt",
+    "doc-11.txt",
+    "spot-0.md",
+    "doc-15.txt",
+    "doc-06.txt"
+   ]
+  },
+  {
+   "set": "technical-notes",
+   "text": "kubernetes pod cannot pull its container image",
+   "relevant": [
+    "doc-07.txt"
+   ],
+   "top10": [
+    "doc-07.txt",
+    "doc-08.txt",
+    "doc-17.txt",
+    "docker-2.md",
+    "doc-02.txt",
+    "docker-1.md",
+    "doc-09.txt",
+    "doc-04.txt",
+    "doc-14.txt",
+    "doc-01.txt"
+   ]
+  },
+  {
+   "set": "technical-notes",
+   "text": "monitoring storage grew larger than the application data",
+   "relevant": [
+    "doc-11.txt"
+   ],
+   "top10": [
+    "doc-11.txt",
+    "lifecycle-1.md",
+    "doc-10.txt",
+    "doc-06.txt",
+    "doc-03.txt",
+    "doc-15.txt",
+    "doc-05.txt",
+    "doc-23.txt",
+    "doc-04.txt",
+    "doc-14.txt"
+   ]
+  },
+  {
+   "set": "technical-notes",
+   "text": "cheaper storage class turned out to cost more",
+   "relevant": [
+    "doc-10.txt"
+   ],
+   "top10": [
+    "lifecycle-1.md",
+    "doc-10.txt",
+    "doc-23.txt",
+    "doc-15.txt",
+    "doc-16.txt",
+    "doc-20.txt",
+    "doc-11.txt",
+    "doc-08.txt",
+    "doc-21.txt",
+    "lifecycle-0.md"
+   ]
+  },
+  {
+   "set": "technical-notes",
+   "text": "scale to zero was not actually zero",
+   "relevant": [
+    "doc-14.txt"
+   ],
+   "top10": [
+    "doc-14.txt",
+    "spot-0.md",
+    "doc-02.txt",
+    "dns-0.md",
+    "terraform-1.md",
+    "lifecycle-0.md",
+    "doc-06.txt",
+    "doc-10.txt",
+    "doc-18.txt",
+    "doc-22.txt"
+   ]
+  },
+  {
+   "set": "technical-notes",
+   "text": "networking cost more than the workload",
+   "relevant": [
+    "doc-05.txt"
+   ],
+   "top10": [
+    "lifecycle-1.md",
+    "doc-23.txt",
+    "doc-05.txt",
+    "doc-10.txt",
+    "doc-08.txt",
+    "doc-06.txt",
+    "doc-21.txt",
+    "dns-0.md",
+    "doc-01.txt",
+    "doc-03.txt"
+   ]
+  },
+  {
+   "set": "technical-notes",
+   "text": "full text search returned an internal server error",
+   "relevant": [
+    "doc-24.txt"
+   ],
+   "top10": [
+    "doc-24.txt",
+    "doc-12.txt",
+    "doc-19.txt",
+    "doc-21.txt",
+    "doc-01.txt",
+    "doc-04.txt",
+    "dns-0.md",
+    "doc-03.txt",
+    "postgres-0.md",
+    "doc-11.txt"
+   ]
+  },
+  {
+   "set": "technical-notes",
+   "text": "ran out of IP addresses in the subnet",
+   "relevant": [
+    "doc-02.txt"
+   ],
+   "top10": [
+    "doc-01.txt",
+    "doc-02.txt",
+    "doc-20.txt",
+    "doc-03.txt",
+    "doc-05.txt",
+    "doc-16.txt",
+    "doc-23.txt",
+    "doc-11.txt",
+    "postgres-0.md",
+    "doc-09.txt"
+   ]
+  },
+  {
+   "set": "technical-notes",
+   "text": "which GPU instance family was cheaper per job",
+   "relevant": [
+    "doc-23.txt"
+   ],
+   "top10": [
+    "doc-08.txt",
+    "doc-20.txt",
+    "doc-06.txt",
+    "doc-10.txt",
+    "doc-11.txt",
+    "doc-13.txt",
+    "doc-23.txt",
+    "doc-16.txt",
+    "doc-15.txt",
+    "doc-03.txt"
+   ]
+  }
+ ]
+}
