@@ -1,0 +1,9 @@
+line-length = 100
+target-version = "py312"
+
+[lint]
+select = ["E", "F", "I", "N", "UP", "B", "A", "S", "BLE", "C4", "DTZ", "SIM", "PTH", "RUF"]
+# Line length is handled by the formatter. The scripts are command-line tools
+# that report with print(); fixture generation uses a seeded random.Random for
+# reproducible images, not for anything security-related.
+ignore = ["E501", "S311"]

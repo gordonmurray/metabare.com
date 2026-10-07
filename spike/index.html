@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>MetaBare spike</title>
+    <link rel="icon" href="data:," />
+    <style>
+      body { font: 15px/1.4 system-ui, sans-serif; margin: 16px; max-width: 760px; }
+      form { display: flex; flex-wrap: wrap; gap: 8px 16px; align-items: end; margin-bottom: 12px; }
+      label { display: flex; flex-direction: column; font-size: 13px; }
+      pre { background: #f4f4f4; padding: 12px; white-space: pre-wrap; word-break: break-word; }
+    </style>
+  </head>
+  <body>
+    <h1>Browser inference spike</h1>
+    <p>
+      Embeds 50 images, 30 notes and 40 queries in this browser and records timings
+      and vectors. Nothing is uploaded; the result downloads as JSON.
+    </p>
+    <form id="settings">
+      <label>Device
+        <select name="device"><option>webgpu</option><option>wasm</option></select>
+      </label>
+      <label>Precision
+        <select name="dtype"><option>fp32</option><option>fp16</option><option>q8</option><option selected>q4f16</option></select>
+      </label>
+      <label>Embedder precision
+        <select name="embed_dtype"><option>fp32</option><option>fp16</option><option>q8</option><option>q4f16</option></select>
+      </label>
+      <label>Threads <input name="threads" type="number" min="1" max="32" placeholder="default" /></label>
+      <label>Label <input name="label" placeholder="device name" /></label>
+      <label><span>Clear cache first</span><input name="cold" type="checkbox" value="1" /></label>
+      <button>Run</button>
+    </form>
+    <pre id="log"></pre>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>

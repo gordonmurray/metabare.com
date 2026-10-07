@@ -34,6 +34,7 @@ it, scoped to the device, browser and date it was measured on.
 
 | Path | What |
 | --- | --- |
+| [`spike/`](spike/README.md) | A feasibility test: embeds images and text in the browser on WebGPU and WebAssembly and measures speed, download size, memory and whether results agree across backends |
 | `eval/technical-notes.json` | 24 synthetic technical notes and 12 queries with relevance labels, for evaluating text search |
 
 ## Licence

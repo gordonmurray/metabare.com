@@ -1,0 +1,149 @@
+[
+  {
+    "repo": "Xenova/all-MiniLM-L6-v2",
+    "revision": "751bff37182d3f1213fa05d7196b954e230abad9",
+    "file": "config.json",
+    "size": 650,
+    "sha256": "7135149f7cffa1a573466c6e4d8423ed73b62fd2332c575bf738a0d033f70df7"
+  },
+  {
+    "repo": "Xenova/all-MiniLM-L6-v2",
+    "revision": "751bff37182d3f1213fa05d7196b954e230abad9",
+    "file": "onnx/model.onnx",
+    "size": 90387606,
+    "sha256": "759c3cd2b7fe7e93933ad23c4c9181b7396442a2ed746ec7c1d46192c469c46e"
+  },
+  {
+    "repo": "Xenova/all-MiniLM-L6-v2",
+    "revision": "751bff37182d3f1213fa05d7196b954e230abad9",
+    "file": "onnx/model_fp16.onnx",
+    "size": 45297825,
+    "sha256": "2cdb5e58291813b6d6e248ed69010100246821a367fa17b1b81ae9483744533d"
+  },
+  {
+    "repo": "Xenova/all-MiniLM-L6-v2",
+    "revision": "751bff37182d3f1213fa05d7196b954e230abad9",
+    "file": "onnx/model_q4f16.onnx",
+    "size": 30018257,
+    "sha256": "eb08a666c46109637e0b6cb04f6052a68efd59bb0252d4e0438d28fb6b2d853d"
+  },
+  {
+    "repo": "Xenova/all-MiniLM-L6-v2",
+    "revision": "751bff37182d3f1213fa05d7196b954e230abad9",
+    "file": "onnx/model_quantized.onnx",
+    "size": 22972370,
+    "sha256": "afdb6f1a0e45b715d0bb9b11772f032c399babd23bfc31fed1c170afc848bdb1"
+  },
+  {
+    "repo": "Xenova/all-MiniLM-L6-v2",
+    "revision": "751bff37182d3f1213fa05d7196b954e230abad9",
+    "file": "special_tokens_map.json",
+    "size": 125,
+    "sha256": "b6d346be366a7d1d48332dbc9fdf3bf8960b5d879522b7799ddba59e76237ee3"
+  },
+  {
+    "repo": "Xenova/all-MiniLM-L6-v2",
+    "revision": "751bff37182d3f1213fa05d7196b954e230abad9",
+    "file": "tokenizer.json",
+    "size": 711661,
+    "sha256": "da0e79933b9ed51798a3ae27893d3c5fa4a201126cef75586296df9b4d2c62a0"
+  },
+  {
+    "repo": "Xenova/all-MiniLM-L6-v2",
+    "revision": "751bff37182d3f1213fa05d7196b954e230abad9",
+    "file": "tokenizer_config.json",
+    "size": 366,
+    "sha256": "9261e7d79b44c8195c1cada2b453e55b00aeb81e907a6664974b4d7776172ab3"
+  },
+  {
+    "repo": "Xenova/clip-vit-base-patch32",
+    "revision": "d15189d7028b43f1d3e65039190477f6af591c2a",
+    "file": "config.json",
+    "size": 4524,
+    "sha256": "493ef57ff783e42d1530c91b53469b7fdf8db8a9c1408e86998fcb7899a4f495"
+  },
+  {
+    "repo": "Xenova/clip-vit-base-patch32",
+    "revision": "d15189d7028b43f1d3e65039190477f6af591c2a",
+    "file": "onnx/text_model.onnx",
+    "size": 254058553,
+    "sha256": "3f6571f5bad13a97c469c1622e1cfc4d9aef78b79fdbfcff804ca357bfada8cc"
+  },
+  {
+    "repo": "Xenova/clip-vit-base-patch32",
+    "revision": "d15189d7028b43f1d3e65039190477f6af591c2a",
+    "file": "onnx/text_model_fp16.onnx",
+    "size": 127339794,
+    "sha256": "df587ffbf248bf20d44fa6e16adc5ebc27ead691860e5333dbdaab5fd6bf3f6e"
+  },
+  {
+    "repo": "Xenova/clip-vit-base-patch32",
+    "revision": "d15189d7028b43f1d3e65039190477f6af591c2a",
+    "file": "onnx/text_model_q4f16.onnx",
+    "size": 72531963,
+    "sha256": "7640460b1389da7d4fa3b3ebcc80299fbe6850b209a009b5067d25c4a9d027d2"
+  },
+  {
+    "repo": "Xenova/clip-vit-base-patch32",
+    "revision": "d15189d7028b43f1d3e65039190477f6af591c2a",
+    "file": "onnx/text_model_quantized.onnx",
+    "size": 64504507,
+    "sha256": "73baab855d406190da9faa498cfedf65f15cf309f4cc7385b7b032e6d08e5c3a"
+  },
+  {
+    "repo": "Xenova/clip-vit-base-patch32",
+    "revision": "d15189d7028b43f1d3e65039190477f6af591c2a",
+    "file": "onnx/vision_model.onnx",
+    "size": 351685709,
+    "sha256": "fd6e1402a588279d1723c7534d4bcba5bc0b14b47dfab0e46f8c47b8270d7d40"
+  },
+  {
+    "repo": "Xenova/clip-vit-base-patch32",
+    "revision": "d15189d7028b43f1d3e65039190477f6af591c2a",
+    "file": "onnx/vision_model_fp16.onnx",
+    "size": 176080659,
+    "sha256": "35c4e0fb0aeee527dcde1693520b214a34424a786babd530f35366bad5844efd"
+  },
+  {
+    "repo": "Xenova/clip-vit-base-patch32",
+    "revision": "d15189d7028b43f1d3e65039190477f6af591c2a",
+    "file": "onnx/vision_model_q4f16.onnx",
+    "size": 53267374,
+    "sha256": "d238c4e0afe798c47c5991a046b923c5bcbeed19c2d75d7c0db845ba73bb7b87"
+  },
+  {
+    "repo": "Xenova/clip-vit-base-patch32",
+    "revision": "d15189d7028b43f1d3e65039190477f6af591c2a",
+    "file": "onnx/vision_model_quantized.onnx",
+    "size": 89117001,
+    "sha256": "583fd1110a514667812fee7d684952aaf82a99b959760c8d7dca7e0ab9839299"
+  },
+  {
+    "repo": "Xenova/clip-vit-base-patch32",
+    "revision": "d15189d7028b43f1d3e65039190477f6af591c2a",
+    "file": "preprocessor_config.json",
+    "size": 520,
+    "sha256": "6f638fb9401a6d6296feff533ee7efe657b787c49f954f82f5906b36ef2a1b1f"
+  },
+  {
+    "repo": "Xenova/clip-vit-base-patch32",
+    "revision": "d15189d7028b43f1d3e65039190477f6af591c2a",
+    "file": "special_tokens_map.json",
+    "size": 472,
+    "sha256": "c4864a9376a8401918425bed71fc14fc0e81f9b59ec45c1cf96cccb2df508eac"
+  },
+  {
+    "repo": "Xenova/clip-vit-base-patch32",
+    "revision": "d15189d7028b43f1d3e65039190477f6af591c2a",
+    "file": "tokenizer.json",
+    "size": 2224119,
+    "sha256": "f7f3b7af117d467b58374797691a6438d3e6b9e9cef800dfd5dced7f697a90cd"
+  },
+  {
+    "repo": "Xenova/clip-vit-base-patch32",
+    "revision": "d15189d7028b43f1d3e65039190477f6af591c2a",
+    "file": "tokenizer_config.json",
+    "size": 775,
+    "sha256": "60ba2912bc6344c94bc16bbdec27fa1209409167b6f2fdf3cfe9e65462ea3967"
+  }
+]
