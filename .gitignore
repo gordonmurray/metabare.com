@@ -1,35 +1,43 @@
-# Working notes, kept local rather than published.
+# Local only, never committed
 CLAUDE.md
 docs/
+scratch/
+
+# Personal data: never commit real images or notes
+demo/data/
+demo/private/
+
+# Model weights and large datasets, fetched and verified from lock files
+models/cache/
+models/export/*.onnx
+spike/public/models/
+*.safetensors
+*.bin
+benchmarks/datasets/*/data/
+benchmarks/results/raw/
+spike/results/ci/
+
+# Node
+node_modules/
+dist/
+build/
+playwright-report/
+test-results/
 
 # Python
 __pycache__/
 *.py[cod]
 .venv/
-venv/
 .pytest_cache/
 .ruff_cache/
 .mypy_cache/
-# pytest --cov writes these; CI runs with coverage, so everyone gets them.
 .coverage
 .coverage.*
 coverage.xml
 htmlcov/
-*.egg-info/
-dist/
-build/
+coverage/
 
-# uv
-.uv-cache/
-
-# Environment and secrets
-.env
-.env.*
-!.env.example
-*.pem
-*.key
-
-# Terraform. .terraform.lock.hcl IS committed (provider version pin).
+# Terraform; .terraform.lock.hcl is committed
 .terraform/
 *.tfstate
 *.tfstate.*
@@ -38,28 +46,16 @@ build/
 crash.log
 override.tf
 override.tf.json
-# Saved plans are binary, environment-specific, stale within minutes, and
-# embed account and resource detail.
 tfplan
 *.tfplan
-# Backend config names a private state bucket. backend.hcl.example is the
-# committed template; the real one stays local.
 backend.hcl
 
-# Model artefacts and caches. Reproducible from models/manifests/.
-models/cache/
-models/export/*.onnx
-*.safetensors
-*.bin
-
-# Benchmark and corpus working data. Reproducible from the manifests.
-benchmarks/datasets/*/data/
-benchmarks/results/raw/
-demo/data/
-
-# Local personal data. Never commit real screenshots or notes.
-demo/private/
-scratch/
+# Secrets
+.env
+.env.*
+!.env.example
+*.pem
+*.key
 
 # Editors and OS
 .DS_Store
