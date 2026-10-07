@@ -90,6 +90,11 @@ jobs:
     defaults:
       run:
         working-directory: spike
+    env:
+      # onnxruntime-node, a Node-only dependency of Transformers.js that the
+      # browser never uses, otherwise downloads CUDA binaries from NuGet at
+      # install time.
+      ONNXRUNTIME_NODE_INSTALL: skip
     steps:
       - uses: actions/checkout@v7
 
