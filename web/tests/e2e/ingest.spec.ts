@@ -22,7 +22,16 @@ test("adds images and notes, and skips them the second time", async ({ page }) =
 
 test("after a reload partway through, choosing the files again skips the finished ones", async ({
     page,
+    browserName,
 }) => {
+    // In WebKit, reloading a page served by the Vite dev server blocks the
+    // worker with a Cross-Origin-Embedder-Policy error. Against the deployed
+    // site this test passes in WebKit (APP_URL=https://metabare.com/), so it is
+    // skipped only for WebKit on the dev server.
+    test.skip(
+        browserName === "webkit" && !process.env.APP_URL,
+        "Vite dev server only; passes against the deployed site",
+    );
     await ready(page);
     await page.locator("#files").setInputFiles(imagePaths);
     // Wait until some, but not all, are stored, then reload mid-run.

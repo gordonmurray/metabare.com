@@ -4,10 +4,9 @@ Semantic search over your own images and notes, with the machine learning
 running in your browser.
 
 > **Status: early.** [metabare.com](https://metabare.com) works in Chrome,
-> Edge and Firefox: add images and notes, or load the demo library, and search
-> them. Everything stays in your browser. **Safari and other WebKit browsers
-> do not work yet**: the image model downloads but never starts, which is
-> being investigated.
+> Edge, Firefox and WebKit, the engine behind Safari (tested with Playwright's
+> WebKit build, not yet in Safari on a Mac or iPhone): add images and notes, or
+> load the demo library, and search them. Everything stays in your browser.
 
 ## The idea
 
