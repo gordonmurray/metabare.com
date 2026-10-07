@@ -198,6 +198,7 @@ async function run(req: RunRequest): Promise<RunResult> {
     for (const key of await caches.keys()) await caches.delete(key);
   }
   if (onnx.wasm && req.threads) onnx.wasm.numThreads = req.threads;
+  env.useBrowserCache = !req.no_cache;
 
   const webgpu = await gpuInfo();
   let device: Device = req.device;
@@ -230,6 +231,7 @@ async function run(req: RunRequest): Promise<RunResult> {
     dtype: req.dtype,
     embed_dtype: req.embed_dtype,
     cold: req.cold,
+    no_cache: req.no_cache,
     fallback,
     fixtures_seed: fx.seed,
     env: {

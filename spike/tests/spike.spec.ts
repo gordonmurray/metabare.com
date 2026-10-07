@@ -5,6 +5,8 @@
 //   SPIKE_LABEL  names the machine, default "ci"
 //   SPIKE_BROWSER chromium (default), firefox or webkit, as built by Playwright
 //   SPIKE_CHANNEL chrome, to use the installed Google Chrome instead
+//   SPIKE_NO_CACHE=1 turns off the Cache API for model files
+//   SPIKE_OUT     results directory, default results/<label>
 //
 // Each entry runs twice in one persistent browser profile: first with the
 // cache cleared, then again so the models load from the Cache API. A fresh
@@ -111,10 +113,16 @@ for (const run of runs) {
         if (m.type() === "error" || m.type() === "warning") console.log(`console: ${m.text()}`);
       });
 
-      const dir = `results/${label}`;
+      const dir = process.env.SPIKE_OUT ?? `results/${label}`;
       mkdirSync(dir, { recursive: true });
       for (const cold of [true, false]) {
-        const qs = new URLSearchParams({ ...run, label, auto: "1", ...(cold ? { cold: "1" } : {}) });
+        const qs = new URLSearchParams({
+          ...run,
+          label,
+          auto: "1",
+          ...(cold ? { cold: "1" } : {}),
+          ...(process.env.SPIKE_NO_CACHE === "1" ? { no_cache: "1" } : {}),
+        });
         const result = await measure(page, qs, profile);
         expect(result.vectors.images).toHaveLength(50);
         expect(result.env.cross_origin_isolated).toBe(true);

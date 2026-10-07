@@ -17,6 +17,8 @@ export interface RunRequest {
   embed_dtype: Dtype;
   cold: boolean;
   threads: number | null;
+  /** Skip the Cache API entirely, for the memory investigation. */
+  no_cache: boolean;
 }
 
 export interface Timing {
@@ -43,6 +45,7 @@ export interface RunResult {
   dtype: Dtype;
   embed_dtype: Dtype;
   cold: boolean;
+  no_cache?: boolean;
   fallback: string | null;
   fixtures_seed: number;
   env: {
@@ -87,7 +90,13 @@ export type WorkerMessage =
   | { type: "result"; result: RunResult }
   | { type: "error"; text: string };
 
-export function runName(r: { device: string; dtype: string; embed_dtype: string; cold: boolean }) {
+export function runName(r: {
+  device: string;
+  dtype: string;
+  embed_dtype: string;
+  cold: boolean;
+  no_cache?: boolean;
+}) {
   const embed = r.embed_dtype === r.dtype ? "" : `-embed-${r.embed_dtype}`;
-  return `${r.device}-${r.dtype}${embed}${r.cold ? "-cold" : ""}`;
+  return `${r.device}-${r.dtype}${embed}${r.no_cache ? "-nocache" : ""}${r.cold ? "-cold" : ""}`;
 }

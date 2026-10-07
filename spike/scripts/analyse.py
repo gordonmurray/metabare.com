@@ -155,7 +155,7 @@ def load(path: Path) -> dict:
 
 
 def pack() -> None:
-    for path in [RESULTS / "reference.json", *RESULTS.glob("*/*.json")]:
+    for path in [RESULTS / "reference.json", *RESULTS.glob("**/*.json")]:
         if not path.exists():
             continue
         run = json.loads(path.read_text())

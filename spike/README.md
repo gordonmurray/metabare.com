@@ -65,9 +65,10 @@ uncompressed. Image times are warm medians.
 - **Peak memory fails the 1.5 GB budget on some Firefox first visits.** Over
   the whole browser process tree, warm loads and Chrome's cold loads stay at
   1.05 to 1.35 GB. Three of eight cold Firefox runs, on either path, peaked
-  at 1.67 to 1.70 GB; the other five at 1.27 to 1.37 GB. Downloading and
-  caching the models while loading them is the likely cause, not yet
-  confirmed.
+  at 1.67 to 1.70 GB; the other five at 1.27 to 1.37 GB. The cache is not the
+  cause, and under a hard memory limit the first load did not complete within
+  1.6 GB: see [`results/memory/`](results/memory/README.md). Fixing it is
+  assigned to the ingestion work.
 - Not yet measured: a phone, a discrete GPU, Safari.
 
 ## Browser support

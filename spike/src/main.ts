@@ -1,7 +1,7 @@
 // Settings come from the query string so the same page serves a person
 // clicking through it and Playwright driving it:
 //   ?device=webgpu|wasm &dtype=fp32|fp16|q8|q4f16 &embed_dtype=<same choices>
-//   &cold=1 &threads=N &label=x &auto=1
+//   &cold=1 &threads=N &no_cache=1 &label=x &auto=1
 
 import {
   runName,
@@ -32,6 +32,7 @@ const req: RunRequest = {
   embed_dtype: (params.get("embed_dtype") as Dtype) ?? (params.get("dtype") as Dtype) ?? "q8",
   cold: params.get("cold") === "1",
   threads: params.has("threads") ? Number(params.get("threads")) : null,
+  no_cache: params.get("no_cache") === "1",
 };
 
 const out = document.querySelector<HTMLPreElement>("#log")!;
