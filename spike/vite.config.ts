@@ -1,4 +1,4 @@
-import { cpSync, mkdirSync, readFileSync } from "node:fs";
+import { cpSync, readFileSync } from "node:fs";
 import basicSsl from "@vitejs/plugin-basic-ssl";
 import { defineConfig, type Plugin } from "vite";
 
@@ -32,10 +32,11 @@ function selfHostOrt(): Plugin {
         res.end(readFileSync(`${ORT_DIR}/${name}`));
       });
     },
+    // A build copies only the fixtures from public/, not the 1.3 GB of model
+    // files beside them. The deployed site serves models and the runtime from
+    // their own versioned paths; see scripts/deploy.sh.
     writeBundle(options) {
-      const out = `${options.dir ?? "dist"}/ort`;
-      mkdirSync(out, { recursive: true });
-      for (const name of ORT_FILES) cpSync(`${ORT_DIR}/${name}`, `${out}/${name}`);
+      cpSync("public/fixtures", `${options.dir ?? "dist"}/fixtures`, { recursive: true });
     },
   };
 }
@@ -44,6 +45,9 @@ function selfHostOrt(): Plugin {
 // phone on the same network gets a secure context: WebGPU and cross-origin
 // isolation are both unavailable over plain HTTP anywhere but localhost.
 export default defineConfig(({ mode }) => ({
+  // SPIKE_BASE=/spike/ when building for the deployed site.
+  base: process.env.SPIKE_BASE ?? "/",
+  build: { copyPublicDir: false },
   plugins: [selfHostOrt(), ...(mode === "lan" ? [basicSsl()] : [])],
   server: { headers: isolation },
   preview: { headers: isolation },

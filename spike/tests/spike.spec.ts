@@ -6,7 +6,10 @@
 //   SPIKE_BROWSER chromium (default), firefox or webkit, as built by Playwright
 //   SPIKE_CHANNEL chrome, to use the installed Google Chrome instead
 //   SPIKE_NO_CACHE=1 turns off the Cache API for model files
+//   SPIKE_THREADS  number of WASM threads, default ONNX Runtime's choice
 //   SPIKE_OUT     results directory, default results/<label>
+//   SPIKE_URL     page to test, default the local dev server; for example
+//                 https://metabare.com/spike/ to test the deployed site
 //
 // Each entry runs twice in one persistent browser profile: first with the
 // cache cleared, then again so the models load from the Cache API. A fresh
@@ -74,7 +77,7 @@ async function measure(page: Page, qs: URLSearchParams, profile: string): Promis
     if (bytes !== null) samples.push({ t_ms: Date.now() - started, bytes });
   }, 500);
   try {
-    await page.goto(`http://localhost:5173/?${qs}`);
+    await page.goto(`${process.env.SPIKE_URL ?? "http://localhost:5173/"}?${qs}`);
     await page.waitForFunction(() => window.spikeResult || window.spikeError, null, {
       timeout: 25 * 60 * 1000,
       polling: 1000,
@@ -122,6 +125,7 @@ for (const run of runs) {
           auto: "1",
           ...(cold ? { cold: "1" } : {}),
           ...(process.env.SPIKE_NO_CACHE === "1" ? { no_cache: "1" } : {}),
+          ...(process.env.SPIKE_THREADS ? { threads: process.env.SPIKE_THREADS } : {}),
         });
         const result = await measure(page, qs, profile);
         expect(result.vectors.images).toHaveLength(50);

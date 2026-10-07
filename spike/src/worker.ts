@@ -20,7 +20,13 @@ const MINILM = "Xenova/all-MiniLM-L6-v2";
 // Transformers.js fetches ONNX Runtime from a public CDN.
 env.allowRemoteModels = false;
 env.allowLocalModels = true;
-env.localModelPath = "/models/";
+// Locations are set at build time for the deployed site, where models live
+// under a path named for the model lock file and the runtime under its
+// version, so both can be cached forever.
+const MODEL_BASE: string = import.meta.env.VITE_MODEL_BASE ?? "/models/";
+const ORT_BASE: string = import.meta.env.VITE_ORT_BASE ?? "/ort/";
+const FIXTURES = `${import.meta.env.BASE_URL}fixtures/`;
+env.localModelPath = MODEL_BASE;
 // The build choice follows Transformers.js's own default, whose detection is
 // not exported: the plain build for Safari before 26 without WebGPU, the
 // asyncify build everywhere else.
@@ -38,8 +44,8 @@ const onnx = env.backends.onnx;
 const ortBuild = safariBelow26() && !("gpu" in navigator) ? "" : ".asyncify";
 if (onnx.wasm) {
   onnx.wasm.wasmPaths = {
-    mjs: `/ort/ort-wasm-simd-threaded${ortBuild}.mjs`,
-    wasm: `/ort/ort-wasm-simd-threaded${ortBuild}.wasm`,
+    mjs: `${ORT_BASE}ort-wasm-simd-threaded${ortBuild}.mjs`,
+    wasm: `${ORT_BASE}ort-wasm-simd-threaded${ortBuild}.wasm`,
   };
 }
 
@@ -92,8 +98,8 @@ function bytes(): RunResult["bytes"] {
   const entries = performance.getEntriesByType("resource") as PerformanceResourceTiming[];
   const sum = (filter: (e: PerformanceResourceTiming) => boolean, key: "transferSize" | "decodedBodySize") =>
     entries.filter(filter).reduce((s, e) => s + e[key], 0);
-  const model = (e: PerformanceResourceTiming) => e.name.includes("/models/");
-  const runtime = (e: PerformanceResourceTiming) => e.name.includes("/ort/");
+  const model = (e: PerformanceResourceTiming) => new URL(e.name).pathname.startsWith(MODEL_BASE);
+  const runtime = (e: PerformanceResourceTiming) => new URL(e.name).pathname.startsWith(ORT_BASE);
   return {
     models_network: sum(model, "transferSize"),
     models_payload: sum(model, "decodedBodySize"),
@@ -208,10 +214,10 @@ async function run(req: RunRequest): Promise<RunResult> {
     device = "wasm";
   }
 
-  const fx: Fixtures = await (await fetch("/fixtures/fixtures.json")).json();
+  const fx: Fixtures = await (await fetch(`${FIXTURES}fixtures.json`)).json();
   // Fixture images are fetched before any timer starts, so latency covers
   // decode, preprocessing and inference only, wherever the page is served from.
-  const imageBlobs = await Promise.all(fx.images.map(async (i) => (await fetch(`/fixtures/${i.file}`)).blob()));
+  const imageBlobs = await Promise.all(fx.images.map(async (i) => (await fetch(`${FIXTURES}${i.file}`)).blob()));
 
   let out: Awaited<ReturnType<typeof attempt>>;
   try {
