@@ -7,7 +7,7 @@
     "dev:lan": "vite --host --mode lan",
     "typecheck": "tsc --noEmit",
     "test": "playwright test",
-    "fetch-models": "./scripts/fetch-models.sh",
+    "fetch-models": "../models/fetch.sh",
     "analyse": "python3 scripts/analyse.py"
   },
   "dependencies": {

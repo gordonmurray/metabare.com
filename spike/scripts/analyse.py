@@ -115,7 +115,7 @@ def validate(run: dict, fx: dict, name: str) -> None:
 
 
 def candidate_files(clip: str, embed: str) -> list[Path]:
-    lock = json.loads((ROOT / "models.lock.json").read_text())
+    lock = json.loads((ROOT.parent / "models" / "models.lock.json").read_text())
     files = []
     for e in lock:
         f = e["file"]
@@ -129,7 +129,7 @@ def candidate_files(clip: str, embed: str) -> list[Path]:
             or ("MiniLM" in e["repo"] and f == f"onnx/model{SUFFIX[embed]}.onnx")
         )
         if wanted:
-            files.append(ROOT / "public" / "models" / e["repo"] / f)
+            files.append(ROOT.parent / "models" / "files" / e["repo"] / f)
     return files
 
 

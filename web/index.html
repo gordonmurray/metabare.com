@@ -4,19 +4,90 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>MetaBare</title>
+    <meta
+      name="description"
+      content="Search your own images and notes by what is in them. The models run in your browser; nothing is uploaded."
+    />
     <link rel="icon" href="data:," />
-    <style>
-      body { font: 17px/1.5 system-ui, sans-serif; margin: 0 auto; padding: 48px 16px; max-width: 640px; color: #1d1d1f; }
-      a { color: #0b57d0; }
-    </style>
+    <link rel="stylesheet" href="/src/styles.css" />
   </head>
   <body>
-    <h1>MetaBare</h1>
-    <p>Semantic search over your own images and notes, with the machine learning running in your browser.</p>
-    <p>
-      Not ready yet. In the meantime, the <a href="/spike/">browser inference test</a> embeds a
-      set of sample images and notes on this device and reports how long it took.
-    </p>
-    <p><a href="https://github.com/gordonmurray/metabare.com">Source on GitHub</a></p>
+    <header>
+      <h1>MetaBare</h1>
+      <p class="tagline">
+        Search your own images and notes by what is in them. The models run in this browser, and
+        nothing you add leaves this device.
+      </p>
+    </header>
+
+    <main>
+      <p id="warning" class="warning" hidden></p>
+
+      <section id="add" class="panel" aria-labelledby="add-title">
+        <h2 id="add-title">Add images and notes</h2>
+        <div id="drop" class="drop" tabindex="0">
+          <p>Drop images (PNG, JPEG, WebP) or notes (.txt, .md) here, or</p>
+          <div class="buttons">
+            <label class="button">
+              Choose files
+              <input
+                id="files"
+                type="file"
+                multiple
+                accept="image/png,image/jpeg,image/webp,.txt,.md,.markdown"
+              />
+            </label>
+            <label class="button">
+              Choose a folder
+              <input id="folder" type="file" webkitdirectory />
+            </label>
+          </div>
+        </div>
+        <div id="progress" class="progress" hidden>
+          <progress id="progress-bar" max="1" value="0" aria-label="Files processed"></progress>
+          <p id="progress-text" aria-live="polite"></p>
+          <button id="cancel" type="button">Cancel</button>
+        </div>
+        <p id="summary" class="summary" aria-live="polite"></p>
+      </section>
+
+      <section id="library" class="panel" aria-labelledby="library-title">
+        <div class="library-head">
+          <h2 id="library-title">Your library</h2>
+          <p id="library-stats" class="muted"></p>
+        </div>
+        <p id="empty" class="muted">Nothing here yet. Add some images or notes above.</p>
+        <ul id="grid" class="grid"></ul>
+        <p id="more" class="muted" hidden></p>
+        <div class="buttons">
+          <button id="export" type="button">Export library</button>
+          <label class="button">
+            Import library
+            <input id="import" type="file" accept="application/json,.json" />
+          </label>
+          <button id="clear" type="button" class="danger">Remove everything</button>
+        </div>
+        <p class="muted small">
+          The library is stored in this browser only. Clearing site data removes it; export it to
+          keep a copy.
+        </p>
+      </section>
+
+      <section class="panel settings" aria-labelledby="settings-title">
+        <h2 id="settings-title">Settings</h2>
+        <label class="check">
+          <input id="gpu" type="checkbox" />
+          Use the GPU (WebGPU) when this browser supports it
+        </label>
+        <p id="status" class="muted small" aria-live="polite"></p>
+      </section>
+    </main>
+
+    <footer>
+      <a href="https://github.com/gordonmurray/metabare.com">Source</a>
+      · <a href="/spike/">Browser test page</a>
+    </footer>
+
+    <script type="module" src="/src/main.ts"></script>
   </body>
 </html>

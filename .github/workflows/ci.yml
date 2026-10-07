@@ -112,11 +112,11 @@ jobs:
       # Only the precisions this job runs: CLIP at q4f16, MiniLM at q8.
       - uses: actions/cache@v6
         with:
-          path: spike/public/models
-          key: spike-models-${{ hashFiles('spike/models.lock.json') }}-q4f16-q8
+          path: models/files
+          key: models-${{ hashFiles('models/models.lock.json') }}-q4f16-q8
 
       - name: Fetch and verify models
-        run: ./scripts/fetch-models.sh '_model_q4f16|^onnx/model_quantized|json$'
+        run: ../models/fetch.sh '_model_q4f16|^onnx/model_quantized|json$'
 
       - name: Install ${{ matrix.browser }}
         run: npx playwright install --with-deps ${{ matrix.browser }}
@@ -135,3 +135,74 @@ jobs:
         with:
           name: spike-ci-${{ matrix.browser }}
           path: spike/results/ci/
+
+  web:
+    name: Web app (types, lint, unit tests)
+    runs-on: ubuntu-24.04
+    defaults:
+      run:
+        working-directory: web
+    env:
+      ONNXRUNTIME_NODE_INSTALL: skip
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: web/package-lock.json
+      - run: npm ci
+      - name: Type check
+        run: npx tsc --noEmit
+      - name: ESLint
+        run: npx eslint .
+      - name: Prettier
+        run: npx prettier --check .
+      - name: Unit tests
+        run: npx vitest run
+
+  web-e2e:
+    name: Web app in ${{ matrix.browser }}
+    runs-on: ubuntu-24.04
+    strategy:
+      fail-fast: false
+      matrix:
+        browser: [chromium, firefox, webkit]
+    defaults:
+      run:
+        working-directory: web
+    env:
+      ONNXRUNTIME_NODE_INSTALL: skip
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: web/package-lock.json
+      - run: npm ci
+      - uses: actions/cache@v6
+        with:
+          path: models/files
+          key: models-${{ hashFiles('models/models.lock.json') }}-q4f16-q8
+      - name: Fetch and verify models
+        run: ../models/fetch.sh '_model_q4f16|^onnx/model_quantized|json$'
+      - name: Install ${{ matrix.browser }}
+        run: npx playwright install --with-deps ${{ matrix.browser }}
+      - name: Ingestion tests
+        env:
+          APP_BROWSERS: ${{ matrix.browser }}
+        run: npx playwright test ingest
+      # The first-visit memory budget, five cold runs. It reads /proc, so it
+      # runs on Linux, for the two browsers it was set for.
+      - name: Memory budget
+        if: matrix.browser != 'webkit'
+        env:
+          APP_BROWSERS: ${{ matrix.browser }}
+          MEMORY_RUNS: 5
+        run: npx playwright test memory
+      - uses: actions/upload-artifact@v7
+        if: failure()
+        with:
+          name: web-e2e-${{ matrix.browser }}
+          path: web/test-results/

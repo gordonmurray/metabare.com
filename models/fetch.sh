@@ -1,12 +1,12 @@
 #!/usr/bin/env bash
-# Downloads the files in models.lock.json into public/models/<repo>/ and
+# Downloads the files in models.lock.json into models/files/<repo>/ and
 # verifies each one's size and SHA-256. An optional argument is an extended
 # regular expression matched against file names, so CI can fetch only the
-# precisions it runs, for example: fetch-models.sh '_q4f16|_quantized|json$'.
+# precisions it runs, for example: models/fetch.sh '_q4f16|_quantized|json$'.
 set -euo pipefail
 
-cd "$(dirname "$0")/.."
-dest=public/models
+cd "$(dirname "$0")"
+dest=files
 only=${1:-.}
 
 jq -c '.[]' models.lock.json | while read -r entry; do
