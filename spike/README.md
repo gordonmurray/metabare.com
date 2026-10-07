@@ -50,8 +50,9 @@ uncompressed. Image times are warm medians.
   0.92, minimum 0.85) than any other precision. WebGPU and WASM at q8 agree
   with each other, but a library embedded at q8 and searched at any other
   precision, or the reverse, fails the agreement gate, and its fixture
-  relevance is the lowest measured. Every device would have to stay on q8 for
-  good, so it is ruled out.
+  relevance is the lowest measured. Every device would have to use q8, and
+  moving to another precision later would mean re-embedding the whole
+  library, so it is ruled out.
 - **q4f16 CLIP with q8 MiniLM passes** agreement across WebGPU and WASM, in
   both directions and across Chrome and Firefox, and passes the latency and
   memory budgets. It is 179 MB uncompressed against a 150 MB budget; gzip
@@ -61,13 +62,17 @@ uncompressed. Image times are warm medians.
   run faster on WASM than on WebGPU; fp16 is the fast WebGPU path.
 - **A query takes about 27 ms on WASM** through both encoders, against a
   500 ms budget.
-- **Peak memory is about 1.3 GB** for the whole browser process tree in both
-  Chrome and Firefox, against a 1.5 GB budget.
+- **Peak memory fails the 1.5 GB budget on some Firefox first visits.** Over
+  the whole browser process tree, warm loads and Chrome's cold loads stay at
+  1.05 to 1.35 GB. Three of eight cold Firefox runs, on either path, peaked
+  at 1.67 to 1.70 GB; the other five at 1.27 to 1.37 GB. Downloading and
+  caching the models while loading them is the likely cause, not yet
+  confirmed.
 - Not yet measured: a phone, a discrete GPU, Safari.
 
 ## Browser support
 
-What the spike has run on, and what the
+Stable releases. What the spike has run on, and what the
 [WebGPU implementation status](https://github.com/gpuweb/gpuweb/wiki/Implementation-Status)
 page (updated 2026-10-02) says about the rest. WASM is the fallback wherever
 WebGPU is missing; it needs `SharedArrayBuffer`, which the page gets from
@@ -75,7 +80,8 @@ cross-origin isolation.
 
 | Browser | WebGPU | Tested here |
 | --- | --- | --- |
-| Chrome, Edge 113+ on Windows, macOS, ChromeOS | Yes | No |
+| Chrome, Edge 113+ on Windows x86/x64, macOS, ChromeOS | Yes | No |
+| Chrome, Edge on Windows ARM64 | Behind a flag | No |
 | Chrome 144+ on Linux, Intel Gen12+ GPUs | Yes | Chrome 154, Iris Xe: WebGPU and WASM |
 | Chrome 147+ on Linux, NVIDIA driver 535.183.01+ on Wayland | Yes | No |
 | Chrome on Linux, other GPUs | Behind a flag | No |
@@ -84,7 +90,8 @@ cross-origin isolation.
 | Firefox 141+ on Windows | Yes | No |
 | Firefox 145+ on macOS 26, Apple Silicon; 147+ on any macOS, Apple Silicon | Yes | No |
 | Firefox on Intel macOS | Nightly only | No |
-| Firefox on Linux and Android | No | Firefox 155, Linux: falls back to WASM |
+| Firefox on Linux, stable | No (Nightly only) | Firefox 155, Linux: falls back to WASM |
+| Firefox on Android, stable | No (flagged in Beta and Nightly) | No |
 | Safari 26+ on macOS, iOS, iPadOS | Yes | No; WebKit WASM path runs in CI |
 | Safari before 26 | No | No |
 

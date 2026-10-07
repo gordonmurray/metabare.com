@@ -44,9 +44,24 @@ the memory gate.
 | laptop-iris-xe/firefox-wasm-q4f16-embed-q8 | - | 4 | 1427 | 0.0 | 119.0 | 26.6 | 3.8 | 1352 | - |
 | laptop-iris-xe/firefox-webgpu-q4f16-embed-q8-cold | navigator.gpu missing | 4 | 1807 | 178.6 | 116.8 | 26.7 | 3.8 | 1704 | - |
 | laptop-iris-xe/firefox-webgpu-q4f16-embed-q8 | navigator.gpu missing | 4 | 1420 | 0.0 | 116.4 | 26.6 | 3.8 | 1284 | - |
+| laptop-iris-xe-repeat2/firefox-wasm-q4f16-embed-q8-cold | - | 4 | 1806 | 178.6 | 121.3 | 26.8 | 3.8 | 1277 | - |
+| laptop-iris-xe-repeat2/firefox-wasm-q4f16-embed-q8 | - | 4 | 1411 | 0.0 | 120.0 | 26.9 | 3.9 | 1345 | - |
+| laptop-iris-xe-repeat2/firefox-webgpu-q4f16-embed-q8-cold | navigator.gpu missing | 4 | 1837 | 178.6 | 118.7 | 26.3 | 3.8 | 1669 | - |
+| laptop-iris-xe-repeat2/firefox-webgpu-q4f16-embed-q8 | navigator.gpu missing | 4 | 1406 | 0.0 | 117.1 | 26.9 | 3.9 | 1280 | - |
+| laptop-iris-xe-repeat3/firefox-wasm-q4f16-embed-q8-cold | - | 4 | 1835 | 178.6 | 119.4 | 26.9 | 3.8 | 1702 | - |
+| laptop-iris-xe-repeat3/firefox-wasm-q4f16-embed-q8 | - | 4 | 1404 | 0.0 | 116.1 | 26.5 | 3.9 | 1286 | - |
+| laptop-iris-xe-repeat3/firefox-webgpu-q4f16-embed-q8-cold | navigator.gpu missing | 4 | 1822 | 178.6 | 119.9 | 26.5 | 3.8 | 1273 | - |
+| laptop-iris-xe-repeat3/firefox-webgpu-q4f16-embed-q8 | navigator.gpu missing | 4 | 1374 | 0.0 | 117.6 | 26.6 | 3.9 | 1346 | - |
+| laptop-iris-xe-repeat4/firefox-wasm-q4f16-embed-q8-cold | - | 4 | 1811 | 178.6 | 118.9 | 26.6 | 3.9 | 1287 | - |
+| laptop-iris-xe-repeat4/firefox-wasm-q4f16-embed-q8 | - | 4 | 1387 | 0.0 | 120.7 | 26.5 | 3.8 | 1349 | - |
+| laptop-iris-xe-repeat4/firefox-webgpu-q4f16-embed-q8-cold | navigator.gpu missing | 4 | 1814 | 178.6 | 115.2 | 26.4 | 3.8 | 1371 | - |
+| laptop-iris-xe-repeat4/firefox-webgpu-q4f16-embed-q8 | navigator.gpu missing | 4 | 1411 | 0.0 | 116.2 | 26.4 | 3.8 | 1273 | - |
 
 | Machine/browser | User agent | WebGPU adapter |
 | --- | --- | --- |
+| laptop-iris-xe-repeat2/firefox | Mozilla/5.0 (X11; Linux x86_64; rv:155.0) Gecko/20100101 Firefox/155.0 | none |
+| laptop-iris-xe-repeat3/firefox | Mozilla/5.0 (X11; Linux x86_64; rv:155.0) Gecko/20100101 Firefox/155.0 | none |
+| laptop-iris-xe-repeat4/firefox | Mozilla/5.0 (X11; Linux x86_64; rv:155.0) Gecko/20100101 Firefox/155.0 | none |
 | laptop-iris-xe/chrome | Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/154.0.0.0 Safari/537.36 | intel gen-12lp |
 | laptop-iris-xe/firefox | Mozilla/5.0 (X11; Linux x86_64; rv:155.0) Gecko/20100101 Firefox/155.0 | none |
 
@@ -69,6 +84,12 @@ as mean / minimum.
 | laptop-iris-xe/chrome-webgpu-q8 | 0.9209 / 0.8523 | 0.9231 / 0.8520 | 0.9914 / 0.9878 | 0.9915 / 0.9808 |
 | laptop-iris-xe/firefox-wasm-q4f16-embed-q8 | 0.9635 / 0.9163 | 0.9859 / 0.9777 | 0.9915 / 0.9877 | 0.9915 / 0.9808 |
 | laptop-iris-xe/firefox-webgpu-q4f16-embed-q8 | 0.9635 / 0.9163 | 0.9859 / 0.9777 | 0.9915 / 0.9877 | 0.9915 / 0.9808 |
+| laptop-iris-xe-repeat2/firefox-wasm-q4f16-embed-q8 | 0.9635 / 0.9163 | 0.9859 / 0.9777 | 0.9915 / 0.9877 | 0.9915 / 0.9808 |
+| laptop-iris-xe-repeat2/firefox-webgpu-q4f16-embed-q8 | 0.9635 / 0.9163 | 0.9859 / 0.9777 | 0.9915 / 0.9877 | 0.9915 / 0.9808 |
+| laptop-iris-xe-repeat3/firefox-wasm-q4f16-embed-q8 | 0.9635 / 0.9163 | 0.9859 / 0.9777 | 0.9915 / 0.9877 | 0.9915 / 0.9808 |
+| laptop-iris-xe-repeat3/firefox-webgpu-q4f16-embed-q8 | 0.9635 / 0.9163 | 0.9859 / 0.9777 | 0.9915 / 0.9877 | 0.9915 / 0.9808 |
+| laptop-iris-xe-repeat4/firefox-wasm-q4f16-embed-q8 | 0.9635 / 0.9163 | 0.9859 / 0.9777 | 0.9915 / 0.9877 | 0.9915 / 0.9808 |
+| laptop-iris-xe-repeat4/firefox-webgpu-q4f16-embed-q8 | 0.9635 / 0.9163 | 0.9859 / 0.9777 | 0.9915 / 0.9877 | 0.9915 / 0.9808 |
 
 ## Cross-backend agreement, images
 
@@ -76,21 +97,27 @@ Row A embeds the corpus, column B embeds the queries. Each cell is the top-10
 overlap with A's own ranking, as mean / minimum over queries. Budget: mean at least
 0.9, no query below 0.7. Failing cells have an asterisk.
 
-| A \ B | 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 |
-| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| 0: laptop-iris-xe/chrome-wasm-fp16 | - | 1.00 / 1.0 | 0.94 / 0.7 | 0.94 / 0.7 | 0.82 / 0.5* | 0.99 / 0.9 | 1.00 / 1.0 | 0.94 / 0.7 | 0.94 / 0.7 | 0.82 / 0.5* | 0.94 / 0.7 | 0.94 / 0.7 | 1.00 / 1.0 |
-| 1: laptop-iris-xe/chrome-wasm-fp32 | 1.00 / 1.0 | - | 0.95 / 0.7 | 0.95 / 0.7 | 0.81 / 0.5* | 0.99 / 0.9 | 1.00 / 1.0 | 0.94 / 0.7 | 0.94 / 0.7 | 0.82 / 0.5* | 0.95 / 0.7 | 0.95 / 0.7 | 1.00 / 1.0 |
-| 2: laptop-iris-xe/chrome-wasm-q4f16-embed-q8 | 0.97 / 0.8 | 0.97 / 0.8 | - | 1.00 / 1.0 | 0.82 / 0.5* | 0.97 / 0.8 | 0.97 / 0.8 | 0.99 / 0.9 | 0.99 / 0.9 | 0.81 / 0.5* | 1.00 / 1.0 | 1.00 / 1.0 | 0.97 / 0.8 |
-| 3: laptop-iris-xe/chrome-wasm-q4f16 | 0.97 / 0.8 | 0.97 / 0.8 | 1.00 / 1.0 | - | 0.82 / 0.5* | 0.97 / 0.8 | 0.97 / 0.8 | 0.99 / 0.9 | 0.99 / 0.9 | 0.81 / 0.5* | 1.00 / 1.0 | 1.00 / 1.0 | 0.97 / 0.8 |
-| 4: laptop-iris-xe/chrome-wasm-q8 | 0.82 / 0.4* | 0.82 / 0.4* | 0.81 / 0.4* | 0.81 / 0.4* | - | 0.82 / 0.4* | 0.82 / 0.4* | 0.81 / 0.4* | 0.81 / 0.4* | 0.98 / 0.9 | 0.81 / 0.4* | 0.81 / 0.4* | 0.82 / 0.4* |
-| 5: laptop-iris-xe/chrome-webgpu-fp16 | 1.00 / 1.0 | 1.00 / 1.0 | 0.94 / 0.7 | 0.94 / 0.7 | 0.81 / 0.4* | - | 1.00 / 1.0 | 0.94 / 0.7 | 0.94 / 0.7 | 0.82 / 0.4* | 0.94 / 0.7 | 0.94 / 0.7 | 1.00 / 1.0 |
-| 6: laptop-iris-xe/chrome-webgpu-fp32 | 1.00 / 1.0 | 1.00 / 1.0 | 0.95 / 0.7 | 0.95 / 0.7 | 0.81 / 0.5* | 1.00 / 1.0 | - | 0.94 / 0.7 | 0.94 / 0.7 | 0.82 / 0.5* | 0.95 / 0.7 | 0.95 / 0.7 | 1.00 / 1.0 |
-| 7: laptop-iris-xe/chrome-webgpu-q4f16-embed-q8 | 0.96 / 0.8 | 0.96 / 0.8 | 0.98 / 0.9 | 0.98 / 0.9 | 0.81 / 0.5* | 0.96 / 0.8 | 0.96 / 0.8 | - | 1.00 / 1.0 | 0.81 / 0.5* | 0.98 / 0.9 | 0.98 / 0.9 | 0.96 / 0.8 |
-| 8: laptop-iris-xe/chrome-webgpu-q4f16 | 0.96 / 0.8 | 0.96 / 0.8 | 0.98 / 0.9 | 0.98 / 0.9 | 0.81 / 0.5* | 0.96 / 0.8 | 0.96 / 0.8 | 1.00 / 1.0 | - | 0.81 / 0.5* | 0.98 / 0.9 | 0.98 / 0.9 | 0.96 / 0.8 |
-| 9: laptop-iris-xe/chrome-webgpu-q8 | 0.81 / 0.4* | 0.81 / 0.4* | 0.80 / 0.4* | 0.80 / 0.4* | 0.99 / 0.9 | 0.81 / 0.4* | 0.81 / 0.4* | 0.80 / 0.4* | 0.80 / 0.4* | - | 0.80 / 0.4* | 0.80 / 0.4* | 0.81 / 0.4* |
-| 10: laptop-iris-xe/firefox-wasm-q4f16-embed-q8 | 0.97 / 0.7 | 0.97 / 0.7 | 1.00 / 1.0 | 1.00 / 1.0 | 0.82 / 0.5* | 0.97 / 0.7 | 0.97 / 0.7 | 0.99 / 0.9 | 0.99 / 0.9 | 0.82 / 0.5* | - | 1.00 / 1.0 | 0.97 / 0.7 |
-| 11: laptop-iris-xe/firefox-webgpu-q4f16-embed-q8 | 0.97 / 0.7 | 0.97 / 0.7 | 1.00 / 1.0 | 1.00 / 1.0 | 0.82 / 0.5* | 0.97 / 0.7 | 0.97 / 0.7 | 0.99 / 0.9 | 0.99 / 0.9 | 0.82 / 0.5* | 1.00 / 1.0 | - | 0.97 / 0.7 |
-| 12: reference | 0.99 / 0.9 | 1.00 / 1.0 | 0.93 / 0.8 | 0.93 / 0.8 | 0.81 / 0.5* | 0.99 / 0.9 | 1.00 / 1.0 | 0.93 / 0.8 | 0.93 / 0.8 | 0.81 / 0.5* | 0.93 / 0.8 | 0.93 / 0.8 | - |
+| A \ B | 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13 | 14 | 15 | 16 | 17 | 18 |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 0: laptop-iris-xe/chrome-wasm-fp16 | - | 1.00 / 1.0 | 0.94 / 0.7 | 0.94 / 0.7 | 0.82 / 0.5* | 0.99 / 0.9 | 1.00 / 1.0 | 0.94 / 0.7 | 0.94 / 0.7 | 0.82 / 0.5* | 0.94 / 0.7 | 0.94 / 0.7 | 0.94 / 0.7 | 0.94 / 0.7 | 0.94 / 0.7 | 0.94 / 0.7 | 0.94 / 0.7 | 0.94 / 0.7 | 1.00 / 1.0 |
+| 1: laptop-iris-xe/chrome-wasm-fp32 | 1.00 / 1.0 | - | 0.95 / 0.7 | 0.95 / 0.7 | 0.81 / 0.5* | 0.99 / 0.9 | 1.00 / 1.0 | 0.94 / 0.7 | 0.94 / 0.7 | 0.82 / 0.5* | 0.95 / 0.7 | 0.95 / 0.7 | 0.95 / 0.7 | 0.95 / 0.7 | 0.95 / 0.7 | 0.95 / 0.7 | 0.95 / 0.7 | 0.95 / 0.7 | 1.00 / 1.0 |
+| 2: laptop-iris-xe/chrome-wasm-q4f16-embed-q8 | 0.97 / 0.8 | 0.97 / 0.8 | - | 1.00 / 1.0 | 0.82 / 0.5* | 0.97 / 0.8 | 0.97 / 0.8 | 0.99 / 0.9 | 0.99 / 0.9 | 0.81 / 0.5* | 1.00 / 1.0 | 1.00 / 1.0 | 1.00 / 1.0 | 1.00 / 1.0 | 1.00 / 1.0 | 1.00 / 1.0 | 1.00 / 1.0 | 1.00 / 1.0 | 0.97 / 0.8 |
+| 3: laptop-iris-xe/chrome-wasm-q4f16 | 0.97 / 0.8 | 0.97 / 0.8 | 1.00 / 1.0 | - | 0.82 / 0.5* | 0.97 / 0.8 | 0.97 / 0.8 | 0.99 / 0.9 | 0.99 / 0.9 | 0.81 / 0.5* | 1.00 / 1.0 | 1.00 / 1.0 | 1.00 / 1.0 | 1.00 / 1.0 | 1.00 / 1.0 | 1.00 / 1.0 | 1.00 / 1.0 | 1.00 / 1.0 | 0.97 / 0.8 |
+| 4: laptop-iris-xe/chrome-wasm-q8 | 0.82 / 0.4* | 0.82 / 0.4* | 0.81 / 0.4* | 0.81 / 0.4* | - | 0.82 / 0.4* | 0.82 / 0.4* | 0.81 / 0.4* | 0.81 / 0.4* | 0.98 / 0.9 | 0.81 / 0.4* | 0.81 / 0.4* | 0.81 / 0.4* | 0.81 / 0.4* | 0.81 / 0.4* | 0.81 / 0.4* | 0.81 / 0.4* | 0.81 / 0.4* | 0.82 / 0.4* |
+| 5: laptop-iris-xe/chrome-webgpu-fp16 | 1.00 / 1.0 | 1.00 / 1.0 | 0.94 / 0.7 | 0.94 / 0.7 | 0.81 / 0.4* | - | 1.00 / 1.0 | 0.94 / 0.7 | 0.94 / 0.7 | 0.82 / 0.4* | 0.94 / 0.7 | 0.94 / 0.7 | 0.94 / 0.7 | 0.94 / 0.7 | 0.94 / 0.7 | 0.94 / 0.7 | 0.94 / 0.7 | 0.94 / 0.7 | 1.00 / 1.0 |
+| 6: laptop-iris-xe/chrome-webgpu-fp32 | 1.00 / 1.0 | 1.00 / 1.0 | 0.95 / 0.7 | 0.95 / 0.7 | 0.81 / 0.5* | 1.00 / 1.0 | - | 0.94 / 0.7 | 0.94 / 0.7 | 0.82 / 0.5* | 0.95 / 0.7 | 0.95 / 0.7 | 0.95 / 0.7 | 0.95 / 0.7 | 0.95 / 0.7 | 0.95 / 0.7 | 0.95 / 0.7 | 0.95 / 0.7 | 1.00 / 1.0 |
+| 7: laptop-iris-xe/chrome-webgpu-q4f16-embed-q8 | 0.96 / 0.8 | 0.96 / 0.8 | 0.98 / 0.9 | 0.98 / 0.9 | 0.81 / 0.5* | 0.96 / 0.8 | 0.96 / 0.8 | - | 1.00 / 1.0 | 0.81 / 0.5* | 0.98 / 0.9 | 0.98 / 0.9 | 0.98 / 0.9 | 0.98 / 0.9 | 0.98 / 0.9 | 0.98 / 0.9 | 0.98 / 0.9 | 0.98 / 0.9 | 0.96 / 0.8 |
+| 8: laptop-iris-xe/chrome-webgpu-q4f16 | 0.96 / 0.8 | 0.96 / 0.8 | 0.98 / 0.9 | 0.98 / 0.9 | 0.81 / 0.5* | 0.96 / 0.8 | 0.96 / 0.8 | 1.00 / 1.0 | - | 0.81 / 0.5* | 0.98 / 0.9 | 0.98 / 0.9 | 0.98 / 0.9 | 0.98 / 0.9 | 0.98 / 0.9 | 0.98 / 0.9 | 0.98 / 0.9 | 0.98 / 0.9 | 0.96 / 0.8 |
+| 9: laptop-iris-xe/chrome-webgpu-q8 | 0.81 / 0.4* | 0.81 / 0.4* | 0.80 / 0.4* | 0.80 / 0.4* | 0.99 / 0.9 | 0.81 / 0.4* | 0.81 / 0.4* | 0.80 / 0.4* | 0.80 / 0.4* | - | 0.80 / 0.4* | 0.80 / 0.4* | 0.80 / 0.4* | 0.80 / 0.4* | 0.80 / 0.4* | 0.80 / 0.4* | 0.80 / 0.4* | 0.80 / 0.4* | 0.81 / 0.4* |
+| 10: laptop-iris-xe/firefox-wasm-q4f16-embed-q8 | 0.97 / 0.7 | 0.97 / 0.7 | 1.00 / 1.0 | 1.00 / 1.0 | 0.82 / 0.5* | 0.97 / 0.7 | 0.97 / 0.7 | 0.99 / 0.9 | 0.99 / 0.9 | 0.82 / 0.5* | - | 1.00 / 1.0 | 1.00 / 1.0 | 1.00 / 1.0 | 1.00 / 1.0 | 1.00 / 1.0 | 1.00 / 1.0 | 1.00 / 1.0 | 0.97 / 0.7 |
+| 11: laptop-iris-xe/firefox-webgpu-q4f16-embed-q8 | 0.97 / 0.7 | 0.97 / 0.7 | 1.00 / 1.0 | 1.00 / 1.0 | 0.82 / 0.5* | 0.97 / 0.7 | 0.97 / 0.7 | 0.99 / 0.9 | 0.99 / 0.9 | 0.82 / 0.5* | 1.00 / 1.0 | - | 1.00 / 1.0 | 1.00 / 1.0 | 1.00 / 1.0 | 1.00 / 1.0 | 1.00 / 1.0 | 1.00 / 1.0 | 0.97 / 0.7 |
+| 12: laptop-iris-xe-repeat2/firefox-wasm-q4f16-embed-q8 | 0.97 / 0.7 | 0.97 / 0.7 | 1.00 / 1.0 | 1.00 / 1.0 | 0.82 / 0.5* | 0.97 / 0.7 | 0.97 / 0.7 | 0.99 / 0.9 | 0.99 / 0.9 | 0.82 / 0.5* | 1.00 / 1.0 | 1.00 / 1.0 | - | 1.00 / 1.0 | 1.00 / 1.0 | 1.00 / 1.0 | 1.00 / 1.0 | 1.00 / 1.0 | 0.97 / 0.7 |
+| 13: laptop-iris-xe-repeat2/firefox-webgpu-q4f16-embed-q8 | 0.97 / 0.7 | 0.97 / 0.7 | 1.00 / 1.0 | 1.00 / 1.0 | 0.82 / 0.5* | 0.97 / 0.7 | 0.97 / 0.7 | 0.99 / 0.9 | 0.99 / 0.9 | 0.82 / 0.5* | 1.00 / 1.0 | 1.00 / 1.0 | 1.00 / 1.0 | - | 1.00 / 1.0 | 1.00 / 1.0 | 1.00 / 1.0 | 1.00 / 1.0 | 0.97 / 0.7 |
+| 14: laptop-iris-xe-repeat3/firefox-wasm-q4f16-embed-q8 | 0.97 / 0.7 | 0.97 / 0.7 | 1.00 / 1.0 | 1.00 / 1.0 | 0.82 / 0.5* | 0.97 / 0.7 | 0.97 / 0.7 | 0.99 / 0.9 | 0.99 / 0.9 | 0.82 / 0.5* | 1.00 / 1.0 | 1.00 / 1.0 | 1.00 / 1.0 | 1.00 / 1.0 | - | 1.00 / 1.0 | 1.00 / 1.0 | 1.00 / 1.0 | 0.97 / 0.7 |
+| 15: laptop-iris-xe-repeat3/firefox-webgpu-q4f16-embed-q8 | 0.97 / 0.7 | 0.97 / 0.7 | 1.00 / 1.0 | 1.00 / 1.0 | 0.82 / 0.5* | 0.97 / 0.7 | 0.97 / 0.7 | 0.99 / 0.9 | 0.99 / 0.9 | 0.82 / 0.5* | 1.00 / 1.0 | 1.00 / 1.0 | 1.00 / 1.0 | 1.00 / 1.0 | 1.00 / 1.0 | - | 1.00 / 1.0 | 1.00 / 1.0 | 0.97 / 0.7 |
+| 16: laptop-iris-xe-repeat4/firefox-wasm-q4f16-embed-q8 | 0.97 / 0.7 | 0.97 / 0.7 | 1.00 / 1.0 | 1.00 / 1.0 | 0.82 / 0.5* | 0.97 / 0.7 | 0.97 / 0.7 | 0.99 / 0.9 | 0.99 / 0.9 | 0.82 / 0.5* | 1.00 / 1.0 | 1.00 / 1.0 | 1.00 / 1.0 | 1.00 / 1.0 | 1.00 / 1.0 | 1.00 / 1.0 | - | 1.00 / 1.0 | 0.97 / 0.7 |
+| 17: laptop-iris-xe-repeat4/firefox-webgpu-q4f16-embed-q8 | 0.97 / 0.7 | 0.97 / 0.7 | 1.00 / 1.0 | 1.00 / 1.0 | 0.82 / 0.5* | 0.97 / 0.7 | 0.97 / 0.7 | 0.99 / 0.9 | 0.99 / 0.9 | 0.82 / 0.5* | 1.00 / 1.0 | 1.00 / 1.0 | 1.00 / 1.0 | 1.00 / 1.0 | 1.00 / 1.0 | 1.00 / 1.0 | 1.00 / 1.0 | - | 0.97 / 0.7 |
+| 18: reference | 0.99 / 0.9 | 1.00 / 1.0 | 0.93 / 0.8 | 0.93 / 0.8 | 0.81 / 0.5* | 0.99 / 0.9 | 1.00 / 1.0 | 0.93 / 0.8 | 0.93 / 0.8 | 0.81 / 0.5* | 0.93 / 0.8 | 0.93 / 0.8 | 0.93 / 0.8 | 0.93 / 0.8 | 0.93 / 0.8 | 0.93 / 0.8 | 0.93 / 0.8 | 0.93 / 0.8 | - |
 
 ## Cross-backend agreement, notes
 
@@ -98,21 +125,27 @@ Row A embeds the corpus, column B embeds the queries. Each cell is the top-10
 overlap with A's own ranking, as mean / minimum over queries. Budget: mean at least
 0.9, no query below 0.7. Failing cells have an asterisk.
 
-| A \ B | 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 |
-| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| 0: laptop-iris-xe/chrome-wasm-fp16 | - | 1.00 / 1.0 | 0.98 / 0.9 | 0.97 / 0.8 | 0.98 / 0.9 | 0.99 / 0.9 | 1.00 / 1.0 | 0.98 / 0.9 | 0.97 / 0.8 | 0.98 / 0.9 | 0.98 / 0.9 | 0.98 / 0.9 | 1.00 / 1.0 |
-| 1: laptop-iris-xe/chrome-wasm-fp32 | 1.00 / 1.0 | - | 0.98 / 0.9 | 0.97 / 0.8 | 0.98 / 0.9 | 1.00 / 1.0 | 1.00 / 1.0 | 0.98 / 0.9 | 0.97 / 0.8 | 0.98 / 0.9 | 0.98 / 0.9 | 0.98 / 0.9 | 1.00 / 1.0 |
-| 2: laptop-iris-xe/chrome-wasm-q4f16-embed-q8 | 0.95 / 0.9 | 0.95 / 0.9 | - | 0.93 / 0.8 | 1.00 / 1.0 | 0.95 / 0.9 | 0.95 / 0.9 | 0.99 / 0.9 | 0.93 / 0.8 | 0.99 / 0.9 | 1.00 / 1.0 | 1.00 / 1.0 | 0.95 / 0.9 |
-| 3: laptop-iris-xe/chrome-wasm-q4f16 | 0.96 / 0.8 | 0.96 / 0.8 | 0.94 / 0.8 | - | 0.94 / 0.8 | 0.96 / 0.8 | 0.96 / 0.8 | 0.94 / 0.8 | 1.00 / 1.0 | 0.94 / 0.8 | 0.94 / 0.8 | 0.94 / 0.8 | 0.96 / 0.8 |
-| 4: laptop-iris-xe/chrome-wasm-q8 | 0.95 / 0.9 | 0.95 / 0.9 | 1.00 / 1.0 | 0.93 / 0.8 | - | 0.95 / 0.9 | 0.95 / 0.9 | 0.99 / 0.9 | 0.93 / 0.8 | 0.99 / 0.9 | 1.00 / 1.0 | 1.00 / 1.0 | 0.95 / 0.9 |
-| 5: laptop-iris-xe/chrome-webgpu-fp16 | 0.99 / 0.9 | 0.99 / 0.9 | 0.98 / 0.9 | 0.97 / 0.8 | 0.98 / 0.9 | - | 0.99 / 0.9 | 0.98 / 0.9 | 0.97 / 0.8 | 0.98 / 0.9 | 0.98 / 0.9 | 0.98 / 0.9 | 0.99 / 0.9 |
-| 6: laptop-iris-xe/chrome-webgpu-fp32 | 1.00 / 1.0 | 1.00 / 1.0 | 0.98 / 0.9 | 0.97 / 0.8 | 0.98 / 0.9 | 1.00 / 1.0 | - | 0.98 / 0.9 | 0.97 / 0.8 | 0.98 / 0.9 | 0.98 / 0.9 | 0.98 / 0.9 | 1.00 / 1.0 |
-| 7: laptop-iris-xe/chrome-webgpu-q4f16-embed-q8 | 0.94 / 0.8 | 0.94 / 0.8 | 0.99 / 0.9 | 0.93 / 0.7 | 0.99 / 0.9 | 0.95 / 0.8 | 0.94 / 0.8 | - | 0.93 / 0.7 | 1.00 / 1.0 | 0.99 / 0.9 | 0.99 / 0.9 | 0.94 / 0.8 |
-| 8: laptop-iris-xe/chrome-webgpu-q4f16 | 0.96 / 0.8 | 0.96 / 0.8 | 0.94 / 0.8 | 1.00 / 1.0 | 0.94 / 0.8 | 0.96 / 0.8 | 0.96 / 0.8 | 0.94 / 0.8 | - | 0.94 / 0.8 | 0.94 / 0.8 | 0.94 / 0.8 | 0.96 / 0.8 |
-| 9: laptop-iris-xe/chrome-webgpu-q8 | 0.94 / 0.8 | 0.94 / 0.8 | 0.99 / 0.9 | 0.93 / 0.7 | 0.99 / 0.9 | 0.95 / 0.8 | 0.94 / 0.8 | 1.00 / 1.0 | 0.93 / 0.7 | - | 0.99 / 0.9 | 0.99 / 0.9 | 0.94 / 0.8 |
-| 10: laptop-iris-xe/firefox-wasm-q4f16-embed-q8 | 0.95 / 0.9 | 0.95 / 0.9 | 1.00 / 1.0 | 0.93 / 0.8 | 1.00 / 1.0 | 0.95 / 0.9 | 0.95 / 0.9 | 0.99 / 0.9 | 0.93 / 0.8 | 0.99 / 0.9 | - | 1.00 / 1.0 | 0.95 / 0.9 |
-| 11: laptop-iris-xe/firefox-webgpu-q4f16-embed-q8 | 0.95 / 0.9 | 0.95 / 0.9 | 1.00 / 1.0 | 0.93 / 0.8 | 1.00 / 1.0 | 0.95 / 0.9 | 0.95 / 0.9 | 0.99 / 0.9 | 0.93 / 0.8 | 0.99 / 0.9 | 1.00 / 1.0 | - | 0.95 / 0.9 |
-| 12: reference | 1.00 / 1.0 | 1.00 / 1.0 | 0.98 / 0.9 | 0.97 / 0.8 | 0.98 / 0.9 | 1.00 / 1.0 | 1.00 / 1.0 | 0.98 / 0.9 | 0.97 / 0.8 | 0.98 / 0.9 | 0.98 / 0.9 | 0.98 / 0.9 | - |
+| A \ B | 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13 | 14 | 15 | 16 | 17 | 18 |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 0: laptop-iris-xe/chrome-wasm-fp16 | - | 1.00 / 1.0 | 0.98 / 0.9 | 0.97 / 0.8 | 0.98 / 0.9 | 0.99 / 0.9 | 1.00 / 1.0 | 0.98 / 0.9 | 0.97 / 0.8 | 0.98 / 0.9 | 0.98 / 0.9 | 0.98 / 0.9 | 0.98 / 0.9 | 0.98 / 0.9 | 0.98 / 0.9 | 0.98 / 0.9 | 0.98 / 0.9 | 0.98 / 0.9 | 1.00 / 1.0 |
+| 1: laptop-iris-xe/chrome-wasm-fp32 | 1.00 / 1.0 | - | 0.98 / 0.9 | 0.97 / 0.8 | 0.98 / 0.9 | 1.00 / 1.0 | 1.00 / 1.0 | 0.98 / 0.9 | 0.97 / 0.8 | 0.98 / 0.9 | 0.98 / 0.9 | 0.98 / 0.9 | 0.98 / 0.9 | 0.98 / 0.9 | 0.98 / 0.9 | 0.98 / 0.9 | 0.98 / 0.9 | 0.98 / 0.9 | 1.00 / 1.0 |
+| 2: laptop-iris-xe/chrome-wasm-q4f16-embed-q8 | 0.95 / 0.9 | 0.95 / 0.9 | - | 0.93 / 0.8 | 1.00 / 1.0 | 0.95 / 0.9 | 0.95 / 0.9 | 0.99 / 0.9 | 0.93 / 0.8 | 0.99 / 0.9 | 1.00 / 1.0 | 1.00 / 1.0 | 1.00 / 1.0 | 1.00 / 1.0 | 1.00 / 1.0 | 1.00 / 1.0 | 1.00 / 1.0 | 1.00 / 1.0 | 0.95 / 0.9 |
+| 3: laptop-iris-xe/chrome-wasm-q4f16 | 0.96 / 0.8 | 0.96 / 0.8 | 0.94 / 0.8 | - | 0.94 / 0.8 | 0.96 / 0.8 | 0.96 / 0.8 | 0.94 / 0.8 | 1.00 / 1.0 | 0.94 / 0.8 | 0.94 / 0.8 | 0.94 / 0.8 | 0.94 / 0.8 | 0.94 / 0.8 | 0.94 / 0.8 | 0.94 / 0.8 | 0.94 / 0.8 | 0.94 / 0.8 | 0.96 / 0.8 |
+| 4: laptop-iris-xe/chrome-wasm-q8 | 0.95 / 0.9 | 0.95 / 0.9 | 1.00 / 1.0 | 0.93 / 0.8 | - | 0.95 / 0.9 | 0.95 / 0.9 | 0.99 / 0.9 | 0.93 / 0.8 | 0.99 / 0.9 | 1.00 / 1.0 | 1.00 / 1.0 | 1.00 / 1.0 | 1.00 / 1.0 | 1.00 / 1.0 | 1.00 / 1.0 | 1.00 / 1.0 | 1.00 / 1.0 | 0.95 / 0.9 |
+| 5: laptop-iris-xe/chrome-webgpu-fp16 | 0.99 / 0.9 | 0.99 / 0.9 | 0.98 / 0.9 | 0.97 / 0.8 | 0.98 / 0.9 | - | 0.99 / 0.9 | 0.98 / 0.9 | 0.97 / 0.8 | 0.98 / 0.9 | 0.98 / 0.9 | 0.98 / 0.9 | 0.98 / 0.9 | 0.98 / 0.9 | 0.98 / 0.9 | 0.98 / 0.9 | 0.98 / 0.9 | 0.98 / 0.9 | 0.99 / 0.9 |
+| 6: laptop-iris-xe/chrome-webgpu-fp32 | 1.00 / 1.0 | 1.00 / 1.0 | 0.98 / 0.9 | 0.97 / 0.8 | 0.98 / 0.9 | 1.00 / 1.0 | - | 0.98 / 0.9 | 0.97 / 0.8 | 0.98 / 0.9 | 0.98 / 0.9 | 0.98 / 0.9 | 0.98 / 0.9 | 0.98 / 0.9 | 0.98 / 0.9 | 0.98 / 0.9 | 0.98 / 0.9 | 0.98 / 0.9 | 1.00 / 1.0 |
+| 7: laptop-iris-xe/chrome-webgpu-q4f16-embed-q8 | 0.94 / 0.8 | 0.94 / 0.8 | 0.99 / 0.9 | 0.93 / 0.7 | 0.99 / 0.9 | 0.95 / 0.8 | 0.94 / 0.8 | - | 0.93 / 0.7 | 1.00 / 1.0 | 0.99 / 0.9 | 0.99 / 0.9 | 0.99 / 0.9 | 0.99 / 0.9 | 0.99 / 0.9 | 0.99 / 0.9 | 0.99 / 0.9 | 0.99 / 0.9 | 0.94 / 0.8 |
+| 8: laptop-iris-xe/chrome-webgpu-q4f16 | 0.96 / 0.8 | 0.96 / 0.8 | 0.94 / 0.8 | 1.00 / 1.0 | 0.94 / 0.8 | 0.96 / 0.8 | 0.96 / 0.8 | 0.94 / 0.8 | - | 0.94 / 0.8 | 0.94 / 0.8 | 0.94 / 0.8 | 0.94 / 0.8 | 0.94 / 0.8 | 0.94 / 0.8 | 0.94 / 0.8 | 0.94 / 0.8 | 0.94 / 0.8 | 0.96 / 0.8 |
+| 9: laptop-iris-xe/chrome-webgpu-q8 | 0.94 / 0.8 | 0.94 / 0.8 | 0.99 / 0.9 | 0.93 / 0.7 | 0.99 / 0.9 | 0.95 / 0.8 | 0.94 / 0.8 | 1.00 / 1.0 | 0.93 / 0.7 | - | 0.99 / 0.9 | 0.99 / 0.9 | 0.99 / 0.9 | 0.99 / 0.9 | 0.99 / 0.9 | 0.99 / 0.9 | 0.99 / 0.9 | 0.99 / 0.9 | 0.94 / 0.8 |
+| 10: laptop-iris-xe/firefox-wasm-q4f16-embed-q8 | 0.95 / 0.9 | 0.95 / 0.9 | 1.00 / 1.0 | 0.93 / 0.8 | 1.00 / 1.0 | 0.95 / 0.9 | 0.95 / 0.9 | 0.99 / 0.9 | 0.93 / 0.8 | 0.99 / 0.9 | - | 1.00 / 1.0 | 1.00 / 1.0 | 1.00 / 1.0 | 1.00 / 1.0 | 1.00 / 1.0 | 1.00 / 1.0 | 1.00 / 1.0 | 0.95 / 0.9 |
+| 11: laptop-iris-xe/firefox-webgpu-q4f16-embed-q8 | 0.95 / 0.9 | 0.95 / 0.9 | 1.00 / 1.0 | 0.93 / 0.8 | 1.00 / 1.0 | 0.95 / 0.9 | 0.95 / 0.9 | 0.99 / 0.9 | 0.93 / 0.8 | 0.99 / 0.9 | 1.00 / 1.0 | - | 1.00 / 1.0 | 1.00 / 1.0 | 1.00 / 1.0 | 1.00 / 1.0 | 1.00 / 1.0 | 1.00 / 1.0 | 0.95 / 0.9 |
+| 12: laptop-iris-xe-repeat2/firefox-wasm-q4f16-embed-q8 | 0.95 / 0.9 | 0.95 / 0.9 | 1.00 / 1.0 | 0.93 / 0.8 | 1.00 / 1.0 | 0.95 / 0.9 | 0.95 / 0.9 | 0.99 / 0.9 | 0.93 / 0.8 | 0.99 / 0.9 | 1.00 / 1.0 | 1.00 / 1.0 | - | 1.00 / 1.0 | 1.00 / 1.0 | 1.00 / 1.0 | 1.00 / 1.0 | 1.00 / 1.0 | 0.95 / 0.9 |
+| 13: laptop-iris-xe-repeat2/firefox-webgpu-q4f16-embed-q8 | 0.95 / 0.9 | 0.95 / 0.9 | 1.00 / 1.0 | 0.93 / 0.8 | 1.00 / 1.0 | 0.95 / 0.9 | 0.95 / 0.9 | 0.99 / 0.9 | 0.93 / 0.8 | 0.99 / 0.9 | 1.00 / 1.0 | 1.00 / 1.0 | 1.00 / 1.0 | - | 1.00 / 1.0 | 1.00 / 1.0 | 1.00 / 1.0 | 1.00 / 1.0 | 0.95 / 0.9 |
+| 14: laptop-iris-xe-repeat3/firefox-wasm-q4f16-embed-q8 | 0.95 / 0.9 | 0.95 / 0.9 | 1.00 / 1.0 | 0.93 / 0.8 | 1.00 / 1.0 | 0.95 / 0.9 | 0.95 / 0.9 | 0.99 / 0.9 | 0.93 / 0.8 | 0.99 / 0.9 | 1.00 / 1.0 | 1.00 / 1.0 | 1.00 / 1.0 | 1.00 / 1.0 | - | 1.00 / 1.0 | 1.00 / 1.0 | 1.00 / 1.0 | 0.95 / 0.9 |
+| 15: laptop-iris-xe-repeat3/firefox-webgpu-q4f16-embed-q8 | 0.95 / 0.9 | 0.95 / 0.9 | 1.00 / 1.0 | 0.93 / 0.8 | 1.00 / 1.0 | 0.95 / 0.9 | 0.95 / 0.9 | 0.99 / 0.9 | 0.93 / 0.8 | 0.99 / 0.9 | 1.00 / 1.0 | 1.00 / 1.0 | 1.00 / 1.0 | 1.00 / 1.0 | 1.00 / 1.0 | - | 1.00 / 1.0 | 1.00 / 1.0 | 0.95 / 0.9 |
+| 16: laptop-iris-xe-repeat4/firefox-wasm-q4f16-embed-q8 | 0.95 / 0.9 | 0.95 / 0.9 | 1.00 / 1.0 | 0.93 / 0.8 | 1.00 / 1.0 | 0.95 / 0.9 | 0.95 / 0.9 | 0.99 / 0.9 | 0.93 / 0.8 | 0.99 / 0.9 | 1.00 / 1.0 | 1.00 / 1.0 | 1.00 / 1.0 | 1.00 / 1.0 | 1.00 / 1.0 | 1.00 / 1.0 | - | 1.00 / 1.0 | 0.95 / 0.9 |
+| 17: laptop-iris-xe-repeat4/firefox-webgpu-q4f16-embed-q8 | 0.95 / 0.9 | 0.95 / 0.9 | 1.00 / 1.0 | 0.93 / 0.8 | 1.00 / 1.0 | 0.95 / 0.9 | 0.95 / 0.9 | 0.99 / 0.9 | 0.93 / 0.8 | 0.99 / 0.9 | 1.00 / 1.0 | 1.00 / 1.0 | 1.00 / 1.0 | 1.00 / 1.0 | 1.00 / 1.0 | 1.00 / 1.0 | 1.00 / 1.0 | - | 0.95 / 0.9 |
+| 18: reference | 1.00 / 1.0 | 1.00 / 1.0 | 0.98 / 0.9 | 0.97 / 0.8 | 0.98 / 0.9 | 1.00 / 1.0 | 1.00 / 1.0 | 0.98 / 0.9 | 0.97 / 0.8 | 0.98 / 0.9 | 0.98 / 0.9 | 0.98 / 0.9 | 0.98 / 0.9 | 0.98 / 0.9 | 0.98 / 0.9 | 0.98 / 0.9 | 0.98 / 0.9 | 0.98 / 0.9 | - |
 
 ## Relevance on the fixtures
 
@@ -134,6 +167,12 @@ evaluation.
 | laptop-iris-xe/chrome-webgpu-q8 | 0.780 | 0.733 |
 | laptop-iris-xe/firefox-wasm-q4f16-embed-q8 | 0.840 | 0.733 |
 | laptop-iris-xe/firefox-webgpu-q4f16-embed-q8 | 0.840 | 0.733 |
+| laptop-iris-xe-repeat2/firefox-wasm-q4f16-embed-q8 | 0.840 | 0.733 |
+| laptop-iris-xe-repeat2/firefox-webgpu-q4f16-embed-q8 | 0.840 | 0.733 |
+| laptop-iris-xe-repeat3/firefox-wasm-q4f16-embed-q8 | 0.840 | 0.733 |
+| laptop-iris-xe-repeat3/firefox-webgpu-q4f16-embed-q8 | 0.840 | 0.733 |
+| laptop-iris-xe-repeat4/firefox-wasm-q4f16-embed-q8 | 0.840 | 0.733 |
+| laptop-iris-xe-repeat4/firefox-webgpu-q4f16-embed-q8 | 0.840 | 0.733 |
 
 ## Gates for the candidate: CLIP q4f16, embedder q8
 
@@ -145,13 +184,41 @@ evaluation.
 | Image embedding, WASM | laptop-iris-xe/chrome-wasm-q4f16-embed-q8 | 124.6 ms | 2000 ms | pass |
 | Image embedding, WASM | laptop-iris-xe/firefox-wasm-q4f16-embed-q8 | 119.0 ms | 2000 ms | pass |
 | Image embedding, WASM | laptop-iris-xe/firefox-webgpu-q4f16-embed-q8 | 116.4 ms | 2000 ms | pass |
+| Image embedding, WASM | laptop-iris-xe-repeat2/firefox-wasm-q4f16-embed-q8 | 120.0 ms | 2000 ms | pass |
+| Image embedding, WASM | laptop-iris-xe-repeat2/firefox-webgpu-q4f16-embed-q8 | 117.1 ms | 2000 ms | pass |
+| Image embedding, WASM | laptop-iris-xe-repeat3/firefox-wasm-q4f16-embed-q8 | 116.1 ms | 2000 ms | pass |
+| Image embedding, WASM | laptop-iris-xe-repeat3/firefox-webgpu-q4f16-embed-q8 | 117.6 ms | 2000 ms | pass |
+| Image embedding, WASM | laptop-iris-xe-repeat4/firefox-wasm-q4f16-embed-q8 | 120.7 ms | 2000 ms | pass |
+| Image embedding, WASM | laptop-iris-xe-repeat4/firefox-webgpu-q4f16-embed-q8 | 116.2 ms | 2000 ms | pass |
 | Query, both encoders, WASM | laptop-iris-xe/chrome-wasm-q4f16-embed-q8 | 26.5 ms | 500 ms | pass |
 | Query, both encoders, WASM | laptop-iris-xe/firefox-wasm-q4f16-embed-q8 | 26.6 ms | 500 ms | pass |
 | Query, both encoders, WASM | laptop-iris-xe/firefox-webgpu-q4f16-embed-q8 | 26.6 ms | 500 ms | pass |
+| Query, both encoders, WASM | laptop-iris-xe-repeat2/firefox-wasm-q4f16-embed-q8 | 26.9 ms | 500 ms | pass |
+| Query, both encoders, WASM | laptop-iris-xe-repeat2/firefox-webgpu-q4f16-embed-q8 | 26.9 ms | 500 ms | pass |
+| Query, both encoders, WASM | laptop-iris-xe-repeat3/firefox-wasm-q4f16-embed-q8 | 26.5 ms | 500 ms | pass |
+| Query, both encoders, WASM | laptop-iris-xe-repeat3/firefox-webgpu-q4f16-embed-q8 | 26.6 ms | 500 ms | pass |
+| Query, both encoders, WASM | laptop-iris-xe-repeat4/firefox-wasm-q4f16-embed-q8 | 26.5 ms | 500 ms | pass |
+| Query, both encoders, WASM | laptop-iris-xe-repeat4/firefox-webgpu-q4f16-embed-q8 | 26.4 ms | 500 ms | pass |
+| Peak memory | laptop-iris-xe/chrome-wasm-q4f16-embed-q8-cold | 1053 MB | 1500 MB | pass |
+| Peak memory | laptop-iris-xe/chrome-webgpu-q4f16-embed-q8-cold | 1236 MB | 1500 MB | pass |
+| Peak memory | laptop-iris-xe/firefox-wasm-q4f16-embed-q8-cold | 1347 MB | 1500 MB | pass |
+| Peak memory | laptop-iris-xe/firefox-webgpu-q4f16-embed-q8-cold | 1704 MB | 1500 MB | **FAIL** |
+| Peak memory | laptop-iris-xe-repeat2/firefox-wasm-q4f16-embed-q8-cold | 1277 MB | 1500 MB | pass |
+| Peak memory | laptop-iris-xe-repeat2/firefox-webgpu-q4f16-embed-q8-cold | 1669 MB | 1500 MB | **FAIL** |
+| Peak memory | laptop-iris-xe-repeat3/firefox-wasm-q4f16-embed-q8-cold | 1702 MB | 1500 MB | **FAIL** |
+| Peak memory | laptop-iris-xe-repeat3/firefox-webgpu-q4f16-embed-q8-cold | 1273 MB | 1500 MB | pass |
+| Peak memory | laptop-iris-xe-repeat4/firefox-wasm-q4f16-embed-q8-cold | 1287 MB | 1500 MB | pass |
+| Peak memory | laptop-iris-xe-repeat4/firefox-webgpu-q4f16-embed-q8-cold | 1371 MB | 1500 MB | pass |
 | Peak memory | laptop-iris-xe/chrome-wasm-q4f16-embed-q8 | 1315 MB | 1500 MB | pass |
 | Peak memory | laptop-iris-xe/chrome-webgpu-q4f16-embed-q8 | 1270 MB | 1500 MB | pass |
 | Peak memory | laptop-iris-xe/firefox-wasm-q4f16-embed-q8 | 1352 MB | 1500 MB | pass |
 | Peak memory | laptop-iris-xe/firefox-webgpu-q4f16-embed-q8 | 1284 MB | 1500 MB | pass |
+| Peak memory | laptop-iris-xe-repeat2/firefox-wasm-q4f16-embed-q8 | 1345 MB | 1500 MB | pass |
+| Peak memory | laptop-iris-xe-repeat2/firefox-webgpu-q4f16-embed-q8 | 1280 MB | 1500 MB | pass |
+| Peak memory | laptop-iris-xe-repeat3/firefox-wasm-q4f16-embed-q8 | 1286 MB | 1500 MB | pass |
+| Peak memory | laptop-iris-xe-repeat3/firefox-webgpu-q4f16-embed-q8 | 1346 MB | 1500 MB | pass |
+| Peak memory | laptop-iris-xe-repeat4/firefox-wasm-q4f16-embed-q8 | 1349 MB | 1500 MB | pass |
+| Peak memory | laptop-iris-xe-repeat4/firefox-webgpu-q4f16-embed-q8 | 1273 MB | 1500 MB | pass |
 | Agreement, images | laptop-iris-xe/chrome-webgpu-q4f16-embed-q8 corpus, laptop-iris-xe/chrome-wasm-q4f16-embed-q8 queries | 0.985 / 0.9 | 0.9 / 0.7 | pass |
 | Agreement, notes | laptop-iris-xe/chrome-webgpu-q4f16-embed-q8 corpus, laptop-iris-xe/chrome-wasm-q4f16-embed-q8 queries | 0.995 / 0.9 | 0.9 / 0.7 | pass |
 | Agreement, images | laptop-iris-xe/chrome-wasm-q4f16-embed-q8 corpus, laptop-iris-xe/chrome-webgpu-q4f16-embed-q8 queries | 0.995 / 0.9 | 0.9 / 0.7 | pass |
@@ -164,6 +231,30 @@ evaluation.
 | Agreement, notes | laptop-iris-xe/chrome-webgpu-q4f16-embed-q8 corpus, laptop-iris-xe/firefox-webgpu-q4f16-embed-q8 queries | 0.995 / 0.9 | 0.9 / 0.7 | pass |
 | Agreement, images | laptop-iris-xe/firefox-webgpu-q4f16-embed-q8 corpus, laptop-iris-xe/chrome-webgpu-q4f16-embed-q8 queries | 0.995 / 0.9 | 0.9 / 0.7 | pass |
 | Agreement, notes | laptop-iris-xe/firefox-webgpu-q4f16-embed-q8 corpus, laptop-iris-xe/chrome-webgpu-q4f16-embed-q8 queries | 0.995 / 0.9 | 0.9 / 0.7 | pass |
+| Agreement, images | laptop-iris-xe/chrome-webgpu-q4f16-embed-q8 corpus, laptop-iris-xe-repeat2/firefox-wasm-q4f16-embed-q8 queries | 0.985 / 0.9 | 0.9 / 0.7 | pass |
+| Agreement, notes | laptop-iris-xe/chrome-webgpu-q4f16-embed-q8 corpus, laptop-iris-xe-repeat2/firefox-wasm-q4f16-embed-q8 queries | 0.995 / 0.9 | 0.9 / 0.7 | pass |
+| Agreement, images | laptop-iris-xe-repeat2/firefox-wasm-q4f16-embed-q8 corpus, laptop-iris-xe/chrome-webgpu-q4f16-embed-q8 queries | 0.995 / 0.9 | 0.9 / 0.7 | pass |
+| Agreement, notes | laptop-iris-xe-repeat2/firefox-wasm-q4f16-embed-q8 corpus, laptop-iris-xe/chrome-webgpu-q4f16-embed-q8 queries | 0.995 / 0.9 | 0.9 / 0.7 | pass |
+| Agreement, images | laptop-iris-xe/chrome-webgpu-q4f16-embed-q8 corpus, laptop-iris-xe-repeat2/firefox-webgpu-q4f16-embed-q8 queries | 0.985 / 0.9 | 0.9 / 0.7 | pass |
+| Agreement, notes | laptop-iris-xe/chrome-webgpu-q4f16-embed-q8 corpus, laptop-iris-xe-repeat2/firefox-webgpu-q4f16-embed-q8 queries | 0.995 / 0.9 | 0.9 / 0.7 | pass |
+| Agreement, images | laptop-iris-xe-repeat2/firefox-webgpu-q4f16-embed-q8 corpus, laptop-iris-xe/chrome-webgpu-q4f16-embed-q8 queries | 0.995 / 0.9 | 0.9 / 0.7 | pass |
+| Agreement, notes | laptop-iris-xe-repeat2/firefox-webgpu-q4f16-embed-q8 corpus, laptop-iris-xe/chrome-webgpu-q4f16-embed-q8 queries | 0.995 / 0.9 | 0.9 / 0.7 | pass |
+| Agreement, images | laptop-iris-xe/chrome-webgpu-q4f16-embed-q8 corpus, laptop-iris-xe-repeat3/firefox-wasm-q4f16-embed-q8 queries | 0.985 / 0.9 | 0.9 / 0.7 | pass |
+| Agreement, notes | laptop-iris-xe/chrome-webgpu-q4f16-embed-q8 corpus, laptop-iris-xe-repeat3/firefox-wasm-q4f16-embed-q8 queries | 0.995 / 0.9 | 0.9 / 0.7 | pass |
+| Agreement, images | laptop-iris-xe-repeat3/firefox-wasm-q4f16-embed-q8 corpus, laptop-iris-xe/chrome-webgpu-q4f16-embed-q8 queries | 0.995 / 0.9 | 0.9 / 0.7 | pass |
+| Agreement, notes | laptop-iris-xe-repeat3/firefox-wasm-q4f16-embed-q8 corpus, laptop-iris-xe/chrome-webgpu-q4f16-embed-q8 queries | 0.995 / 0.9 | 0.9 / 0.7 | pass |
+| Agreement, images | laptop-iris-xe/chrome-webgpu-q4f16-embed-q8 corpus, laptop-iris-xe-repeat3/firefox-webgpu-q4f16-embed-q8 queries | 0.985 / 0.9 | 0.9 / 0.7 | pass |
+| Agreement, notes | laptop-iris-xe/chrome-webgpu-q4f16-embed-q8 corpus, laptop-iris-xe-repeat3/firefox-webgpu-q4f16-embed-q8 queries | 0.995 / 0.9 | 0.9 / 0.7 | pass |
+| Agreement, images | laptop-iris-xe-repeat3/firefox-webgpu-q4f16-embed-q8 corpus, laptop-iris-xe/chrome-webgpu-q4f16-embed-q8 queries | 0.995 / 0.9 | 0.9 / 0.7 | pass |
+| Agreement, notes | laptop-iris-xe-repeat3/firefox-webgpu-q4f16-embed-q8 corpus, laptop-iris-xe/chrome-webgpu-q4f16-embed-q8 queries | 0.995 / 0.9 | 0.9 / 0.7 | pass |
+| Agreement, images | laptop-iris-xe/chrome-webgpu-q4f16-embed-q8 corpus, laptop-iris-xe-repeat4/firefox-wasm-q4f16-embed-q8 queries | 0.985 / 0.9 | 0.9 / 0.7 | pass |
+| Agreement, notes | laptop-iris-xe/chrome-webgpu-q4f16-embed-q8 corpus, laptop-iris-xe-repeat4/firefox-wasm-q4f16-embed-q8 queries | 0.995 / 0.9 | 0.9 / 0.7 | pass |
+| Agreement, images | laptop-iris-xe-repeat4/firefox-wasm-q4f16-embed-q8 corpus, laptop-iris-xe/chrome-webgpu-q4f16-embed-q8 queries | 0.995 / 0.9 | 0.9 / 0.7 | pass |
+| Agreement, notes | laptop-iris-xe-repeat4/firefox-wasm-q4f16-embed-q8 corpus, laptop-iris-xe/chrome-webgpu-q4f16-embed-q8 queries | 0.995 / 0.9 | 0.9 / 0.7 | pass |
+| Agreement, images | laptop-iris-xe/chrome-webgpu-q4f16-embed-q8 corpus, laptop-iris-xe-repeat4/firefox-webgpu-q4f16-embed-q8 queries | 0.985 / 0.9 | 0.9 / 0.7 | pass |
+| Agreement, notes | laptop-iris-xe/chrome-webgpu-q4f16-embed-q8 corpus, laptop-iris-xe-repeat4/firefox-webgpu-q4f16-embed-q8 queries | 0.995 / 0.9 | 0.9 / 0.7 | pass |
+| Agreement, images | laptop-iris-xe-repeat4/firefox-webgpu-q4f16-embed-q8 corpus, laptop-iris-xe/chrome-webgpu-q4f16-embed-q8 queries | 0.995 / 0.9 | 0.9 / 0.7 | pass |
+| Agreement, notes | laptop-iris-xe-repeat4/firefox-webgpu-q4f16-embed-q8 corpus, laptop-iris-xe/chrome-webgpu-q4f16-embed-q8 queries | 0.995 / 0.9 | 0.9 / 0.7 | pass |
 | Phone loads models and embeds | - | no phone run | completes | *INCOMPLETE* |
 
 Overall: **FAIL**.

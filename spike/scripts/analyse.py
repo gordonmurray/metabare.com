@@ -367,7 +367,9 @@ def main() -> None:
                 "pass" if v <= BUDGET["wasm_query_ms"] else "fail",
             )
         )
-    for r in cand:
+    # Memory is checked on cold runs too: a first visit downloads and caches
+    # the models while loading them, which can peak higher than a warm load.
+    for r in [*cold_cand, *cand]:
         mem = (r.get("process_memory") or {}).get("max_bytes")
         if mem is None:
             gates.append(
