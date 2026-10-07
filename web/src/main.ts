@@ -149,6 +149,10 @@ async function main() {
     // Library view. Any change to the library also drops the search index,
     // which is rebuilt on the next search.
     let index: Index | null = null;
+    const results = $<HTMLUListElement>("results");
+    const searchStatus = $("search-status");
+    let resultUrls: string[] = [];
+    let searching = 0;
     const grid = $<HTMLUListElement>("grid");
     let urls: string[] = [];
     async function render() {
@@ -313,55 +317,88 @@ async function main() {
             if (!confirm("Remove every item from this browser's library? This cannot be undone."))
                 return;
             await library.clear();
+            clearResults();
             summaryEl.textContent = "Library cleared.";
             await render();
         }),
     );
 
-    // Search.
-    const results = $<HTMLUListElement>("results");
-    const searchStatus = $("search-status");
-    let resultUrls: string[] = [];
-    let searching = 0;
+    // Search. Each run keeps its own index reference and thumbnail URLs, and
+    // only the newest run may change the results or the status line.
+    function searchState(state: "searching" | "done" | "error", query: string, text: string) {
+        searchStatus.textContent = text;
+        searchStatus.dataset.state = state;
+        searchStatus.dataset.query = query;
+    }
     async function search(query: string) {
         query = query.trim();
         if (!query) return;
         const run = ++searching;
-        searchStatus.textContent = "Searching…";
-        if (!index) {
-            const snap = await library.snapshot();
-            index = new Index(snap.items, snap.vectors);
+        searchState("searching", query, "Searching…");
+        try {
+            let ix = index;
+            if (!ix) {
+                const snap = await library.snapshot();
+                ix = index = new Index(snap.items, snap.vectors);
+            }
+            if (ix.size === 0) {
+                if (run === searching)
+                    searchState(
+                        "done",
+                        query,
+                        "The library is empty. Add some images or notes first.",
+                    );
+                return;
+            }
+            const t0 = performance.now();
+            const vectors = await embedder.query(query);
+            const t1 = performance.now();
+            // ?floors=none turns off the similarity floors, to measure what they do.
+            const hits =
+                params.get("floors") === "none"
+                    ? ix.search(query, vectors, 24, { image: -1, text: -1 })
+                    : ix.search(query, vectors);
+            const t2 = performance.now();
+            if (run !== searching) return;
+            const urls: string[] = [];
+            const cards = await Promise.all(hits.map((h) => card(h.item, urls, h)));
+            if (run !== searching) {
+                for (const u of urls) URL.revokeObjectURL(u);
+                return;
+            }
+            for (const u of resultUrls) URL.revokeObjectURL(u);
+            resultUrls = urls;
+            results.replaceChildren(...cards);
+            searchStatus.dataset.results = String(hits.length);
+            const firstLoad = t1 - t0 > 1000 ? " (the first search loads the text models)" : "";
+            searchState(
+                "done",
+                query,
+                hits.length
+                    ? `${hits.length} results. Reading the query took ${Math.round(t1 - t0)} ms${firstLoad}, ` +
+                          `searching ${ix.size} items ${Math.round(t2 - t1)} ms.`
+                    : "Nothing matched closely enough.",
+            );
+        } catch (err) {
+            if (run === searching)
+                searchState(
+                    "error",
+                    query,
+                    `Search failed: ${err instanceof Error ? err.message : String(err)}`,
+                );
         }
-        if (index.size === 0) {
-            searchStatus.textContent = "The library is empty. Add some images or notes first.";
-            return;
-        }
-        const t0 = performance.now();
-        const vectors = await embedder.query(query);
-        const t1 = performance.now();
-        // ?floors=none turns off the similarity floors, to measure what they do.
-        const hits =
-            params.get("floors") === "none"
-                ? index.search(query, vectors, 24, { image: -1, text: -1 })
-                : index.search(query, vectors);
-        const t2 = performance.now();
-        if (run !== searching) return;
+    }
+    function clearResults() {
+        searching++;
         for (const u of resultUrls) URL.revokeObjectURL(u);
         resultUrls = [];
-        results.replaceChildren(
-            ...(await Promise.all(hits.map((h) => card(h.item, resultUrls, h)))),
-        );
-        searchStatus.textContent = hits.length
-            ? `${hits.length} results. Reading the query took ${Math.round(t1 - t0)} ms, ` +
-              `searching ${index.size} items ${Math.round(t2 - t1)} ms.`
-            : "Nothing matched closely enough.";
-        searchStatus.dataset.results = String(hits.length);
+        results.replaceChildren();
+        searchStatus.textContent = "";
+        delete searchStatus.dataset.state;
     }
     $<HTMLFormElement>("search-form").addEventListener("submit", (e) => {
         e.preventDefault();
-        void search($<HTMLInputElement>("query").value).catch((err) => {
-            searchStatus.textContent = `Search failed: ${err instanceof Error ? err.message : err}`;
-        });
+        void search($<HTMLInputElement>("query").value);
     });
 
     // The demo library: synthetic images and notes, built by
