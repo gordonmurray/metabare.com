@@ -6,6 +6,9 @@ set -euo pipefail
 
 cd "$(dirname "$0")"
 
+# SHA-256 of standard input, on Linux (sha256sum) or macOS (shasum).
+sha256() { if command -v sha256sum > /dev/null; then sha256sum; else shasum -a 256; fi; }
+
 # repo, revision, then the files wanted from it.
 declare -A REVISION=(
   [Xenova/clip-vit-base-patch32]=d15189d7028b43f1d3e65039190477f6af591c2a
@@ -28,7 +31,7 @@ for repo in "${!REVISION[@]}"; do
     # Small files are plain git blobs with no SHA-256 in the API, so hash
     # them here to pin their content too.
     if [[ $(jq -r '.sha256' <<<"${entries[-1]}") == null ]]; then
-      sum=$(curl -fsSL "https://huggingface.co/${repo}/resolve/${rev}/${f}" | sha256sum | cut -d' ' -f1)
+      sum=$(curl -fsSL "https://huggingface.co/${repo}/resolve/${rev}/${f}" | sha256 | cut -d' ' -f1)
       entries[-1]=$(jq -c --arg s "$sum" '.sha256 = $s' <<<"${entries[-1]}")
     fi
   done

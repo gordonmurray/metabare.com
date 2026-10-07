@@ -11,6 +11,7 @@ Run with: uv run --with pillow==12.3.0 python scripts/make_fixtures.py
 from __future__ import annotations
 
 import json
+import os
 import random
 from itertools import pairwise
 from pathlib import Path
@@ -19,7 +20,10 @@ from PIL import Image, ImageDraw, ImageFont
 
 OUT = Path(__file__).resolve().parent.parent / "public" / "fixtures"
 W, H = 448, 336
-FONT_PATH = "/usr/share/fonts/truetype/dejavu/DejaVuSansMono.ttf"
+# DejaVu Sans Mono, from the fonts-dejavu-core package on Debian and Ubuntu.
+# FIXTURE_FONT points at another copy. The committed images were drawn with it;
+# a different font gives different images.
+FONT_PATH = os.environ.get("FIXTURE_FONT", "/usr/share/fonts/truetype/dejavu/DejaVuSansMono.ttf")
 SEED = 20261007
 
 

@@ -55,21 +55,19 @@ uncompressed. Image times are warm medians.
   moving to another precision later would mean re-embedding the whole
   library, so it is ruled out.
 - **q4f16 CLIP with q8 MiniLM passes** agreement across WebGPU and WASM, in
-  both directions and across Chrome and Firefox, and passes the latency and
-  memory budgets. It is 179 MB uncompressed against a 150 MB budget; gzip
-  brings the same files to an estimated 140 MB, which the hosting item has to
-  confirm, because CloudFront does not compress objects over 10 MB.
+  both directions and across Chrome and Firefox, and passes the latency
+  budgets. Its files are 179 MB uncompressed; stored gzip-compressed, a first
+  visit to the deployed page transferred 139.5 MB against a 150 MB budget.
 - **WebGPU is not always faster.** On this integrated GPU, quantised models
   run faster on WASM than on WebGPU; fp16 is the fast WebGPU path.
 - **A query takes about 27 ms on WASM** through both encoders, against a
   500 ms budget.
-- **Peak memory fails the 1.5 GB budget on some Firefox first visits.** Over
-  the whole browser process tree, warm loads and Chrome's cold loads stay at
-  1.05 to 1.35 GB. Three of eight cold Firefox runs, on either path, peaked
-  at 1.67 to 1.70 GB; the other five at 1.27 to 1.37 GB. The cache is not the
-  cause, and under a hard memory limit the first load did not complete within
-  1.6 GB: see [`results/memory/`](results/memory/README.md). Fixing it is
-  assigned to the ingestion work.
+- **This page exceeds the 1.5 GB memory budget on some Firefox first
+  visits.** It loads all three models at once. Over the whole browser process
+  tree, warm loads and Chrome's cold loads stay at 1.05 to 1.35 GB; three of
+  eight cold Firefox runs peaked at 1.67 to 1.70 GB. The app avoids this by
+  loading each model only when it is needed, which keeps its first visit
+  within budget in both browsers: see [`results/memory/`](results/memory/README.md).
 - Not measured: a phone, a discrete GPU, Safari on a device.
 
 ## Browser support
@@ -108,11 +106,14 @@ npm run dev                      # http://localhost:5173
 The page takes its settings from the form or the query string, runs in a
 worker, and offers the result as a JSON download.
 
-Automated, on this machine's Chrome (WebGPU) and on bundled Chromium (WASM):
+Automated, after `npx playwright install --with-deps chromium firefox`.
+On Playwright's bundled Chromium, which runs WASM; add `SPIKE_CHANNEL=chrome`
+to use the installed Google Chrome, which can also reach the GPU;
+`SPIKE_BROWSER=firefox` for Firefox:
 
 ```bash
-SPIKE_CHANNEL=chrome SPIKE_LABEL=<machine> \
-  SPIKE_RUNS=webgpu:q4f16:q8,wasm:q4f16:q8 npx playwright test
+SPIKE_LABEL=<machine> SPIKE_RUNS=wasm:q4f16:q8 npx playwright test
+SPIKE_CHANNEL=chrome SPIKE_LABEL=<machine> SPIKE_RUNS=webgpu:q4f16:q8 npx playwright test
 python3 scripts/analyse.py --pack  # compresses new results, writes results/summary.md
 ```
 

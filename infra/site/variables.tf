@@ -5,9 +5,8 @@ variable "region" {
 }
 
 variable "domain" {
-  description = "Apex domain. Its Route 53 hosted zone must already exist."
+  description = "Apex domain, for example example.com. Its Route 53 hosted zone must already exist."
   type        = string
-  default     = "metabare.com"
 }
 
 variable "price_class" {
